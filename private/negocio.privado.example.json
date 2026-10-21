@@ -1,0 +1,8 @@
+{
+  "_aviso": "Plantilla. Copia a negocio.privado.json y rellena. El real no se sube a GitHub.",
+  "titular": {
+    "nombre": "NOMBRE Y APELLIDOS",
+    "nie": "X0000000X",
+    "domicilio": "CALLE, NÚMERO, CÓDIGO POSTAL, LOCALIDAD (PROVINCIA)"
+  }
+}
