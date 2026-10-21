@@ -238,6 +238,23 @@ test.describe('home page actions', () => {
     );
   });
 
+  test('shows what the place is and the main buttons in the first screen', async ({ page }) => {
+    await page.goto('/');
+    const viewport = page.viewportSize();
+    for (const target of [
+      page.getByRole('heading', { level: 1, name: 'Inkawasi' }),
+      page.getByText('Cocina tradicional peruana').first(),
+      page.getByRole('link', { name: 'Ver la carta' }),
+    ]) {
+      const box = await target.boundingBox();
+      expect(box, 'element has a box').not.toBeNull();
+      expect(
+        (box?.y ?? 0) + (box?.height ?? 0),
+        'ends inside the first screen',
+      ).toBeLessThanOrEqual(viewport?.height ?? 0);
+    }
+  });
+
   test('shows the photo with room reserved, before any script runs', async ({ page }) => {
     await page.goto('/');
     const photo = page.locator('.cover__img');

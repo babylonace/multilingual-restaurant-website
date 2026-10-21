@@ -41,7 +41,7 @@ export function footer(page: Page): SafeHtml {
           data-event="justeat_clic"
           data-prop-location="pie"
         >
-          ${t.justEat}
+          ${brandIcon('justeat', 'icon icon--gold')}${t.justEat}
           <span class="visually-hidden">${t.newTab}</span>
         </a>
       </address>

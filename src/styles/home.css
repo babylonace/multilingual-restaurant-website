@@ -4,7 +4,7 @@
     border-bottom: 0;
   }
 
-  /* The photo of the dining room: 3:2 on a phone so the bar and the tables both show, wide on desktop. */
+  /* Phone: the photo is a 3:2 band so the bar and the tables both show, then the text. */
   .cover__img {
     width: 100%;
     height: auto;
@@ -13,23 +13,13 @@
     object-position: 50% 60%;
   }
 
-  @media (min-width: 900px) {
-    .cover__img {
-      aspect-ratio: 21 / 9;
-      max-height: 520px;
-    }
-  }
-
-  .home {
+  .hero__content {
     display: grid;
-    justify-items: center;
-    gap: var(--space-5);
-    max-width: 640px;
-    padding-block: var(--space-6) var(--space-6);
-  }
-
-  .home > * {
+    gap: var(--space-4);
     width: 100%;
+    max-width: 640px;
+    margin-inline: auto;
+    padding: var(--space-6) var(--gutter) var(--space-5);
   }
 
   .home__intro {
@@ -45,8 +35,10 @@
     color: var(--text-strong);
   }
 
-  .home .actions {
-    padding: 0;
+  /* Two by two: four pills in one row are too narrow for their labels in a text column. */
+  .hero__content .actions__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
   }
 
   .home__links {
@@ -55,7 +47,69 @@
     gap: var(--space-3);
   }
 
-  .home > .actions__secondary {
-    justify-content: center;
+  .home__reviews {
+    max-width: 640px;
+    padding-bottom: var(--space-6);
+  }
+
+  /* Tablet: the photo is still a band, but no taller than the screen can spare. */
+  @media (min-width: 640px) {
+    .cover__img {
+      aspect-ratio: 16 / 7;
+    }
+  }
+
+  /*
+   * Desktop: text beside the photo. A full-width photo pushed the name and the buttons below the
+   * fold, so a visitor saw a logo and a picture and nothing saying what the place is. Now the
+   * name, the cuisine and the buttons are in the first screen and the photo keeps a size that
+   * shows the room without taking over (the usual split hero for restaurants).
+   */
+  @media (min-width: 900px) {
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      grid-template-areas: 'content cover';
+      align-items: center;
+      gap: 56px;
+      max-width: var(--container-wide);
+      margin-inline: auto;
+      padding: var(--space-4) var(--gutter) var(--space-6);
+    }
+
+    .cover {
+      grid-area: cover;
+    }
+
+    .cover__img {
+      aspect-ratio: auto;
+      height: clamp(460px, 68vh, 640px);
+      border-radius: 32px;
+      object-position: 55% 60%;
+      box-shadow: var(--shadow-card);
+    }
+
+    .hero__content {
+      grid-area: content;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .home__intro {
+      text-align: start;
+    }
+
+    .hero__content .masthead__quote {
+      margin-inline: 0;
+    }
+
+    .hero__content .actions__inner {
+      justify-items: stretch;
+    }
+
+    .hero__content .actions__title {
+      justify-content: flex-start;
+    }
   }
 }

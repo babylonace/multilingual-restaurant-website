@@ -23,6 +23,7 @@
     --gold-400: #ddb459;
 
     /* Terracotta & olive */
+    --terra-500: #e27d56; /* fill only: text on it is brown-900 (5.6:1) */
     --terra-700: #a54a2b;
     --olive-500: #3d5245;
     --olive-100: #e4e9e4;

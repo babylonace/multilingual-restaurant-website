@@ -14,6 +14,12 @@
     padding-block: var(--space-5);
   }
 
+  .masthead__bar--wide {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
   .masthead__logo img {
     height: 50px;
     width: auto;

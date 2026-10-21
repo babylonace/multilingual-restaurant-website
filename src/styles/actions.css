@@ -87,6 +87,22 @@
     background: var(--brown-900);
   }
 
+  .pill--terra {
+    background: var(--terra-500);
+    color: var(--brown-900);
+  }
+
+  .pill--terra:hover {
+    background: var(--gold-500);
+  }
+
+  .pill__icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-inline-end: var(--space-2);
+  }
+
   .pill--outline {
     border-color: var(--text-strong);
     color: var(--text-strong);
@@ -101,26 +117,5 @@
     min-height: 60px;
     font-size: 1rem;
     letter-spacing: 0.12em;
-  }
-
-  .actions__secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: 44px;
-    font-size: 0.875rem;
-    font-weight: var(--fw-semibold);
-    color: var(--terra-700);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  .actions__arrow {
-    width: 16px;
-    height: 16px;
-  }
-
-  [dir='rtl'] .actions__arrow {
-    transform: scaleX(-1);
   }
 }

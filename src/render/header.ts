@@ -45,7 +45,9 @@ function languageMenu(page: Page): SafeHtml {
 /** Logo (linking to the home page) and language switcher. */
 export function mastheadBar(page: Page): SafeHtml {
   const { ctx } = page;
-  return html`<div class="masthead__bar container">
+  // The carta is 820 px wide; the home is wider, so its bar is too.
+  const width = page.kind === 'home' ? 'masthead__bar--wide' : 'container';
+  return html`<div class="masthead__bar ${width}">
     <a class="masthead__logo" href="${kindHref(ctx, 'home', ctx.lang)}">
       <img
         src="${ctx.base}assets/logo.webp"

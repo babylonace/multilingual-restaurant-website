@@ -148,6 +148,13 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(body).toContain('tripadvisor.com.pe/UserReviewEdit-d34747578');
   });
 
+  it('gives Just Eat its own button, with its icon, here and in the footer', () => {
+    expect(body).toMatch(/class="pill pill--terra"\s+href="https:\/\/www\.just-eat\.es\//);
+    expect(body).toContain('class="pill__icon"');
+    const footer = /<footer.*<\/footer>/s.exec(body)?.[0] ?? '';
+    expect(footer).toMatch(/justeat_clic[\s\S]*?<svg class="icon icon--gold"/);
+  });
+
   it('keeps the reservation system out of sight', () => {
     expect(body).not.toMatch(/\/reservar|\/reserva\/|\/equipo/);
   });

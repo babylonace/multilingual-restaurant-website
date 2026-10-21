@@ -1,5 +1,5 @@
 import * as flags from 'country-flag-icons/string/3x2';
-import { siFacebook, siInstagram, siWhatsapp } from 'simple-icons';
+import { siFacebook, siInstagram, siJusteat, siWhatsapp } from 'simple-icons';
 import { LANGS } from '../data/langs';
 import type { AllergenKey, FlagId } from '../data/types';
 import { html, raw, type SafeHtml } from '../lib/html';
@@ -93,7 +93,12 @@ export function uiIcon(name: keyof typeof LUCIDE, className = 'icon'): SafeHtml 
 }
 
 /** Brand glyphs from Simple Icons (CC0). */
-const BRANDS = { instagram: siInstagram, facebook: siFacebook, whatsapp: siWhatsapp } as const;
+const BRANDS = {
+  instagram: siInstagram,
+  facebook: siFacebook,
+  whatsapp: siWhatsapp,
+  justeat: siJusteat,
+} as const;
 
 export function brandIcon(name: keyof typeof BRANDS, className = 'icon'): SafeHtml {
   return raw(
