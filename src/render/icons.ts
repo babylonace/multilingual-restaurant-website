@@ -78,12 +78,19 @@ export function flagIcon(flag: FlagId): SafeHtml {
   </svg>`;
 }
 
-/** Lucide `map-pin`, `navigation` and `arrow-right` (ISC), inlined to avoid a runtime CDN. */
+/** Lucide icons (ISC), inlined to avoid a runtime CDN. */
 const LUCIDE = {
   'map-pin':
     '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
   navigation: '<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
   'arrow-right': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  calendar:
+    '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  'shopping-bag':
+    '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  bike: '<circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/>',
+  'message-circle': '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
 } as const;
 
 export function uiIcon(name: keyof typeof LUCIDE, className = 'icon'): SafeHtml {

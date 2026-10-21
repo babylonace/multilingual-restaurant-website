@@ -110,7 +110,7 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
   });
 
   it('shows the dining-room photo with its size, alt text and high priority', () => {
-    const img = /<img[^>]*class="cover__img"[^>]*>/s.exec(body)?.[0] ?? '';
+    const img = /<img[^>]*class="[^"]*cover__img"[^>]*>/s.exec(body)?.[0] ?? '';
     expect(img).toContain('width="1600"');
     expect(img).toContain('height="900"');
     expect(img).toContain('fetchpriority="high"');
@@ -149,10 +149,16 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
   });
 
   it('gives Just Eat its own button, with its icon, here and in the footer', () => {
-    expect(body).toMatch(/class="pill pill--terra"\s+href="https:\/\/www\.just-eat\.es\//);
-    expect(body).toContain('class="pill__icon"');
+    expect(body).toMatch(/class="tile tile--terra"\s+href="https:\/\/www\.just-eat\.es\//);
+    expect(body).toMatch(/tile--terra[\s\S]*?<svg class="tile__icon"/);
     const footer = /<footer.*<\/footer>/s.exec(body)?.[0] ?? '';
     expect(footer).toMatch(/justeat_clic[\s\S]*?<svg class="icon icon--gold"/);
+  });
+
+  it('shows the six favourite dishes, each linking to its section of the carta', () => {
+    const cards = [...body.matchAll(/class="dish-card" href="([^"]+)"/g)].map((m) => m[1]);
+    expect(cards).toHaveLength(6);
+    for (const href of cards) expect(href).toMatch(new RegExp(`^${carta}#[a-z]+$`));
   });
 
   it('keeps the reservation system out of sight', () => {

@@ -1,72 +1,31 @@
 @layer components {
-  /* ---- WhatsApp call to action ---- */
-  .actions {
-    padding-block: var(--space-6) var(--space-2);
-  }
-
-  .actions__inner {
-    width: 100%;
-    max-width: var(--container-wide);
-    margin-inline: auto;
-    display: grid;
-    justify-items: center;
-    gap: var(--space-4);
-  }
-
-  .actions__title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    font-size: 0.875rem;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    text-align: center;
-    color: var(--text-strong);
-  }
-
-  .actions__icon {
-    flex: none;
-    width: 20px;
-    height: 20px;
-    color: var(--olive-500);
-  }
-
-  .actions__list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
-    width: 100%;
-    max-width: 640px;
-  }
-
-  @media (min-width: 640px) {
-    .actions__list {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      max-width: none;
-    }
-  }
-
   /*
-   * Pills. Text on gold is always brown-900 (brand brown on gold is only 3.57:1); cream on
-   * olive is 8:1. Outline pills keep the brand brown on cream.
+   * Pills. Text on gold or terracotta is always brown-900 (brand brown on gold is only 3.57:1);
+   * cream on olive is 8:1. Outline pills keep the brand brown on cream.
    */
   .pill {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 48px;
-    padding: var(--space-2) var(--space-4);
+    padding: var(--space-2) var(--space-6);
     border: 2px solid transparent;
     border-radius: var(--radius-pill);
     font-size: 0.8125rem;
     font-weight: var(--fw-bold);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     line-height: 1.2;
     text-align: center;
     text-transform: uppercase;
-    transition: var(--transition-colors);
+    transition:
+      var(--transition-colors),
+      transform var(--dur-fast) var(--ease-standard),
+      box-shadow var(--dur-fast) var(--ease-standard);
+  }
+
+  .pill:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
   }
 
   .pill--gold {
@@ -78,22 +37,21 @@
     background: var(--gold-400);
   }
 
-  .pill--olive {
-    background: var(--olive-500);
+  /* On the photo: cream outline over the brown veil. */
+  .pill--ghost {
+    border-color: rgb(245 244 240 / 0.85);
     color: var(--cream-100);
   }
 
-  .pill--olive:hover {
-    background: var(--brown-900);
-  }
-
-  .pill--terra {
-    background: var(--terra-500);
+  .pill--ghost:hover {
+    background: var(--cream-100);
     color: var(--brown-900);
   }
 
-  .pill--terra:hover {
-    background: var(--gold-500);
+  .pill--lg {
+    min-height: 56px;
+    font-size: 0.9375rem;
+    letter-spacing: 0.14em;
   }
 
   .pill__icon {
@@ -103,19 +61,127 @@
     margin-inline-end: var(--space-2);
   }
 
-  .pill--outline {
-    border-color: var(--text-strong);
-    color: var(--text-strong);
-  }
-
-  .pill--outline:hover {
-    background: var(--text-strong);
+  /* ---- WhatsApp intents ---- */
+  .actions__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
     color: var(--cream-100);
   }
 
-  .pill--lg {
-    min-height: 60px;
-    font-size: 1rem;
-    letter-spacing: 0.12em;
+  .actions__icon {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    color: var(--gold-400);
+  }
+
+  .actions__list,
+  .more {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .more {
+    margin-top: var(--space-3);
+  }
+
+  .more li:first-child {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 900px) {
+    .actions__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .more {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .more li:first-child {
+      grid-column: auto;
+    }
+  }
+
+  /* ---- Tiles: a large touch target with an icon over its label ---- */
+  .tile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    height: 100%;
+    min-height: 104px;
+    padding: var(--space-4);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    background: var(--cream-100);
+    color: var(--brown-900);
+    transition:
+      var(--transition-colors),
+      transform var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
+
+  .tile:hover {
+    transform: translateY(-3px);
+    background: var(--gold-400);
+    box-shadow: 0 10px 24px rgb(51 26 19 / 0.35);
+  }
+
+  .tile__icon {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    color: var(--olive-500);
+  }
+
+  .tile__label {
+    font-size: 0.875rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.06em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .tile--terra,
+  .tile--outline {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 72px;
+  }
+
+  .tile--terra {
+    background: var(--terra-500);
+  }
+
+  .tile--terra .tile__icon {
+    color: var(--brown-900);
+  }
+
+  .tile--outline {
+    border-color: rgb(245 244 240 / 0.55);
+    background: transparent;
+    color: var(--cream-100);
+  }
+
+  .tile--outline .tile__icon {
+    color: var(--gold-400);
+  }
+
+  .tile--outline:hover {
+    border-color: var(--gold-400);
+    background: rgb(245 244 240 / 0.08);
+  }
+
+  .band--brown :focus-visible {
+    outline-color: var(--gold-400);
   }
 }

@@ -4,112 +4,334 @@
     border-bottom: 0;
   }
 
-  /* Phone: the photo is a 3:2 band so the bar and the tables both show, then the text. */
-  .cover__img {
+  /*
+   * Hero: the photo full bleed under the brown veil of the Instagram pieces, text in cream on top.
+   * Tall enough to feel like a cover, short enough that the band below peeks in, so the page
+   * invites a scroll and the name and buttons are always in the first screen.
+   */
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    min-height: min(72svh, 620px);
+    overflow: hidden;
+    background: var(--brown-900);
+    isolation: isolate;
+  }
+
+  .hero__img {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
     width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
+    height: 100%;
     object-fit: cover;
-    object-position: 50% 60%;
+    object-position: 42% 55%;
+    animation: hero-settle 1.6s var(--ease-standard) both;
+  }
+
+  /* brown-900, light at the top, heavy at the foot where the text sits */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      rgb(51 26 19 / 0.35) 0%,
+      rgb(51 26 19 / 0.1) 30%,
+      rgb(51 26 19 / 0.78) 62%,
+      rgb(51 26 19 / 0.94) 100%
+    );
   }
 
   .hero__content {
-    display: grid;
-    gap: var(--space-4);
     width: 100%;
-    max-width: 640px;
+    max-width: var(--container-wide);
     margin-inline: auto;
-    padding: var(--space-6) var(--gutter) var(--space-5);
+    padding: var(--space-6) var(--gutter) 40px;
+    color: var(--cream-100);
+    animation: hero-rise 0.7s 0.15s var(--ease-standard) both;
   }
 
-  .home__intro {
-    text-align: center;
+  .hero__eyebrow {
+    font-size: 0.75rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--gold-300);
   }
 
-  .home__title {
+  .hero__title {
     margin-top: var(--space-2);
+    font-size: clamp(3rem, 1.6rem + 6vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  .hero__quote {
+    margin-top: var(--space-3);
     font-family: var(--font-serif);
-    font-size: clamp(2.5rem, 2rem + 2vw, 3rem);
-    font-weight: var(--fw-semibold);
-    line-height: 1.05;
-    color: var(--text-strong);
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+    font-style: var(--italic);
   }
 
-  /* Two by two: four pills in one row are too narrow for their labels in a text column. */
-  .hero__content .actions__list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: none;
-  }
-
-  .home__links {
+  .hero__ctas {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-3);
+    margin-top: var(--space-6);
   }
 
-  .home__reviews {
-    max-width: 640px;
-    padding-bottom: var(--space-6);
-  }
-
-  /* Tablet: the photo is still a band, but no taller than the screen can spare. */
   @media (min-width: 640px) {
-    .cover__img {
-      aspect-ratio: 16 / 7;
+    .hero__ctas {
+      display: flex;
+      flex-wrap: wrap;
     }
   }
 
-  /*
-   * Desktop: text beside the photo. A full-width photo pushed the name and the buttons below the
-   * fold, so a visitor saw a logo and a picture and nothing saying what the place is. Now the
-   * name, the cuisine and the buttons are in the first screen and the photo keeps a size that
-   * shows the room without taking over (the usual split hero for restaurants).
-   */
   @media (min-width: 900px) {
     .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-      grid-template-areas: 'content cover';
-      align-items: center;
-      gap: 56px;
-      max-width: var(--container-wide);
-      margin-inline: auto;
-      padding: var(--space-4) var(--gutter) var(--space-6);
+      min-height: min(70vh, 640px);
     }
 
-    .cover {
-      grid-area: cover;
-    }
-
-    .cover__img {
-      aspect-ratio: auto;
-      height: clamp(460px, 68vh, 640px);
-      border-radius: 32px;
-      object-position: 55% 60%;
-      box-shadow: var(--shadow-card);
+    .hero__img {
+      object-position: 50% 55%;
     }
 
     .hero__content {
-      grid-area: content;
-      max-width: none;
-      margin: 0;
-      padding: 0;
+      padding-bottom: 56px;
+    }
+  }
+
+  /* Reduced motion: no zoom, no rise; the final state from the first frame. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__img,
+    .hero__content {
+      animation: none;
+    }
+  }
+
+  @keyframes hero-settle {
+    from {
+      transform: scale(1.06);
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  .brand-bar {
+    display: flex;
+    height: 10px;
+  }
+
+  .brand-bar i {
+    flex: 1;
+  }
+
+  .brand-bar i:nth-child(1) {
+    background: var(--gold-500);
+  }
+
+  .brand-bar i:nth-child(2) {
+    background: var(--terra-500);
+  }
+
+  .brand-bar i:nth-child(3) {
+    background: var(--olive-500);
+  }
+
+  /* ---- Colour bands ---- */
+  .band {
+    position: relative;
+    overflow: hidden;
+    padding-block: 48px;
+  }
+
+  .band__inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .band--brown {
+    background: var(--brown-700);
+    scroll-margin-top: var(--space-4);
+  }
+
+  /* Isotype watermark at 6%, always whole inside the band, never over the photo. */
+  .band--brown::after {
+    content: '';
+    position: absolute;
+    inset-block: 24px;
+    inset-inline-end: 4%;
+    /* Height follows the band, width follows the isotype's own proportions: never cropped. */
+    aspect-ratio: 1144 / 1471;
+    max-height: 420px;
+    background: url('/assets/brand/isotipo-cream.svg') center / contain no-repeat;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  @media (min-width: 900px) {
+    .band {
+      padding-block: 72px;
+    }
+  }
+
+  .band--olive {
+    background: var(--olive-500);
+  }
+
+  .band--olive .review {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .band--olive .review__pin {
+    width: 34px;
+    height: 34px;
+    color: var(--gold-400);
+  }
+
+  .band--olive .review__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1rem + 1.2vw, 1.75rem);
+    font-weight: 800;
+    color: var(--cream-100);
+  }
+
+  .band--olive .review__text {
+    font-size: 1.0625rem;
+    color: var(--cream-100);
+  }
+
+  .band--olive .review__link {
+    min-height: 48px;
+    border-color: rgb(245 244 240 / 0.7);
+    color: var(--cream-100);
+  }
+
+  .band--olive .review__link:hover {
+    background: var(--cream-100);
+    color: var(--olive-500);
+  }
+
+  .band--olive :focus-visible {
+    outline-color: var(--gold-400);
+  }
+
+  /* ---- Favourite dishes ---- */
+  .dishes {
+    padding-block: 48px;
+  }
+
+  .dishes__inner {
+    max-width: var(--container-wide);
+    margin-inline: auto;
+  }
+
+  .section-heading {
+    padding-inline: var(--gutter);
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-strong);
+  }
+
+  /* Phone: a row to swipe through, snapping to each card. Desktop: a 3 × 2 grid. */
+  .dishes__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(72%, 280px);
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    padding: 4px var(--gutter) var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+  }
+
+  .dishes__list > li {
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 900px) {
+    .dishes {
+      padding-block: 72px;
     }
 
-    .home__intro {
-      text-align: start;
+    .dishes__list {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      overflow: visible;
     }
+  }
 
-    .hero__content .masthead__quote {
-      margin-inline: 0;
-    }
+  .dish-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--cream-50);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
 
-    .hero__content .actions__inner {
-      justify-items: stretch;
-    }
+  .dish-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-pop);
+  }
 
-    .hero__content .actions__title {
-      justify-content: flex-start;
-    }
+  .dish-card__frame {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+    background: var(--cream-200);
+  }
+
+  .dish-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms var(--ease-standard);
+  }
+
+  .dish-card:hover .dish-card__img {
+    transform: scale(1.06);
+  }
+
+  .dish-card__body {
+    display: grid;
+    gap: 4px;
+    padding: var(--space-4) var(--space-5) var(--space-5);
+  }
+
+  .dish-card__section {
+    font-size: 0.6875rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra-700);
+  }
+
+  .dish-card__name {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: var(--fw-semibold);
+    line-height: 1.2;
+    color: var(--text-strong);
   }
 }

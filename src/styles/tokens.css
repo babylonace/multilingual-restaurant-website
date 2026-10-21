@@ -21,6 +21,7 @@
     --gold-600: #bf8d22;
     --gold-500: #d19e2b;
     --gold-400: #ddb459;
+    --gold-300: #e8cb8a;
 
     /* Terracotta & olive */
     --terra-500: #e27d56; /* fill only: text on it is brown-900 (5.6:1) */
@@ -50,7 +51,7 @@
     --focus-ring: var(--gold-600);
 
     /* Typography */
-    --font-display: 'Jost Variable', 'Century Gothic', system-ui, sans-serif;
+    --font-display: 'Montserrat Variable', 'Century Gothic', system-ui, sans-serif;
     --font-serif: 'Lora Variable', Georgia, 'Times New Roman', serif;
     --fw-medium: 500;
     --fw-semibold: 600;
@@ -80,6 +81,7 @@
     /* Motion */
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
     --dur-fast: 140ms;
+    --dur-base: 220ms;
     --transition-colors:
       color var(--dur-fast) var(--ease-standard),
       background-color var(--dur-fast) var(--ease-standard),
@@ -93,13 +95,15 @@
   }
 
   :lang(ar) {
-    --font-display: 'Jost Variable', 'Segoe UI', 'Noto Sans Arabic', Tahoma, system-ui, sans-serif;
+    --font-display:
+      'Montserrat Variable', 'Segoe UI', 'Noto Sans Arabic', Tahoma, system-ui, sans-serif;
     --font-serif: 'Lora Variable', 'Noto Naskh Arabic', 'Traditional Arabic', 'Segoe UI', serif;
   }
 
   :lang(zh) {
     --font-display:
-      'Jost Variable', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif;
+      'Montserrat Variable', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui,
+      sans-serif;
     --font-serif: 'Lora Variable', 'Songti SC', 'Noto Serif CJK SC', 'Microsoft YaHei', serif;
   }
 }

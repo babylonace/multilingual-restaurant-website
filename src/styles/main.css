@@ -1,6 +1,6 @@
 @layer tokens, base, components, utilities;
 
-@import '@fontsource-variable/jost/index.css';
+@import '@fontsource-variable/montserrat/index.css';
 @import '@fontsource-variable/lora/index.css';
 @import '@fontsource-variable/lora/wght-italic.css';
 @import './tokens.css';
