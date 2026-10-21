@@ -1,14 +1,12 @@
 import { html, type SafeHtml } from '../lib/html';
 import { CONTACT, justEatLink, whatsappIntentLink } from './contact';
 import type { Page } from './context';
-import { openingHours } from './hours';
 import { brandIcon, uiIcon } from './icons';
 
 export function footer(page: Page): SafeHtml {
   const { ctx, t } = page;
   return html`<footer class="footer">
     <div class="footer__inner container">
-      ${openingHours(page)}
       <address class="footer__contact">
         <span class="footer__item"
           >${uiIcon('map-pin', 'icon icon--gold')}${CONTACT.streetAddress} ·
@@ -27,7 +25,7 @@ export function footer(page: Page): SafeHtml {
         </a>
         <a
           class="footer__item"
-          href="${CONTACT.mapsUrl}"
+          href="${CONTACT.directionsUrl}"
           target="_blank"
           rel="noopener"
           data-event="llegar_clic"

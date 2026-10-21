@@ -1,7 +1,7 @@
 import { LANGS } from '../data/langs';
 import { DEFAULT_LANG } from '../i18n';
 import { html, type SafeHtml } from '../lib/html';
-import { langHref, type Page } from './context';
+import { kindHref, type Page } from './context';
 import { flagIcon } from './icons';
 
 /** Spanish first, the rest alphabetical by endonym (fixed locale so the build is reproducible). */
@@ -17,7 +17,7 @@ const SORTED_LANGS = [...LANGS].sort((a, b) => {
  * outside-click closing.
  */
 function languageMenu(page: Page): SafeHtml {
-  const { ctx, t, langDef } = page;
+  const { ctx, t, langDef, kind } = page;
   return html`<details class="lang" data-lang-menu>
     <summary class="lang__trigger" aria-label="${t.langLabel}: ${langDef.label}">
       ${flagIcon(langDef.flag)}<span class="lang__current">${langDef.label}</span
@@ -29,7 +29,7 @@ function languageMenu(page: Page): SafeHtml {
           html`<li>
             <a
               class="lang__option"
-              href="${langHref(ctx, l.code)}"
+              href="${kindHref(ctx, kind, l.code)}"
               hreflang="${l.code}"
               lang="${l.code}"
               data-lang="${l.code}"
@@ -42,21 +42,27 @@ function languageMenu(page: Page): SafeHtml {
   </details>`;
 }
 
+/** Logo (linking to the home page) and language switcher. */
+export function mastheadBar(page: Page): SafeHtml {
+  const { ctx } = page;
+  return html`<div class="masthead__bar container">
+    <a class="masthead__logo" href="${kindHref(ctx, 'home', ctx.lang)}">
+      <img
+        src="${ctx.base}assets/logo.webp"
+        width="162"
+        height="50"
+        alt="Inkawasi"
+        ${page.kind === 'carta' && html`fetchpriority="high"`}
+      />
+    </a>
+    ${languageMenu(page)}
+  </div>`;
+}
+
 export function header(page: Page): SafeHtml {
-  const { ctx, t } = page;
+  const { t } = page;
   return html`<header class="masthead">
-    <div class="masthead__bar container">
-      <a class="masthead__logo" href="${langHref(ctx, ctx.lang)}">
-        <img
-          src="${ctx.base}assets/logo.webp"
-          width="162"
-          height="50"
-          alt="Inkawasi"
-          fetchpriority="high"
-        />
-      </a>
-      ${languageMenu(page)}
-    </div>
+    ${mastheadBar(page)}
     <div class="masthead__hero container">
       <p class="eyebrow">${t.eyebrow}</p>
       <h1 class="masthead__title">${t.title}</h1>

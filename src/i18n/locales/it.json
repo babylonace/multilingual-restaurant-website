@@ -28,7 +28,7 @@
     "skipLink": "Vai al contenuto",
     "tabsLabel": "Sezioni del menù",
     "directions": "Indicazioni",
-    "reviewTitle": "Lasciaci una recensione su Google Maps",
+    "reviewTitle": "Lasciaci una recensione",
     "reviewText": "Ci aiuta a crescere ed è sempre molto apprezzata!",
     "newTab": "(si apre in una nuova scheda)",
     "allergenTraces": "Possibili tracce di altri allergeni. Chiedi sempre al nostro personale.",
@@ -38,10 +38,13 @@
     "waDomicilio": "Ordina a domicilio",
     "waConsulta": "Fai una domanda",
     "justEat": "Ordina su Just Eat",
-    "hoursTitle": "Orari",
-    "closed": "Chiuso",
     "legalNotice": "Note legali",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "viewMenu": "Vedi il menù",
+    "viewHours": "Vedi gli orari",
+    "homeMetaTitle": "Inkawasi · Cucina tradizionale peruviana a Ferrol",
+    "homeMetaDescription": "Inkawasi, cucina tradizionale peruviana a Ferrol: ceviche, chaufa, lomo saltado e altro. Guarda il menù, ordina da asporto o a domicilio e scrivici su WhatsApp.",
+    "coverAlt": "Interno di Inkawasi: il bancone in legno a sinistra e i tavoli della sala a destra"
   },
   "allergens": {
     "gluten": "Glutine",

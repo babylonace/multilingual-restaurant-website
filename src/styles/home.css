@@ -1,0 +1,61 @@
+@layer components {
+  /* ---- Home page ---- */
+  .masthead--home {
+    border-bottom: 0;
+  }
+
+  /* The photo of the dining room: 3:2 on a phone so the bar and the tables both show, wide on desktop. */
+  .cover__img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    object-position: 50% 60%;
+  }
+
+  @media (min-width: 900px) {
+    .cover__img {
+      aspect-ratio: 21 / 9;
+      max-height: 520px;
+    }
+  }
+
+  .home {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-5);
+    max-width: 640px;
+    padding-block: var(--space-6) var(--space-6);
+  }
+
+  .home > * {
+    width: 100%;
+  }
+
+  .home__intro {
+    text-align: center;
+  }
+
+  .home__title {
+    margin-top: var(--space-2);
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 2rem + 2vw, 3rem);
+    font-weight: var(--fw-semibold);
+    line-height: 1.05;
+    color: var(--text-strong);
+  }
+
+  .home .actions {
+    padding: 0;
+  }
+
+  .home__links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .home > .actions__secondary {
+    justify-content: center;
+  }
+}

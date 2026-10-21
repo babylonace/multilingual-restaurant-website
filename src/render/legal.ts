@@ -218,7 +218,7 @@ export function renderLegalPage(
     <a class="skip-link" href="#content">${page.t.skipLink}</a>
     <header class="legal-bar">
       <div class="container">
-        <a href="${ctx.base}carta/">
+        <a href="${ctx.base}">
           <img src="${ctx.base}assets/logo.webp" width="162" height="50" alt="${CONTACT.name}" />
         </a>
       </div>

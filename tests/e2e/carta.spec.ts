@@ -54,7 +54,17 @@ test.describe('carta', () => {
 });
 
 test.describe('URLs', () => {
-  test('forwards the site root to the carta, keeping the tab fragment', async ({ page }) => {
+  test('serves the home page at the site root, not the carta', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveURL(/localhost:\d+\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Inkawasi');
+    await expect(page.getByRole('link', { name: 'Ver la carta' })).toHaveAttribute(
+      'href',
+      '/carta/',
+    );
+  });
+
+  test('forwards an old /#marino link to the carta, on that tab', async ({ page }) => {
     await page.goto('/#marino');
     await expect(page).toHaveURL(/\/carta\/#marino$/);
     await expect(page.getByRole('tab', { name: 'Marino' })).toHaveAttribute(
@@ -63,18 +73,23 @@ test.describe('URLs', () => {
     );
   });
 
-  test('forwards a language root to that language’s carta', async ({ page }) => {
+  test('serves each language at its own root', async ({ page }) => {
     await page.goto('/fr/');
-    await expect(page).toHaveURL(/\/fr\/carta\/$/);
+    await expect(page).toHaveURL(/\/fr\/$/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+    await expect(page.getByRole('link', { name: 'Voir la carte' })).toHaveAttribute(
+      'href',
+      '/fr/carta/',
+    );
   });
 
-  test('forwards the root even without JavaScript', async ({ browser }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false });
-    const page = await context.newPage();
+  test('reaches the carta from the home page', async ({ page }) => {
     await page.goto('/');
+    await page.getByRole('link', { name: 'Ver la carta' }).click();
     await expect(page).toHaveURL(/\/carta\/$/);
-    await context.close();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('La Carta');
+    await page.getByRole('link', { name: 'Inkawasi' }).first().click();
+    await expect(page).toHaveURL(/localhost:\d+\/$/);
   });
 });
 
@@ -130,15 +145,27 @@ test.describe('languages', () => {
     await context.close();
   });
 
-  test('also reaches the English carta through the site root', async ({ browser }) => {
+  test('sends an English phone from the Spanish home to /en/', async ({ browser }) => {
     const context = await browser.newContext({
       locale: 'en-US',
       userAgent: 'Mozilla/5.0 Chrome/130 Safari/537.36',
     });
     const page = await context.newPage();
     await page.goto('/');
-    await expect(page).toHaveURL(/\/en\/carta\/$/);
+    await expect(page).toHaveURL(/\/en\/$/);
+    await expect(page.getByRole('link', { name: 'View the menu' })).toHaveAttribute(
+      'href',
+      '/en/carta/',
+    );
     await context.close();
+  });
+
+  test('switches language on the home page without leaving it', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('[data-lang-menu] summary').click();
+    await page.getByRole('link', { name: 'Deutsch' }).click();
+    await expect(page).toHaveURL(/\/de\/$/);
+    await expect(page.getByRole('link', { name: 'Speisekarte ansehen' })).toBeVisible();
   });
 
   test('never redirects crawlers away from the Spanish carta', async ({ browser }) => {
@@ -150,9 +177,9 @@ test.describe('languages', () => {
   });
 });
 
-test.describe('WhatsApp and orders', () => {
+test.describe('home page actions', () => {
   test('offers one ready-made WhatsApp message per intent', async ({ page }) => {
-    await page.goto('/carta/');
+    await page.goto('/');
     const links = page.locator('.actions a[data-event="whatsapp_clic"]');
     await expect(links).toHaveCount(4);
     const intents = await links.evaluateAll((els) =>
@@ -165,21 +192,63 @@ test.describe('WhatsApp and orders', () => {
   });
 
   test('tells the staff which language the visitor speaks', async ({ page }) => {
-    await page.goto('/en/carta/');
+    await page.goto('/en/');
     const href = await page.locator('.actions a[data-prop-intent="reservar"]').getAttribute('href');
     expect(decodeURIComponent(href ?? '')).toMatch(/\nIdioma: English$/);
   });
 
   test('links Just Eat with its tracking tags, in a new tab', async ({ page }) => {
-    await page.goto('/carta/');
+    await page.goto('/');
     const link = page.getByRole('link', { name: /Pedir en Just Eat/ }).first();
     await expect(link).toHaveAttribute('target', '_blank');
     await expect(link).toHaveAttribute(
       'href',
-      /^https:\/\/www\.just-eat\.es\/restaurants-inkawasi-ferrol\/menu\?.*utm_content=carta/,
+      /^https:\/\/www\.just-eat\.es\/restaurants-inkawasi-ferrol\/menu\?.*utm_content=home/,
     );
   });
 
+  test('opens Google Maps for directions and for the opening hours', async ({ page }) => {
+    await page.goto('/');
+    const directions = page.locator('#content').getByRole('link', { name: /Cómo llegar/ });
+    await expect(directions).toHaveAttribute(
+      'href',
+      'https://www.google.com/maps/dir/?api=1&destination=43.4878407,-8.2178932',
+    );
+    await expect(directions).toHaveAttribute('target', '_blank');
+    await expect(page.getByRole('link', { name: /Ver horario/ })).toHaveAttribute(
+      'href',
+      'https://maps.app.goo.gl/xJ61NGccX21LAM6b9',
+    );
+  });
+
+  test('does not repeat the opening hours: Google Maps is the source', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('body')).not.toContainText(/dd:dd–dd:dd/);
+  });
+
+  test('asks for a review on Google Maps and on TripAdvisor', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('link', { name: /^Google Maps/ })).toHaveAttribute(
+      'href',
+      'https://g.page/r/CdLbyRjbHjW8EAE/review',
+    );
+    await expect(page.getByRole('link', { name: /^TripAdvisor/ })).toHaveAttribute(
+      'href',
+      'https://www.tripadvisor.com.pe/UserReviewEdit-d34747578?m=68676',
+    );
+  });
+
+  test('shows the photo with room reserved, before any script runs', async ({ page }) => {
+    await page.goto('/');
+    const photo = page.locator('.cover__img');
+    await expect(photo).toBeVisible();
+    await expect(photo).toHaveAttribute('width', '1600');
+    const loaded = await photo.evaluate((img) => (img as HTMLImageElement).naturalWidth > 0);
+    expect(loaded).toBe(true);
+  });
+});
+
+test.describe('carta extras', () => {
   test('lists all 14 allergens in the legend', async ({ page }) => {
     await page.goto('/carta/');
     await expect(page.locator('.legend__item')).toHaveCount(14);
@@ -187,12 +256,23 @@ test.describe('WhatsApp and orders', () => {
     await expect(page.locator('.legend')).toContainText('Altramuces');
   });
 
-  test('prints the opening hours', async ({ page }) => {
+  test('keeps the WhatsApp phone, directions and Just Eat in the footer', async ({ page }) => {
     await page.goto('/carta/');
-    const hours = page.locator('.hours');
-    await expect(hours).toContainText('Lunes');
-    await expect(hours).toContainText('Cerrado');
-    await expect(hours).toContainText('11:00–23:00');
+    const footer = page.locator('footer');
+    await expect(footer.getByRole('link', { name: /Cómo llegar/ })).toBeVisible();
+    await expect(footer.getByRole('link', { name: /Just Eat/ })).toHaveAttribute(
+      'href',
+      /utm_content=pie/,
+    );
+    await expect(footer.getByRole('link', { name: /614 92 21 83/ })).toHaveAttribute(
+      'href',
+      /^https:\/\/wa\.me\/34614922183\?text=/,
+    );
+  });
+
+  test('asks for a review on Google Maps and on TripAdvisor', async ({ page }) => {
+    await page.goto('/carta/');
+    await expect(page.locator('.review__link')).toHaveCount(2);
   });
 });
 
@@ -225,7 +305,7 @@ test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
   test('keeps the WhatsApp links working', async ({ page }) => {
-    await page.goto('/carta/');
+    await page.goto('/');
     await expect(page.getByRole('link', { name: /Reservar mesa/ })).toHaveAttribute(
       'href',
       /^https:\/\/wa\.me\/34614922183\?text=/,

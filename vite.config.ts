@@ -8,7 +8,7 @@ const { base, siteUrl } = getBuildConfig();
 
 /**
  * Dev-only: renders the same pre-rendered pages the production build emits, for every
- * language (`/carta/`, `/en/carta/`, …) and the language-root redirects, so what you see
+ * language (the home `/en/`, the carta `/en/carta/`, …) and the legal pages, so what you see
  * in `npm run dev` is what ships.
  */
 function renderPagesInDev(): Plugin {
@@ -36,19 +36,12 @@ function renderPagesInDev(): Plugin {
               req.url ?? '/',
               applyTemplate(template, renderLegalPage(ctx, route.legal, titular)),
             );
-          } else if (route.kind === 'redirect') {
-            const { renderRedirectPage } = await server.ssrLoadModule(
-              '/src/render/redirect-page.ts',
-            );
-            html = renderRedirectPage(ctx);
           } else {
-            const { renderPage } = await server.ssrLoadModule('/src/render/page.ts');
+            const pages = await server.ssrLoadModule('/src/render/page.ts');
             const { applyTemplate } = await server.ssrLoadModule('/src/render/template.ts');
             const template = await readFile(resolve('index.html'), 'utf8');
-            html = await server.transformIndexHtml(
-              req.url ?? '/',
-              applyTemplate(template, renderPage(ctx)),
-            );
+            const page = route.kind === 'home' ? pages.renderHomePage(ctx) : pages.renderPage(ctx);
+            html = await server.transformIndexHtml(req.url ?? '/', applyTemplate(template, page));
           }
           res.setHeader('Content-Type', 'text/html; charset=utf-8');
           res.end(html);

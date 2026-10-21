@@ -7,8 +7,7 @@ import { DEFAULT_LANG, isLangCode } from '../i18n';
  *
  *   /carta/        carta, Spanish (default language)
  *   /en/carta/     carta, any other language
- *   /  /en/  …     language roots; they only forward to that language's carta until
- *                  the site has a home page of its own
+ *   /  /en/  …     home page of each language (photo and the ways to reach the restaurant)
  *   /aviso-legal/  legal pages, Spanish only (they are required by Spanish law)
  *   /privacidad/
  *
@@ -16,7 +15,7 @@ import { DEFAULT_LANG, isLangCode } from '../i18n';
  */
 export type Route =
   | { kind: 'carta'; lang: LangCode }
-  | { kind: 'redirect'; lang: LangCode }
+  | { kind: 'home'; lang: LangCode }
   | { kind: 'legal'; lang: 'es'; legal: LegalId };
 
 const LEGAL_ROUTE = new RegExp(`^/(${LEGAL_PAGES.join('|')})/(?:index\\.html)?$`);
@@ -32,5 +31,5 @@ export function resolveRoute(pathname: string): Route | undefined {
   const lang = match[1] ?? DEFAULT_LANG;
   // The default language lives at the root, never under its own prefix.
   if (!isLangCode(lang) || (match[1] && lang === DEFAULT_LANG)) return undefined;
-  return { kind: match[2] ? 'carta' : 'redirect', lang };
+  return { kind: match[2] ? 'carta' : 'home', lang };
 }

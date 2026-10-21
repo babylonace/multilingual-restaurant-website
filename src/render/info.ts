@@ -23,12 +23,36 @@ export function allergenLegend(page: Page): SafeHtml {
   </section>`;
 }
 
+/** Both places where a review helps: Google Maps and TripAdvisor. */
 export function reviewCallout(page: Page): SafeHtml {
   const { t } = page;
-  return html`<a class="review" href="${CONTACT.reviewUrl}" target="_blank" rel="noopener">
+  const sites = [
+    { id: 'google', name: 'Google Maps', href: CONTACT.reviewUrl },
+    { id: 'tripadvisor', name: 'TripAdvisor', href: CONTACT.tripadvisorReviewUrl },
+  ] as const;
+  return html`<section class="review" aria-labelledby="review-title">
     ${uiIcon('map-pin', 'review__pin')}
-    <span class="review__text"><strong>${t.reviewTitle}</strong><br />${t.reviewText}</span>
-    ${uiIcon('arrow-right', 'review__arrow')}
-    <span class="visually-hidden">${t.newTab}</span>
-  </a>`;
+    <div class="review__body">
+      <h2 class="review__title" id="review-title">${t.reviewTitle}</h2>
+      <p class="review__text">${t.reviewText}</p>
+      <ul class="review__links">
+        ${sites.map(
+          (site) =>
+            html`<li>
+              <a
+                class="review__link"
+                href="${site.href}"
+                target="_blank"
+                rel="noopener"
+                data-event="resena_clic"
+                data-prop-site="${site.id}"
+                >${site.name}${uiIcon('arrow-right', 'review__arrow')}<span class="visually-hidden">
+                  ${t.newTab}</span
+                ></a
+              >
+            </li>`,
+        )}
+      </ul>
+    </div>
+  </section>`;
 }

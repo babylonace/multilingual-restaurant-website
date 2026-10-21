@@ -40,7 +40,7 @@ tests/           unitarios (Vitest) y e2e + accesibilidad (Playwright)
 ```
 
 1. `vite build` compila CSS/JS y deja `dist/index.html` como plantilla.
-2. `scripts/prerender.ts` genera `dist/carta/index.html` (es) y `dist/<idioma>/carta/index.html` con todo el menú ya escrito, metadatos, `hreflang` y JSON-LD (`Restaurant` + `Menu`).
+2. `scripts/prerender.ts` genera una home y una carta por idioma (`dist/index.html`, `dist/carta/index.html`, `dist/<idioma>/index.html`, `dist/<idioma>/carta/index.html`), cada una con su contenido ya escrito, metadatos, `hreflang` y JSON-LD (`Restaurant`, más `Menu` en la carta).
 3. En desarrollo, un plugin de Vite renderiza esas mismas páginas, así que `npm run dev` muestra lo que se publica.
 
 ### Estructura de URLs
@@ -49,17 +49,17 @@ tests/           unitarios (Vitest) y e2e + accesibilidad (Playwright)
 | --------------------------- | ------------------------------------------------------------------------- |
 | `/carta/`                   | Carta en español (idioma por defecto). **La URL de los QR de las mesas.** |
 | `/en/carta/`, `/gl/carta/`… | Carta en cada uno de los otros 9 idiomas                                  |
-| `/`, `/en/`…                | Redirigen a la carta correspondiente, hasta que exista una home           |
+| `/`, `/en/`…                | Home en cada idioma: foto del local y las formas de contactar             |
 | `/aviso-legal/`             | Aviso legal (LSSI). Solo en español; borrador hasta que se apruebe        |
 | `/privacidad/`              | Política de privacidad (RGPD). Solo en español; borrador hasta aprobarla  |
 
-La carta cuelga de `/carta/` para que una home pueda ocupar `/` más adelante sin cambiar ninguna URL impresa. Las raíces redirigen con un `302` real (`dist/_redirects`, que leen Cloudflare Pages y Netlify) y con una página estática de respaldo para cualquier otro alojamiento.
+La home vive en `/` y la carta es un botón de ella; la carta sigue en `/carta/` para que los QR impresos no cambien nunca. Los enlaces antiguos del tipo `/#marino` (la carta era la raíz) se reenvían a la carta con un script en línea mínimo.
 
 ## Decisiones
 
 - **Pre-renderizado en lugar de SPA.** El original cargaba los datos con `import()` tras montar, así que el primer pintado estaba vacío y un buscador no veía ningún plato. Ahora el menú está en el HTML.
 - **Una URL por idioma, no un estado.** `/en/`, `/gl/`… son páginas reales, enlazables y indexables. El selector de idioma son enlaces dentro de un `<details>`, así que funciona sin JavaScript.
-- **Redirección de idioma sin dañar el SEO.** Solo desde la raíz, usando la elección guardada o el idioma del navegador, y nunca para rastreadores. La función que decide es la misma que ejecutan los tests.
+- **Redirección de idioma sin dañar el SEO.** Solo desde la home en español y la carta en español, usando la elección guardada o el idioma del navegador, y nunca para rastreadores. La función que decide es la misma que ejecutan los tests.
 - **Sin dependencias externas en runtime.** Fuentes autoalojadas con subconjuntos por `unicode-range` (el navegador descarga solo latín o cirílico según el idioma), iconos y banderas inline.
 - **Precios como enteros (céntimos)** formateados con `Intl.NumberFormat` por idioma.
 - **Plantillas con escapado por defecto** (`html\`\``), sin `innerHTML` con datos sin sanear.
@@ -87,7 +87,7 @@ npm test               # unitarios (251)
 npm run test:e2e       # e2e + accesibilidad (74), construye antes
 npm run lint && npm run format:check && npm run typecheck
 npm run optimize:images
-npm run build:og       # regenera public/og-image.png (1200×630) con Playwright
+npm run build:og       # regenera public/og-image.jpg (1200×630) con Playwright
 ```
 
 ## Cómo cambiar cosas
@@ -95,7 +95,7 @@ npm run build:og       # regenera public/og-image.png (1200×630) con Playwright
 | Para cambiar…                      | Edita                                                                                                                        |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Un precio, un plato, sus alérgenos | `src/data/menu.ts` (precios en céntimos: `1450` es 14,50€). Textos por idioma: `src/i18n/locales/<idioma>.json`              |
-| El horario o el día cerrado        | `src/data/hours.ts`. El pie de página y el JSON-LD (`openingHoursSpecification`) leen de ahí                                 |
+| El horario o el día cerrado        | No está en esta web: se gestiona en Google Business Profile y «Ver horario» abre la ficha de Google Maps                     |
 | Un mensaje de WhatsApp             | `src/data/whatsapp.ts` (en español, lo lee el personal). Etiquetas de los botones por idioma: `ui.wa*` en los JSON de idioma |
 | Teléfono, dirección, enlaces       | `src/render/contact.ts`                                                                                                      |
 | El menú del día                    | Aún no es editable: llega con el CMS en la etapa 4 de `docs/plan-web.md`                                                     |

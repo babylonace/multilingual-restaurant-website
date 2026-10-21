@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { LANGS } from '../../src/data/langs';
 import { DISHES } from '../../src/data/menu';
 import { LOCALES } from '../../src/i18n';
-import { renderPage } from '../../src/render/page';
+import { renderHomePage, renderPage } from '../../src/render/page';
 
 const SITE = 'https://example.test';
 
@@ -54,7 +54,7 @@ describe.each(LANGS)('page "$code"', ({ code, rtl }) => {
   });
 });
 
-describe.each(LANGS)('page "$code" extras', ({ code }) => {
+describe.each(LANGS)('carta "$code" extras', ({ code }) => {
   const { body, head } = renderPage({ lang: code, base: '/', siteUrl: SITE });
 
   it('shows all 14 allergens in the legend, with the traces note', () => {
@@ -67,49 +67,118 @@ describe.each(LANGS)('page "$code" extras', ({ code }) => {
     expect(body).toContain(LOCALES[code].ui.allergenTraces);
   });
 
-  it('offers a ready-made WhatsApp message per intent, and Just Eat as a secondary link', () => {
-    const actions = /<section class="actions".*?<\/section>/s.exec(body)?.[0] ?? '';
-    const links = [
-      ...actions.matchAll(/href="(https:\/\/wa\.me\/[^"]+)"[^>]*data-prop-intent="(\w+)"/g),
-    ];
-    expect(links.map((m) => m[2])).toEqual(['reservar', 'recoger', 'domicilio', 'consulta']);
-    for (const [, href] of links) expect(href).toMatch(/^https:\/\/wa\.me\/34614922183\?text=Hola/);
-    expect(body).toContain('utm_content=carta');
-    expect(body).toContain('data-event="justeat_clic"');
+  it('asks for a review on Google Maps and on TripAdvisor', () => {
+    expect(body).toContain('href="https://g.page/r/CdLbyRjbHjW8EAE/review"');
+    expect(body).toContain(
+      'href="https://www.tripadvisor.com.pe/UserReviewEdit-d34747578?m=68676"',
+    );
+    expect(body).toContain(LOCALES[code].ui.reviewTitle);
+  });
+
+  it('links back to the home page of the same language and to the legal pages', () => {
+    expect(body).toContain(
+      `<a class="masthead__logo" href="${code === 'es' ? '/' : `/${code}/`}">`,
+    );
+    expect(body).toContain('href="/aviso-legal/"');
+    expect(body).toContain('href="/privacidad/"');
+  });
+
+  it('keeps the hours out: Google Business Profile is the only place they live', () => {
+    expect(body).not.toMatch(/\d\d:\d\d–\d\d:\d\d/);
+    expect(head).not.toContain('openingHours');
   });
 
   it('no longer links the saved-message WhatsApp URL', () => {
     expect(body + head).not.toContain('wa.me/message');
   });
 
-  it('prints the opening hours and links the legal pages', () => {
-    expect(body).toContain('11:00–23:00');
-    expect(body).toContain('09:00–23:00');
-    expect(body).toContain(LOCALES[code].ui.closed);
-    expect(body).toContain('href="/aviso-legal/"');
-    expect(body).toContain('href="/privacidad/"');
-  });
-
   it('points social previews at the Open Graph image', () => {
-    expect(head).toContain(`<meta property="og:image" content="${SITE}/og-image.png" />`);
+    expect(head).toContain(`<meta property="og:image" content="${SITE}/og-image.jpg" />`);
     expect(head).toContain('content="summary_large_image"');
   });
 });
 
-describe('structured data', () => {
-  const json = /<script type="application\/ld\+json">(.*?)<\/script>/s.exec(
-    renderPage({ lang: 'es', base: '/', siteUrl: SITE }).head,
-  )?.[1];
-  const data = JSON.parse(json ?? '{}');
+describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
+  const ui = LOCALES[code].ui;
+  const { body, head, lang, dir } = renderHomePage({ lang: code, base: '/', siteUrl: SITE });
+  const carta = code === 'es' ? '/carta/' : `/${code}/carta/`;
 
-  it('describes the opening hours, with no Monday and midnight as 00:00', () => {
-    const days = data.openingHoursSpecification.flatMap(
-      (s: { dayOfWeek: string[] }) => s.dayOfWeek,
-    );
-    expect(days).toEqual(['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
-    const weekend = data.openingHoursSpecification[1];
-    expect(weekend).toMatchObject({ opens: '11:00', closes: '00:00' });
+  it('sets lang and direction, and has its own title', () => {
+    expect(lang).toBe(code);
+    expect(dir).toBe(rtl ? 'rtl' : 'ltr');
+    expect(head).toContain(`<title>${ui.homeMetaTitle}</title>`);
   });
+
+  it('shows the dining-room photo with its size, alt text and high priority', () => {
+    const img = /<img[^>]*class="cover__img"[^>]*>/s.exec(body)?.[0] ?? '';
+    expect(img).toContain('width="1600"');
+    expect(img).toContain('height="900"');
+    expect(img).toContain('fetchpriority="high"');
+    expect(img).toContain('assets/portada/restaurante-800.webp 800w');
+    expect(img).toContain(`alt="${ui.coverAlt}"`);
+  });
+
+  it('makes the carta one button among the others', () => {
+    expect(body).toMatch(new RegExp(`class="pill pill--gold pill--lg"\\s+href="${carta}"`));
+    expect(body).toContain(ui.viewMenu);
+  });
+
+  it('offers a ready-made WhatsApp message per intent', () => {
+    const actions = /<section class="actions".*?<\/section>/s.exec(body)?.[0] ?? '';
+    const links = [
+      ...actions.matchAll(/href="(https:\/\/wa\.me\/[^"]+)"[^>]*data-prop-intent="(\w+)"/g),
+    ];
+    expect(links.map((m) => m[2])).toEqual(['reservar', 'recoger', 'domicilio', 'consulta']);
+    for (const [, href] of links) expect(href).toMatch(/^https:\/\/wa\.me\/34614922183\?text=Hola/);
+  });
+
+  it('opens directions in Google Maps and the place card for the hours', () => {
+    expect(body).toContain(
+      'href="https://www.google.com/maps/dir/?api=1&amp;destination=43.4878407,-8.2178932"',
+    );
+    expect(body).toContain('href="https://maps.app.goo.gl/xJ61NGccX21LAM6b9"');
+    expect(body).toContain(ui.viewHours);
+    expect(body).not.toMatch(/\d\d:\d\d–\d\d:\d\d/);
+  });
+
+  it('links Just Eat with its tracking tags, and asks for both reviews', () => {
+    expect(body).toContain('utm_content=home');
+    expect(body).toContain('data-event="justeat_clic"');
+    expect(body).toContain('href="https://g.page/r/CdLbyRjbHjW8EAE/review"');
+    expect(body).toContain('tripadvisor.com.pe/UserReviewEdit-d34747578');
+  });
+
+  it('keeps the reservation system out of sight', () => {
+    expect(body).not.toMatch(/\/reservar|\/reserva\/|\/equipo/);
+  });
+
+  it('switches language between home pages, not to the cartas', () => {
+    const menu = /<ul class="lang__list">.*?<\/ul>/s.exec(body)?.[0] ?? '';
+    expect(menu).toMatch(/href="\/en\/"\s+hreflang="en"/);
+    expect(menu).not.toContain('/carta/');
+  });
+
+  it('declares canonical and alternates for the home URLs', () => {
+    expect(head).toContain(
+      `<link rel="canonical" href="${SITE}${code === 'es' ? '/' : `/${code}/`}"`,
+    );
+    expect(head).toContain(`hreflang="en" href="${SITE}/en/"`);
+    expect(head).toContain(`hreflang="x-default" href="${SITE}/"`);
+  });
+
+  it('prints every visible string from the locale, with no template artifacts', () => {
+    const visible = (body + head).replace(/<script[\s\S]*?<\/script>/g, '');
+    expect(visible).not.toMatch(/undefined|\[object|NaN|\{\{/);
+  });
+});
+
+describe('structured data', () => {
+  const read = (page: { head: string }) =>
+    JSON.parse(
+      /<script type="application\/ld\+json">(.*?)<\/script>/s.exec(page.head)?.[1] ?? '{}',
+    );
+  const data = read(renderPage({ lang: 'es', base: '/', siteUrl: SITE }));
+  const home = read(renderHomePage({ lang: 'es', base: '/', siteUrl: SITE }));
 
   it('has coordinates, postal code, map and reservations', () => {
     expect(data.geo).toEqual({
@@ -122,9 +191,51 @@ describe('structured data', () => {
     expect(data.acceptsReservations).toBe(true);
   });
 
-  it('claims nothing it cannot back up', () => {
-    expect(data).not.toHaveProperty('aggregateRating');
-    expect(data).not.toHaveProperty('priceRange');
+  it('claims nothing it cannot back up, and keeps hours out', () => {
+    for (const d of [data, home]) {
+      expect(d).not.toHaveProperty('aggregateRating');
+      expect(d).not.toHaveProperty('priceRange');
+      expect(d).not.toHaveProperty('openingHoursSpecification');
+    }
+  });
+
+  it('carries the whole menu on the carta and points at it from the home page', () => {
+    expect(data.hasMenu['@type']).toBe('Menu');
+    expect(home.hasMenu).toBe(`${SITE}/carta/`);
+    expect(home.image).toBe(`${SITE}/assets/portada/restaurante-1600.webp`);
+  });
+
+  it('lists TripAdvisor among the profiles', () => {
+    expect(data.sameAs).toContain(
+      'https://www.tripadvisor.com/Restaurant_Review-g642225-d34747578-Reviews-Inkawasi-Ferrol_Province_of_A_Coruna_Galicia.html',
+    );
+  });
+});
+
+describe('legacy links', () => {
+  it('sends an old /#marino link from the home page to the carta of that language', () => {
+    expect(renderHomePage({ lang: 'es', base: '/' }).head).toContain(
+      'location.replace("/carta/"+location.hash)',
+    );
+    expect(renderHomePage({ lang: 'fr', base: '/' }).head).toContain(
+      'location.replace("/fr/carta/"+location.hash)',
+    );
+  });
+
+  it('only forwards real tab names', () => {
+    const { head } = renderHomePage({ lang: 'es', base: '/' });
+    const pattern = /test\(location\.hash\)/.test(head)
+      ? /\/\^#\(([^)]*)\)\$\//.exec(head)?.[1]
+      : '';
+    expect(pattern?.split('|')).toEqual([
+      'entrantes',
+      'sopas',
+      'marino',
+      'wok',
+      'criollo',
+      'porciones',
+      'bebidas',
+    ]);
   });
 });
 

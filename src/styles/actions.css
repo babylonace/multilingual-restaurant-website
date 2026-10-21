@@ -5,7 +5,9 @@
   }
 
   .actions__inner {
+    width: 100%;
     max-width: var(--container-wide);
+    margin-inline: auto;
     display: grid;
     justify-items: center;
     gap: var(--space-4);
@@ -14,6 +16,7 @@
   .actions__title {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-2);
     font-size: 0.875rem;
     font-weight: var(--fw-bold);
@@ -45,16 +48,18 @@
     }
   }
 
-  /* Gold pill; text on gold is always brown-900 (brand brown on gold is only 3.57:1). */
+  /*
+   * Pills. Text on gold is always brown-900 (brand brown on gold is only 3.57:1); cream on
+   * olive is 8:1. Outline pills keep the brand brown on cream.
+   */
   .pill {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 48px;
     padding: var(--space-2) var(--space-4);
+    border: 2px solid transparent;
     border-radius: var(--radius-pill);
-    background: var(--gold-500);
-    color: var(--brown-900);
     font-size: 0.8125rem;
     font-weight: var(--fw-bold);
     letter-spacing: 0.08em;
@@ -64,8 +69,38 @@
     transition: var(--transition-colors);
   }
 
-  .pill:hover {
+  .pill--gold {
+    background: var(--gold-500);
+    color: var(--brown-900);
+  }
+
+  .pill--gold:hover {
     background: var(--gold-400);
+  }
+
+  .pill--olive {
+    background: var(--olive-500);
+    color: var(--cream-100);
+  }
+
+  .pill--olive:hover {
+    background: var(--brown-900);
+  }
+
+  .pill--outline {
+    border-color: var(--text-strong);
+    color: var(--text-strong);
+  }
+
+  .pill--outline:hover {
+    background: var(--text-strong);
+    color: var(--cream-100);
+  }
+
+  .pill--lg {
+    min-height: 60px;
+    font-size: 1rem;
+    letter-spacing: 0.12em;
   }
 
   .actions__secondary {

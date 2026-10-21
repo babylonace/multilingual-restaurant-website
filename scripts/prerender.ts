@@ -1,7 +1,7 @@
 /**
- * Post-build step: turns the Vite-built `dist/index.html` shell into one static carta page
- * per language (`dist/carta/index.html`, `dist/en/carta/index.html`, …), a redirect stub at
- * each language root, `_redirects`, sitemap.xml and robots.txt.
+ * Post-build step: turns the Vite-built `dist/index.html` shell into static pages: a home page
+ * and a carta per language (`dist/index.html`, `dist/carta/index.html`, `dist/en/index.html`,
+ * `dist/en/carta/index.html`, …), the two legal pages, sitemap.xml and robots.txt.
  *
  * Run by `npm run build` after `vite build`, so asset URLs already carry their content hashes.
  */
@@ -9,10 +9,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { LANGS } from '../src/data/langs';
 import { LEGAL_DRAFT, LEGAL_PAGES } from '../src/data/legal';
-import { cartaPath, langHref, langPath, langUrl } from '../src/render/context';
+import { kindPath, kindUrl, type PageKind } from '../src/render/context';
 import { renderLegalPage } from '../src/render/legal';
-import { renderPage } from '../src/render/page';
-import { renderRedirectPage } from '../src/render/redirect-page';
+import { renderHomePage, renderPage } from '../src/render/page';
 import { applyTemplate, PLACEHOLDERS } from '../src/render/template';
 import { getBuildConfig } from './config';
 import { loadPrivate } from './private-data';
@@ -26,7 +25,7 @@ async function write(relativePath: string, content: string): Promise<void> {
   await writeFile(file, content);
 }
 
-// Read the shell before the root stub overwrites dist/index.html.
+// Read the shell before the Spanish home page overwrites dist/index.html.
 const template = await readFile(join(DIST, 'index.html'), 'utf8');
 for (const placeholder of PLACEHOLDERS) {
   if (!template.includes(placeholder)) {
@@ -38,11 +37,17 @@ for (const placeholder of PLACEHOLDERS) {
 
 for (const { code } of LANGS) {
   const ctx = { lang: code, base, siteUrl };
-  await write(join(cartaPath(code), 'index.html'), applyTemplate(template, renderPage(ctx)));
-  await write(join(langPath(code), 'index.html'), renderRedirectPage(ctx));
+  await write(
+    join(kindPath('carta', code), 'index.html'),
+    applyTemplate(template, renderPage(ctx)),
+  );
+  await write(
+    join(kindPath('home', code), 'index.html'),
+    applyTemplate(template, renderHomePage(ctx)),
+  );
 }
 console.log(
-  `Pre-rendered ${LANGS.length} carta pages + ${LANGS.length} root redirects (base "${base}")`,
+  `Pre-rendered ${LANGS.length} home pages + ${LANGS.length} carta pages (base "${base}")`,
 );
 
 // Legal pages carry the holder's details, which live outside git (see scripts/private-data.ts).
@@ -55,21 +60,17 @@ console.log(
   `Pre-rendered ${LEGAL_PAGES.length} legal pages${LEGAL_DRAFT ? ' (draft, noindex)' : ''}`,
 );
 
-// Real 302s on hosts that read this file (Cloudflare Pages, Netlify); the stubs above cover the rest.
-const redirects = LANGS.map(
-  ({ code }) => `${base}${langPath(code)} ${langHref({ lang: code, base }, code)} 302`,
-).join('\n');
-await write('_redirects', `${redirects}\n`);
-
-const ctx = { lang: 'es', base, siteUrl } as const;
 if (siteUrl) {
-  const urls = LANGS.map(({ code }) => {
-    const alternates = LANGS.map(
-      (l) =>
-        `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${langUrl(ctx, l.code)}"/>`,
-    ).join('\n');
-    return `  <url>\n    <loc>${langUrl(ctx, code)}</loc>\n${alternates}\n  </url>`;
-  });
+  const ctx = { lang: 'es', base, siteUrl } as const;
+  const entries = (kind: PageKind) =>
+    LANGS.map(({ code }) => {
+      const alternates = LANGS.map(
+        (l) =>
+          `    <xhtml:link rel="alternate" hreflang="${l.code}" href="${kindUrl(ctx, kind, l.code)}"/>`,
+      ).join('\n');
+      return `  <url>\n    <loc>${kindUrl(ctx, kind, code)}</loc>\n${alternates}\n  </url>`;
+    });
+  const urls = [...entries('home'), ...entries('carta')];
   // Draft legal pages are noindex, so they stay out of the sitemap until they are approved.
   if (!LEGAL_DRAFT) {
     for (const id of LEGAL_PAGES) {
@@ -87,6 +88,6 @@ await write(
 );
 console.log(
   siteUrl
-    ? 'Wrote _redirects, sitemap.xml and robots.txt'
-    : 'Wrote _redirects and robots.txt (set SITE_URL to also get sitemap.xml)',
+    ? 'Wrote sitemap.xml and robots.txt'
+    : 'Wrote robots.txt (set SITE_URL to also get sitemap.xml)',
 );

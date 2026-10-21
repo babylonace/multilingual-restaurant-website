@@ -28,7 +28,7 @@
     "skipLink": "Aller au contenu",
     "tabsLabel": "Sections de la carte",
     "directions": "Itinéraire",
-    "reviewTitle": "Laissez-nous un avis sur Google Maps",
+    "reviewTitle": "Laissez-nous un avis",
     "reviewText": "Cela nous aide à grandir et nous fait toujours plaisir !",
     "newTab": "(s'ouvre dans un nouvel onglet)",
     "allergenTraces": "Des traces d’autres allergènes sont possibles. Demandez toujours conseil à notre personnel.",
@@ -38,10 +38,13 @@
     "waDomicilio": "Commander à domicile",
     "waConsulta": "Poser une question",
     "justEat": "Commander sur Just Eat",
-    "hoursTitle": "Horaires",
-    "closed": "Fermé",
     "legalNotice": "Mentions légales",
-    "privacy": "Confidentialité"
+    "privacy": "Confidentialité",
+    "viewMenu": "Voir la carte",
+    "viewHours": "Voir les horaires",
+    "homeMetaTitle": "Inkawasi · Cuisine péruvienne traditionnelle à Ferrol",
+    "homeMetaDescription": "Inkawasi, cuisine péruvienne traditionnelle à Ferrol : ceviche, chaufa, lomo saltado et plus. Consultez la carte, commandez à emporter ou à domicile et écrivez-nous sur WhatsApp.",
+    "coverAlt": "Intérieur d’Inkawasi : le comptoir en bois à gauche et les tables de la salle à droite"
   },
   "allergens": {
     "gluten": "Gluten",

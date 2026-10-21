@@ -2,6 +2,9 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const PAGES = [
+  '/',
+  '/en/',
+  '/ar/',
   '/carta/',
   '/en/carta/',
   '/ar/carta/',

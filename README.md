@@ -40,7 +40,7 @@ tests/           unit (Vitest) and e2e + accessibility (Playwright)
 ```
 
 1. `vite build` compiles CSS/JS and leaves `dist/index.html` as a template.
-2. `scripts/prerender.ts` writes `dist/carta/index.html` (es) and `dist/<lang>/carta/index.html`, each with the whole menu already in the markup, metadata, `hreflang` and JSON-LD (`Restaurant` + `Menu`).
+2. `scripts/prerender.ts` writes a home page and a carta per language (`dist/index.html`, `dist/carta/index.html`, `dist/<lang>/index.html`, `dist/<lang>/carta/index.html`), each with its content already in the markup, metadata, `hreflang` and JSON-LD (`Restaurant`, plus `Menu` on the carta).
 3. In development a Vite plugin renders those same pages, so `npm run dev` shows exactly what ships.
 
 ### URL structure
@@ -49,17 +49,17 @@ tests/           unit (Vitest) and e2e + accessibility (Playwright)
 | --------------------------- | ---------------------------------------------------------------------- |
 | `/carta/`                   | Menu in Spanish (default language). **The URL on the table QR codes.** |
 | `/en/carta/`, `/gl/carta/`… | Menu in each of the other 9 languages                                  |
-| `/`, `/en/`…                | Redirect to the matching menu, until the site has a home page          |
+| `/`, `/en/`…                | Home page in each language: dining-room photo and the ways to reach us |
 | `/aviso-legal/`             | Legal notice (LSSI). Spanish only; draft until approved                |
 | `/privacidad/`              | Privacy policy (GDPR). Spanish only; draft until approved              |
 
-The menu is under `/carta/` so that a home page can take over `/` later without changing any printed URL. Roots redirect with a real `302` (`dist/_redirects`, read by Cloudflare Pages and Netlify) and a static fallback page for any other host.
+The home page lives at `/` and the menu is one button on it; the menu stays at `/carta/` so printed QR codes never change. Old links of the form `/#marino` (the menu used to be the root) are forwarded to the menu by a tiny inline script.
 
 ## Design decisions
 
 - **Pre-rendering instead of an SPA.** The original loaded its data with `import()` after mounting, so the first paint was empty and a search engine saw no dishes. The menu is now in the HTML.
 - **One URL per language, not a piece of state.** `/en/`, `/gl/`… are real, linkable, indexable pages. The language switcher is a set of links inside a `<details>`, so it works without JavaScript.
-- **Language redirect that does not hurt SEO.** Only from the root page, using the saved choice or the browser language, and never for crawlers. The function that decides is the same one the tests exercise.
+- **Language redirect that does not hurt SEO.** Only from the Spanish home and the Spanish menu, using the saved choice or the browser language, and never for crawlers. The function that decides is the same one the tests exercise.
 - **No third-party requests at runtime.** Self-hosted fonts split by `unicode-range` (the browser downloads only Latin or Cyrillic, depending on the language), inline icons and flags.
 - **Prices as integers (cents)**, formatted with `Intl.NumberFormat` per language.
 - **Templates escape by default** (`html\`\``); no `innerHTML` with unsanitised data.
@@ -87,7 +87,7 @@ npm test               # unit tests (251)
 npm run test:e2e       # e2e + accessibility (74), builds first
 npm run lint && npm run format:check && npm run typecheck
 npm run optimize:images
-npm run build:og       # re-render public/og-image.png (1200×630) with Playwright
+npm run build:og       # re-render public/og-image.jpg (1200×630) with Playwright
 ```
 
 ## Changing things
@@ -95,7 +95,7 @@ npm run build:og       # re-render public/og-image.png (1200×630) with Playwrig
 | To change…                     | Edit                                                                                                                |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
 | A price, a dish, its allergens | `src/data/menu.ts` (prices in euro cents: `1450` is 14,50€). Dish text per language: `src/i18n/locales/<lang>.json` |
-| Opening hours, the closed day  | `src/data/hours.ts`. The footer and the JSON-LD (`openingHoursSpecification`) both read it                          |
+| Opening hours, the closed day  | Not on this site: they are kept in Google Business Profile, and "See opening hours" opens the Google Maps card      |
 | A WhatsApp message             | `src/data/whatsapp.ts` (Spanish, read by the staff). Button labels per language: `ui.wa*` in the locale files       |
 | Phone, address, links          | `src/render/contact.ts`                                                                                             |
 | The daily menu                 | Not editable yet: it arrives with the CMS in stage 4 of `docs/plan-web.md`                                          |

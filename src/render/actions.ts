@@ -1,8 +1,8 @@
 import { WHATSAPP_INTENTS, type WhatsappIntent } from '../data/whatsapp';
 import { html, type SafeHtml } from '../lib/html';
-import { justEatLink, whatsappIntentLink } from './contact';
+import { whatsappIntentLink } from './contact';
 import type { Page } from './context';
-import { brandIcon, uiIcon } from './icons';
+import { brandIcon } from './icons';
 
 const LABEL = {
   reservar: 'waReservar',
@@ -19,16 +19,16 @@ const LABEL = {
 export function actions(page: Page): SafeHtml {
   const { ctx, t } = page;
   return html`<section class="actions" aria-labelledby="actions-title">
-    <div class="actions__inner container">
+    <div class="actions__inner">
       <h2 class="actions__title" id="actions-title">
-        ${brandIcon('whatsapp', 'actions__icon')}${t.waTitle}
+        ${brandIcon('whatsapp', 'actions__icon')}<span>${t.waTitle}</span>
       </h2>
       <ul class="actions__list">
         ${WHATSAPP_INTENTS.map(
           (intent) =>
             html`<li>
               <a
-                class="pill"
+                class="pill pill--olive"
                 href="${whatsappIntentLink(intent, ctx.lang)}"
                 target="_blank"
                 rel="noopener"
@@ -39,17 +39,6 @@ export function actions(page: Page): SafeHtml {
             </li>`,
         )}
       </ul>
-      <a
-        class="actions__secondary"
-        href="${justEatLink('carta')}"
-        target="_blank"
-        rel="noopener"
-        data-event="justeat_clic"
-        data-prop-location="carta"
-        >${t.justEat}${uiIcon('arrow-right', 'actions__arrow')}<span class="visually-hidden">
-          ${t.newTab}</span
-        ></a
-      >
     </div>
   </section>`;
 }

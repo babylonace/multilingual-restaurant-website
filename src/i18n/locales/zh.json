@@ -28,7 +28,7 @@
     "skipLink": "跳到主要内容",
     "tabsLabel": "菜单分类",
     "directions": "路线导航",
-    "reviewTitle": "欢迎在 Google 地图上给我们留下评价",
+    "reviewTitle": "给我们留下评价",
     "reviewText": "这对我们的成长很有帮助，万分感谢！",
     "newTab": "（在新标签页中打开）",
     "allergenTraces": "可能含有其他过敏原的痕迹。请务必向我们的工作人员咨询。",
@@ -38,10 +38,13 @@
     "waDomicilio": "外卖配送点餐",
     "waConsulta": "咨询问题",
     "justEat": "在 Just Eat 点餐",
-    "hoursTitle": "营业时间",
-    "closed": "休息",
     "legalNotice": "法律声明",
-    "privacy": "隐私政策"
+    "privacy": "隐私政策",
+    "viewMenu": "查看菜单",
+    "viewHours": "查看营业时间",
+    "homeMetaTitle": "Inkawasi · 费罗尔的传统秘鲁美食",
+    "homeMetaDescription": "Inkawasi 是费罗尔的传统秘鲁餐厅：酸橘汁腌鱼、秘鲁炒饭、牛肉炒土豆等。查看菜单，自取或外卖点餐，也可通过 WhatsApp 联系我们。",
+    "coverAlt": "Inkawasi 店内：左侧是木质吧台，右侧是用餐区的餐桌"
   },
   "allergens": {
     "gluten": "麸质",
