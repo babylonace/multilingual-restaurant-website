@@ -1,5 +1,5 @@
 {
-  "name": "inkawasi-carta",
+  "name": "inkawasi-web",
   "version": "1.0.0",
   "description": "Carta web multilingüe de Inkawasi (cocina peruana, Ferrol): sitio estático pre-renderizado en 10 idiomas.",
   "scripts": {
