@@ -12,7 +12,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "optimize:images": "tsx scripts/optimize-images.ts"
+    "optimize:images": "tsx scripts/optimize-images.ts",
+    "build:og": "tsx scripts/og-image.ts"
   },
   "type": "module",
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@eslint/js": "^10.0.1",
     "@fontsource-variable/jost": "^5.3.0",
     "@fontsource-variable/lora": "^5.3.0",
+    "@fontsource-variable/montserrat": "^5.3.0",
     "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
     "country-flag-icons": "^1.6.20",

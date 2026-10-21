@@ -50,6 +50,8 @@ tests/           unit (Vitest) and e2e + accessibility (Playwright)
 | `/carta/`                   | Menu in Spanish (default language). **The URL on the table QR codes.** |
 | `/en/carta/`, `/gl/carta/`… | Menu in each of the other 9 languages                                  |
 | `/`, `/en/`…                | Redirect to the matching menu, until the site has a home page          |
+| `/aviso-legal/`             | Legal notice (LSSI). Spanish only; draft until approved                |
+| `/privacidad/`              | Privacy policy (GDPR). Spanish only; draft until approved              |
 
 The menu is under `/carta/` so that a home page can take over `/` later without changing any printed URL. Roots redirect with a real `302` (`dist/_redirects`, read by Cloudflare Pages and Netlify) and a static fallback page for any other host.
 
@@ -81,11 +83,31 @@ npm install
 npm run dev            # dev server with all 10 pages
 npm run build          # typecheck + build + pre-render  → dist/
 npm run preview        # serve dist/
-npm test               # unit tests (152)
-npm run test:e2e       # e2e + accessibility (44), builds first
+npm test               # unit tests (251)
+npm run test:e2e       # e2e + accessibility (74), builds first
 npm run lint && npm run format:check && npm run typecheck
 npm run optimize:images
+npm run build:og       # re-render public/og-image.png (1200×630) with Playwright
 ```
+
+## Changing things
+
+| To change…                     | Edit                                                                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| A price, a dish, its allergens | `src/data/menu.ts` (prices in euro cents: `1450` is 14,50€). Dish text per language: `src/i18n/locales/<lang>.json` |
+| Opening hours, the closed day  | `src/data/hours.ts`. The footer and the JSON-LD (`openingHoursSpecification`) both read it                          |
+| A WhatsApp message             | `src/data/whatsapp.ts` (Spanish, read by the staff). Button labels per language: `ui.wa*` in the locale files       |
+| Phone, address, links          | `src/render/contact.ts`                                                                                             |
+| The daily menu                 | Not editable yet: it arrives with the CMS in stage 4 of `docs/plan-web.md`                                          |
+| A one-off closure (holiday)    | Not editable yet: same stage 4 (CMS)                                                                                |
+
+Every change is checked by `npm test`; a dish without a price or description in all 10 languages, or an allergen outside the official 14, fails the build.
+
+## Confidential data
+
+The holder's details for the legal pages (name, NIE, address) are **not in git**. They live in `private/negocio.privado.json`, which is git-ignored; only the template `private/negocio.privado.example.json` is tracked. The build reads it and never writes it (the file is read-only). In CI, provide the same JSON as the `INKAWASI_PRIVATE_JSON` secret. A build with `SITE_URL` set refuses to publish placeholders, and a unit test fails if the real NIE ever shows up in a tracked file. Technical secrets (Cloudflare, Resend, Turnstile) go in environment variables, never in that file.
+
+The legal pages stay `noindex` and marked as a draft until `LEGAL_DRAFT` in `src/data/legal.ts` is set to `false`.
 
 ## Deployment
 
@@ -100,5 +122,6 @@ SITE_URL=https://inkawasi.es BASE_PATH=/ npm run build
 ## To do
 
 - Register `inkawasi.es` and deploy to Cloudflare Pages.
-- Open Graph image for link previews.
+- Review the legal texts and set `LEGAL_DRAFT` to `false`.
+- Replace the Open Graph image with one that uses a photo of the restaurant.
 - Logo, photos and brand belong to Inkawasi.

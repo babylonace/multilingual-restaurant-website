@@ -50,6 +50,8 @@ tests/           unitarios (Vitest) y e2e + accesibilidad (Playwright)
 | `/carta/`                   | Carta en español (idioma por defecto). **La URL de los QR de las mesas.** |
 | `/en/carta/`, `/gl/carta/`… | Carta en cada uno de los otros 9 idiomas                                  |
 | `/`, `/en/`…                | Redirigen a la carta correspondiente, hasta que exista una home           |
+| `/aviso-legal/`             | Aviso legal (LSSI). Solo en español; borrador hasta que se apruebe        |
+| `/privacidad/`              | Política de privacidad (RGPD). Solo en español; borrador hasta aprobarla  |
 
 La carta cuelga de `/carta/` para que una home pueda ocupar `/` más adelante sin cambiar ninguna URL impresa. Las raíces redirigen con un `302` real (`dist/_redirects`, que leen Cloudflare Pages y Netlify) y con una página estática de respaldo para cualquier otro alojamiento.
 
@@ -81,11 +83,31 @@ npm install
 npm run dev            # servidor de desarrollo con las 10 páginas
 npm run build          # tipos + build + pre-render  → dist/
 npm run preview        # sirve dist/
-npm test               # unitarios (152)
-npm run test:e2e       # e2e + accesibilidad (44), construye antes
+npm test               # unitarios (251)
+npm run test:e2e       # e2e + accesibilidad (74), construye antes
 npm run lint && npm run format:check && npm run typecheck
 npm run optimize:images
+npm run build:og       # regenera public/og-image.png (1200×630) con Playwright
 ```
+
+## Cómo cambiar cosas
+
+| Para cambiar…                      | Edita                                                                                                                        |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Un precio, un plato, sus alérgenos | `src/data/menu.ts` (precios en céntimos: `1450` es 14,50€). Textos por idioma: `src/i18n/locales/<idioma>.json`              |
+| El horario o el día cerrado        | `src/data/hours.ts`. El pie de página y el JSON-LD (`openingHoursSpecification`) leen de ahí                                 |
+| Un mensaje de WhatsApp             | `src/data/whatsapp.ts` (en español, lo lee el personal). Etiquetas de los botones por idioma: `ui.wa*` en los JSON de idioma |
+| Teléfono, dirección, enlaces       | `src/render/contact.ts`                                                                                                      |
+| El menú del día                    | Aún no es editable: llega con el CMS en la etapa 4 de `docs/plan-web.md`                                                     |
+| Un cierre puntual (vacaciones)     | Aún no es editable: también en la etapa 4 (CMS)                                                                              |
+
+`npm test` comprueba cada cambio: un plato sin precio o sin descripción en los 10 idiomas, o un alérgeno fuera de los 14 oficiales, rompe el build.
+
+## Datos confidenciales
+
+Los datos del titular para las páginas legales (nombre, NIE, domicilio) **no están en git**. Viven en `private/negocio.privado.json`, ignorado por git; solo se versiona la plantilla `private/negocio.privado.example.json`. El build lo lee y nunca lo escribe (el archivo es de solo lectura). En CI, el mismo JSON se pasa como secreto `INKAWASI_PRIVATE_JSON`. Un build con `SITE_URL` se niega a publicar datos de ejemplo, y un test unitario falla si el NIE real aparece en algún archivo versionado. Los secretos técnicos (Cloudflare, Resend, Turnstile) van en variables de entorno, nunca en ese archivo.
+
+Las páginas legales siguen en `noindex` y marcadas como borrador hasta que `LEGAL_DRAFT` en `src/data/legal.ts` pase a `false`.
 
 ## Despliegue
 
@@ -100,5 +122,6 @@ SITE_URL=https://inkawasi.es BASE_PATH=/ npm run build
 ## Pendiente
 
 - Dominio `inkawasi.es` y despliegue en Cloudflare Pages.
-- Imagen Open Graph para compartir en redes.
+- Revisar los textos legales y poner `LEGAL_DRAFT` en `false`.
+- Sustituir la imagen Open Graph por una con foto del local.
 - Logo, fotos y marca pertenecen a Inkawasi.
