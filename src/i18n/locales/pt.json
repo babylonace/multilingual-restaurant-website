@@ -30,7 +30,18 @@
     "directions": "Como chegar",
     "reviewTitle": "Deixe-nos a sua avaliação no Google Maps",
     "reviewText": "Ajuda-nos a crescer e é sempre muito apreciada!",
-    "newTab": "(abre num novo separador)"
+    "newTab": "(abre num novo separador)",
+    "allergenTraces": "Pode haver vestígios de outros alergénios. Consulte sempre o nosso pessoal.",
+    "waTitle": "Escreva-nos no WhatsApp",
+    "waReservar": "Reservar mesa",
+    "waRecoger": "Pedir para levantar",
+    "waDomicilio": "Pedir para entrega",
+    "waConsulta": "Fazer uma pergunta",
+    "justEat": "Pedir no Just Eat",
+    "hoursTitle": "Horário",
+    "closed": "Fechado",
+    "legalNotice": "Aviso legal",
+    "privacy": "Privacidade"
   },
   "allergens": {
     "gluten": "Glúten",
@@ -44,7 +55,9 @@
     "apio": "Aipo",
     "mostaza": "Mostarda",
     "sulfitos": "Sulfitos",
-    "moluscos": "Moluscos"
+    "moluscos": "Moluscos",
+    "frutosCascara": "Frutos de casca rija",
+    "altramuces": "Tremoço"
   },
   "descriptions": {
     "tamal": "Porco marinado envolto em massa de milho e folha de bananeira, servido com molho criollo.",

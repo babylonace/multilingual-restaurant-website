@@ -19,6 +19,20 @@ describe('resolveRoute', () => {
     expect(resolveRoute('/gl/')).toEqual({ kind: 'redirect', lang: 'gl' });
   });
 
+  it('serves the legal pages in Spanish only', () => {
+    expect(resolveRoute('/aviso-legal/')).toEqual({
+      kind: 'legal',
+      lang: 'es',
+      legal: 'aviso-legal',
+    });
+    expect(resolveRoute('/privacidad/index.html')).toEqual({
+      kind: 'legal',
+      lang: 'es',
+      legal: 'privacidad',
+    });
+    expect(resolveRoute('/en/privacidad/')).toBeUndefined();
+  });
+
   it('does not invent routes', () => {
     expect(resolveRoute('/xx/carta/')).toBeUndefined();
     expect(resolveRoute('/es/carta/')).toBeUndefined();

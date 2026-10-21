@@ -30,7 +30,18 @@
     "directions": "Get directions",
     "reviewTitle": "Leave us a review on Google Maps",
     "reviewText": "It helps us grow and is always appreciated!",
-    "newTab": "(opens in a new tab)"
+    "newTab": "(opens in a new tab)",
+    "allergenTraces": "Traces of other allergens may be present. Always check with our staff.",
+    "waTitle": "Message us on WhatsApp",
+    "waReservar": "Book a table",
+    "waRecoger": "Order for pickup",
+    "waDomicilio": "Order for delivery",
+    "waConsulta": "Ask a question",
+    "justEat": "Order on Just Eat",
+    "hoursTitle": "Opening hours",
+    "closed": "Closed",
+    "legalNotice": "Legal notice",
+    "privacy": "Privacy"
   },
   "allergens": {
     "gluten": "Gluten",
@@ -44,7 +55,9 @@
     "apio": "Celery",
     "mostaza": "Mustard",
     "sulfitos": "Sulphites",
-    "moluscos": "Molluscs"
+    "moluscos": "Molluscs",
+    "frutosCascara": "Tree nuts",
+    "altramuces": "Lupin"
   },
   "descriptions": {
     "tamal": "Marinated pork wrapped in corn dough and banana leaf, served with criolla sauce.",

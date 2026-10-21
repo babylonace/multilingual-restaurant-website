@@ -30,7 +30,18 @@
     "directions": "Indicazioni",
     "reviewTitle": "Lasciaci una recensione su Google Maps",
     "reviewText": "Ci aiuta a crescere ed è sempre molto apprezzata!",
-    "newTab": "(si apre in una nuova scheda)"
+    "newTab": "(si apre in una nuova scheda)",
+    "allergenTraces": "Possibili tracce di altri allergeni. Chiedi sempre al nostro personale.",
+    "waTitle": "Scrivici su WhatsApp",
+    "waReservar": "Prenota un tavolo",
+    "waRecoger": "Ordina da asporto",
+    "waDomicilio": "Ordina a domicilio",
+    "waConsulta": "Fai una domanda",
+    "justEat": "Ordina su Just Eat",
+    "hoursTitle": "Orari",
+    "closed": "Chiuso",
+    "legalNotice": "Note legali",
+    "privacy": "Privacy"
   },
   "allergens": {
     "gluten": "Glutine",
@@ -44,7 +55,9 @@
     "apio": "Sedano",
     "mostaza": "Senape",
     "sulfitos": "Solfiti",
-    "moluscos": "Molluschi"
+    "moluscos": "Molluschi",
+    "frutosCascara": "Frutta a guscio",
+    "altramuces": "Lupini"
   },
   "descriptions": {
     "tamal": "Maiale marinato avvolto in pasta di mais e foglia di platano, servito con salsa criolla.",

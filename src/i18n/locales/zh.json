@@ -30,7 +30,18 @@
     "directions": "路线导航",
     "reviewTitle": "欢迎在 Google 地图上给我们留下评价",
     "reviewText": "这对我们的成长很有帮助，万分感谢！",
-    "newTab": "（在新标签页中打开）"
+    "newTab": "（在新标签页中打开）",
+    "allergenTraces": "可能含有其他过敏原的痕迹。请务必向我们的工作人员咨询。",
+    "waTitle": "通过 WhatsApp 联系我们",
+    "waReservar": "预订餐桌",
+    "waRecoger": "自取点餐",
+    "waDomicilio": "外卖配送点餐",
+    "waConsulta": "咨询问题",
+    "justEat": "在 Just Eat 点餐",
+    "hoursTitle": "营业时间",
+    "closed": "休息",
+    "legalNotice": "法律声明",
+    "privacy": "隐私政策"
   },
   "allergens": {
     "gluten": "麸质",
@@ -44,7 +55,9 @@
     "apio": "芹菜",
     "mostaza": "芥末",
     "sulfitos": "亚硫酸盐",
-    "moluscos": "软体动物"
+    "moluscos": "软体动物",
+    "frutosCascara": "坚果",
+    "altramuces": "羽扇豆"
   },
   "descriptions": {
     "tamal": "腌制猪肉裹以玉米面团和香蕉叶蒸制而成，配criolla酱汁。",

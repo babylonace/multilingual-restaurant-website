@@ -25,7 +25,9 @@ export type AllergenKey =
   | 'apio'
   | 'mostaza'
   | 'sulfitos'
-  | 'moluscos';
+  | 'moluscos'
+  | 'frutosCascara'
+  | 'altramuces';
 
 /** Days on which a dish is served when it is not on the regular menu. */
 export type Availability = 'sun' | 'satsun';

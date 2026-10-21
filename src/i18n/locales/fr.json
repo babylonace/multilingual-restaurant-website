@@ -30,7 +30,18 @@
     "directions": "Itinéraire",
     "reviewTitle": "Laissez-nous un avis sur Google Maps",
     "reviewText": "Cela nous aide à grandir et nous fait toujours plaisir !",
-    "newTab": "(s'ouvre dans un nouvel onglet)"
+    "newTab": "(s'ouvre dans un nouvel onglet)",
+    "allergenTraces": "Des traces d’autres allergènes sont possibles. Demandez toujours conseil à notre personnel.",
+    "waTitle": "Écrivez-nous sur WhatsApp",
+    "waReservar": "Réserver une table",
+    "waRecoger": "Commander à emporter",
+    "waDomicilio": "Commander à domicile",
+    "waConsulta": "Poser une question",
+    "justEat": "Commander sur Just Eat",
+    "hoursTitle": "Horaires",
+    "closed": "Fermé",
+    "legalNotice": "Mentions légales",
+    "privacy": "Confidentialité"
   },
   "allergens": {
     "gluten": "Gluten",
@@ -44,7 +55,9 @@
     "apio": "Céleri",
     "mostaza": "Moutarde",
     "sulfitos": "Sulfites",
-    "moluscos": "Mollusques"
+    "moluscos": "Mollusques",
+    "frutosCascara": "Fruits à coque",
+    "altramuces": "Lupin"
   },
   "descriptions": {
     "tamal": "Porc mariné enveloppé dans une pâte de maïs et une feuille de bananier, servi avec sauce criolla.",

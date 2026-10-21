@@ -21,6 +21,8 @@ const ALLERGEN_SYMBOLS: Record<AllergenKey, string> = {
   mostaza: `<g ${STROKE}><path d="M19 20h10v18a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3Z"/><path d="M21 20v-4h6v4"/><path d="M23 10h2v4h-2Z"/><path d="M24 27v6"/></g>`,
   sulfitos: `<g ${STROKE}><path d="M20 8h8M22 8v9l-8 16a3 3 0 0 0 3 4h12a3 3 0 0 0 3-4l-8-16V8"/><circle cx="24" cy="34" r="1.6" fill="currentColor" stroke="none"/><circle cx="29" cy="30" r="1.2" fill="currentColor" stroke="none"/></g>`,
   moluscos: `<g ${STROKE}><path d="M24 40C10 30 8 18 16 12c4-3 12-3 16 0 8 6 6 18-8 28Z"/><path d="M24 40V12M24 40 13 20M24 40l11-20M24 40 18 16M24 40l6-24"/></g>`,
+  frutosCascara: `<g ${STROKE}><path d="M24 12c-6 0-10 4-10 10 0 9 5 17 10 20 5-3 10-11 10-20 0-6-4-10-10-10Z"/><path d="M14 22h20"/><path d="M24 12V7"/></g>`,
+  altramuces: `<g ${STROKE}><path d="M8 34C8 24 20 12 34 10c4-.5 6 1 6 4 0 12-12 24-26 24-4 0-6-1.5-6-4Z"/><circle cx="16" cy="31" r="2.6"/><circle cx="23" cy="26" r="2.6"/><circle cx="30" cy="20" r="2.6"/></g>`,
 };
 
 /** The Galician flag is not an ISO country, so it is drawn here: white field, blue diagonal band. */

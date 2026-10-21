@@ -30,7 +30,18 @@
     "directions": "Como chegar",
     "reviewTitle": "Déixanos a túa reseña en Google Maps",
     "reviewText": "Axúdanos a medrar e sempre se agradece!",
-    "newTab": "(ábrese nunha nova pestana)"
+    "newTab": "(ábrese nunha nova pestana)",
+    "allergenTraces": "Pode haber trazas doutros alérxenos. Consulta sempre co noso persoal.",
+    "waTitle": "Escríbenos por WhatsApp",
+    "waReservar": "Reservar mesa",
+    "waRecoger": "Pedir para recoller",
+    "waDomicilio": "Pedir a domicilio",
+    "waConsulta": "Facer unha consulta",
+    "justEat": "Pedir en Just Eat",
+    "hoursTitle": "Horario",
+    "closed": "Pechado",
+    "legalNotice": "Aviso legal",
+    "privacy": "Privacidade"
   },
   "allergens": {
     "gluten": "Gluten",
@@ -44,7 +55,9 @@
     "apio": "Apio",
     "mostaza": "Mostaza",
     "sulfitos": "Sulfitos",
-    "moluscos": "Moluscos"
+    "moluscos": "Moluscos",
+    "frutosCascara": "Froitos de casca",
+    "altramuces": "Tremoços"
   },
   "descriptions": {
     "tamal": "Porco adobado envolto en masa de millo e folla de plátano, acompañado de salsa criolla.",

@@ -1,5 +1,6 @@
 import { DEFAULT_LANG } from '../i18n';
 import { html, type SafeHtml } from '../lib/html';
+import { actions } from './actions';
 import { createPage, type Page, type RenderContext } from './context';
 import { favorites } from './favorites';
 import { footer } from './footer';
@@ -22,7 +23,7 @@ export interface RenderedPage {
 function body(page: Page): SafeHtml {
   return html`${spriteSheet()}
     <a class="skip-link" href="#content">${page.t.skipLink}</a>
-    ${header(page)} ${favorites(page)}
+    ${header(page)} ${actions(page)} ${favorites(page)}
     <main id="content">
       ${menu(page)}
       <div class="container tail">${allergenLegend(page)} ${reviewCallout(page)}</div>

@@ -26,7 +26,17 @@ function renderPagesInDev(): Plugin {
 
           const ctx = { lang: route.lang, base, siteUrl };
           let html: string;
-          if (route.kind === 'redirect') {
+          if (route.kind === 'legal') {
+            const { renderLegalPage } = await server.ssrLoadModule('/src/render/legal.ts');
+            const { applyTemplate } = await server.ssrLoadModule('/src/render/template.ts');
+            const { loadPrivate } = await server.ssrLoadModule('/scripts/private-data.ts');
+            const template = await readFile(resolve('index.html'), 'utf8');
+            const { titular } = loadPrivate({ strict: false });
+            html = await server.transformIndexHtml(
+              req.url ?? '/',
+              applyTemplate(template, renderLegalPage(ctx, route.legal, titular)),
+            );
+          } else if (route.kind === 'redirect') {
             const { renderRedirectPage } = await server.ssrLoadModule(
               '/src/render/redirect-page.ts',
             );

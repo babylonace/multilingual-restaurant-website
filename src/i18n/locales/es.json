@@ -30,7 +30,18 @@
     "directions": "Cómo llegar",
     "reviewTitle": "Déjanos tu reseña en Google Maps",
     "reviewText": "¡Nos ayuda a crecer y siempre se agradece!",
-    "newTab": "(se abre en una pestaña nueva)"
+    "newTab": "(se abre en una pestaña nueva)",
+    "allergenTraces": "Puede haber trazas de otros alérgenos. Consulta siempre con nuestro personal.",
+    "waTitle": "Escríbenos por WhatsApp",
+    "waReservar": "Reservar mesa",
+    "waRecoger": "Pedir para recoger",
+    "waDomicilio": "Pedir a domicilio",
+    "waConsulta": "Hacer una consulta",
+    "justEat": "Pedir en Just Eat",
+    "hoursTitle": "Horario",
+    "closed": "Cerrado",
+    "legalNotice": "Aviso legal",
+    "privacy": "Privacidad"
   },
   "allergens": {
     "gluten": "Gluten",
@@ -44,7 +55,9 @@
     "apio": "Apio",
     "mostaza": "Mostaza",
     "sulfitos": "Sulfitos",
-    "moluscos": "Moluscos"
+    "moluscos": "Moluscos",
+    "frutosCascara": "Frutos de cáscara",
+    "altramuces": "Altramuces"
   },
   "descriptions": {
     "tamal": "Cerdo adobado envuelto en masa de maíz y hoja de plátano, acompañado de salsa criolla.",

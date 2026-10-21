@@ -9,6 +9,7 @@
 @layer tokens {
   :root {
     /* Brown ramp */
+    --brown-900: #331a13;
     --brown-800: #4a2a20;
     --brown-700: #512e24;
     --brown-600: #6b4034;

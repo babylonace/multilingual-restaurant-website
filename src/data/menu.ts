@@ -13,6 +13,8 @@ export const ALLERGEN_KEYS = [
   'mostaza',
   'sulfitos',
   'moluscos',
+  'frutosCascara',
+  'altramuces',
 ] as const satisfies readonly AllergenKey[];
 
 export const DISHES = {

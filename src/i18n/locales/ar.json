@@ -30,7 +30,18 @@
     "directions": "الاتجاهات",
     "reviewTitle": "اترك لنا تقييمًا على خرائط Google",
     "reviewText": "هذا يساعدنا على النمو ونقدّره دائمًا!",
-    "newTab": "(يفتح في علامة تبويب جديدة)"
+    "newTab": "(يفتح في علامة تبويب جديدة)",
+    "allergenTraces": "قد توجد آثار من مسببات حساسية أخرى. استشر موظفينا دائمًا.",
+    "waTitle": "راسلنا عبر واتساب",
+    "waReservar": "احجز طاولة",
+    "waRecoger": "اطلب للاستلام",
+    "waDomicilio": "اطلب للتوصيل",
+    "waConsulta": "اطرح سؤالًا",
+    "justEat": "اطلب عبر Just Eat",
+    "hoursTitle": "ساعات العمل",
+    "closed": "مغلق",
+    "legalNotice": "إشعار قانوني",
+    "privacy": "الخصوصية"
   },
   "allergens": {
     "gluten": "الغلوتين",
@@ -44,7 +55,9 @@
     "apio": "الكرفس",
     "mostaza": "الخردل",
     "sulfitos": "الكبريتات",
-    "moluscos": "الرخويات"
+    "moluscos": "الرخويات",
+    "frutosCascara": "المكسرات",
+    "altramuces": "الترمس"
   },
   "descriptions": {
     "tamal": "لحم خنزير متبّل ملفوف بعجينة الذرة وورق الموز، يُقدَّم مع صلصة criolla.",

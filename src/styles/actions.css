@@ -1,0 +1,91 @@
+@layer components {
+  /* ---- WhatsApp call to action ---- */
+  .actions {
+    padding-block: var(--space-6) var(--space-2);
+  }
+
+  .actions__inner {
+    max-width: var(--container-wide);
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+  }
+
+  .actions__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.875rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--text-strong);
+  }
+
+  .actions__icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--olive-500);
+  }
+
+  .actions__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 640px;
+  }
+
+  @media (min-width: 640px) {
+    .actions__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      max-width: none;
+    }
+  }
+
+  /* Gold pill; text on gold is always brown-900 (brand brown on gold is only 3.57:1). */
+  .pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--gold-500);
+    color: var(--brown-900);
+    font-size: 0.8125rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+    transition: var(--transition-colors);
+  }
+
+  .pill:hover {
+    background: var(--gold-400);
+  }
+
+  .actions__secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    font-size: 0.875rem;
+    font-weight: var(--fw-semibold);
+    color: var(--terra-700);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .actions__arrow {
+    width: 16px;
+    height: 16px;
+  }
+
+  [dir='rtl'] .actions__arrow {
+    transform: scaleX(-1);
+  }
+}

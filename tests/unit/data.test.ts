@@ -42,6 +42,28 @@ describe('menu data', () => {
     for (const [key, dish] of Object.entries(DISHES)) expect(dish.id).toBe(key);
   });
 
+  it('lists the 14 allergens of EU Regulation 1169/2011', () => {
+    expect([...ALLERGEN_KEYS].sort()).toEqual(
+      [
+        'altramuces',
+        'apio',
+        'cacahuete',
+        'crustaceos',
+        'frutosCascara',
+        'gluten',
+        'huevos',
+        'lacteos',
+        'moluscos',
+        'mostaza',
+        'pescado',
+        'sesamo',
+        'soja',
+        'sulfitos',
+      ].sort(),
+    );
+    expect(ALLERGEN_KEYS).toHaveLength(14);
+  });
+
   it('only uses allergens from the official list, without repeats', () => {
     for (const dish of Object.values(DISHES)) {
       for (const a of dish.allergens) expect(ALLERGEN_KEYS, `${dish.id}: ${a}`).toContain(a);
@@ -82,6 +104,8 @@ describe.each(codes)('locale "%s"', (code) => {
 
   it('translates every allergen and describes every dish', () => {
     for (const key of ALLERGEN_KEYS) expect(locale.allergens[key], key).toBeTruthy();
+    const names = ALLERGEN_KEYS.map((key) => locale.allergens[key]);
+    expect(new Set(names).size, 'two allergens share a name').toBe(ALLERGEN_KEYS.length);
     for (const s of SECTIONS)
       for (const id of s.dishes) expect(locale.descriptions[id], id).toBeTruthy();
   });

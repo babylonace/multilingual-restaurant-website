@@ -30,7 +30,18 @@
     "directions": "Anfahrt",
     "reviewTitle": "Hinterlassen Sie uns eine Bewertung auf Google Maps",
     "reviewText": "Das hilft uns zu wachsen und freut uns immer!",
-    "newTab": "(öffnet in neuem Tab)"
+    "newTab": "(öffnet in neuem Tab)",
+    "allergenTraces": "Spuren anderer Allergene sind möglich. Bitte fragen Sie immer unser Personal.",
+    "waTitle": "Schreiben Sie uns auf WhatsApp",
+    "waReservar": "Tisch reservieren",
+    "waRecoger": "Zum Mitnehmen bestellen",
+    "waDomicilio": "Lieferung bestellen",
+    "waConsulta": "Frage stellen",
+    "justEat": "Bei Just Eat bestellen",
+    "hoursTitle": "Öffnungszeiten",
+    "closed": "Geschlossen",
+    "legalNotice": "Impressum",
+    "privacy": "Datenschutz"
   },
   "allergens": {
     "gluten": "Gluten",
@@ -44,7 +55,9 @@
     "apio": "Sellerie",
     "mostaza": "Senf",
     "sulfitos": "Sulfite",
-    "moluscos": "Weichtiere"
+    "moluscos": "Weichtiere",
+    "frutosCascara": "Schalenfrüchte",
+    "altramuces": "Lupinen"
   },
   "descriptions": {
     "tamal": "Mariniertes Schweinefleisch, gewickelt in Maisteig und Bananenblatt, mit Criolla-Sauce.",

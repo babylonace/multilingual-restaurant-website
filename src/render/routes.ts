@@ -1,3 +1,4 @@
+import { LEGAL_PAGES, type LegalId } from '../data/legal';
 import type { LangCode } from '../data/types';
 import { DEFAULT_LANG, isLangCode } from '../i18n';
 
@@ -8,13 +9,23 @@ import { DEFAULT_LANG, isLangCode } from '../i18n';
  *   /en/carta/     carta, any other language
  *   /  /en/  …     language roots; they only forward to that language's carta until
  *                  the site has a home page of its own
+ *   /aviso-legal/  legal pages, Spanish only (they are required by Spanish law)
+ *   /privacidad/
  *
  * The printed QR codes point at `/carta/`, so that URL must never move.
  */
-export type Route = { kind: 'carta'; lang: LangCode } | { kind: 'redirect'; lang: LangCode };
+export type Route =
+  | { kind: 'carta'; lang: LangCode }
+  | { kind: 'redirect'; lang: LangCode }
+  | { kind: 'legal'; lang: 'es'; legal: LegalId };
+
+const LEGAL_ROUTE = new RegExp(`^/(${LEGAL_PAGES.join('|')})/(?:index\\.html)?$`);
 
 /** Resolves a pathname with the base already removed (`/`, `/en/`, `/en/carta/`…). */
 export function resolveRoute(pathname: string): Route | undefined {
+  const legal = LEGAL_ROUTE.exec(pathname)?.[1];
+  if (legal) return { kind: 'legal', lang: 'es', legal: legal as LegalId };
+
   const match = /^\/(?:([a-z]{2})\/)?(carta\/)?(?:index\.html)?$/.exec(pathname);
   if (!match) return undefined;
 

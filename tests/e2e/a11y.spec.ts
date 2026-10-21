@@ -1,7 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const PAGES = ['/carta/', '/en/carta/', '/ar/carta/', '/zh/carta/', '/ru/carta/'];
+const PAGES = [
+  '/carta/',
+  '/en/carta/',
+  '/ar/carta/',
+  '/zh/carta/',
+  '/ru/carta/',
+  '/aviso-legal/',
+  '/privacidad/',
+];
 const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
 for (const path of PAGES) {
