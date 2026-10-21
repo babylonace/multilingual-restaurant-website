@@ -11,7 +11,7 @@ import { LANGS } from '../src/data/langs';
 import { LEGAL_DRAFT, LEGAL_PAGES } from '../src/data/legal';
 import { kindPath, kindUrl, type PageKind } from '../src/render/context';
 import { renderLegalPage } from '../src/render/legal';
-import { renderHomePage, renderPage } from '../src/render/page';
+import { renderHomePage, renderMenuDelDiaPage, renderPage } from '../src/render/page';
 import { applyTemplate, PLACEHOLDERS } from '../src/render/template';
 import { getBuildConfig } from './config';
 import { loadPrivate } from './private-data';
@@ -45,9 +45,13 @@ for (const { code } of LANGS) {
     join(kindPath('home', code), 'index.html'),
     applyTemplate(template, renderHomePage(ctx)),
   );
+  await write(
+    join(kindPath('menu', code), 'index.html'),
+    applyTemplate(template, renderMenuDelDiaPage(ctx)),
+  );
 }
 console.log(
-  `Pre-rendered ${LANGS.length} home pages + ${LANGS.length} carta pages (base "${base}")`,
+  `Pre-rendered ${LANGS.length} home, carta and menú del día pages each (base "${base}")`,
 );
 
 // Legal pages carry the holder's details, which live outside git (see scripts/private-data.ts).
@@ -70,7 +74,7 @@ if (siteUrl) {
       ).join('\n');
       return `  <url>\n    <loc>${kindUrl(ctx, kind, code)}</loc>\n${alternates}\n  </url>`;
     });
-  const urls = [...entries('home'), ...entries('carta')];
+  const urls = [...entries('home'), ...entries('carta'), ...entries('menu')];
   // Draft legal pages are noindex, so they stay out of the sitemap until they are approved.
   if (!LEGAL_DRAFT) {
     for (const id of LEGAL_PAGES) {

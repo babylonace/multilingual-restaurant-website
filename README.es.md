@@ -45,13 +45,14 @@ tests/           unitarios (Vitest) y e2e + accesibilidad (Playwright)
 
 ### Estructura de URLs
 
-| URL                         | Qué es                                                                    |
-| --------------------------- | ------------------------------------------------------------------------- |
-| `/carta/`                   | Carta en español (idioma por defecto). **La URL de los QR de las mesas.** |
-| `/en/carta/`, `/gl/carta/`… | Carta en cada uno de los otros 9 idiomas                                  |
-| `/`, `/en/`…                | Home en cada idioma: foto del local y las formas de contactar             |
-| `/aviso-legal/`             | Aviso legal (LSSI). Solo en español; borrador hasta que se apruebe        |
-| `/privacidad/`              | Política de privacidad (RGPD). Solo en español; borrador hasta aprobarla  |
+| URL                                    | Qué es                                                                                                          |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `/carta/`                              | Carta en español (idioma por defecto). **La URL de los QR de las mesas.**                                       |
+| `/en/carta/`, `/gl/carta/`…            | Carta en cada uno de los otros 9 idiomas                                                                        |
+| `/`, `/en/`…                           | Home en cada idioma: foto del local y las formas de contactar                                                   |
+| `/menu-del-dia/`, `/en/menu-del-dia/`… | Menú del día: horario, estructura y precios; los platos de hoy se preguntan por WhatsApp hasta el CMS (etapa 4) |
+| `/aviso-legal/`                        | Aviso legal (LSSI). Solo en español; borrador hasta que se apruebe                                              |
+| `/privacidad/`                         | Política de privacidad (RGPD). Solo en español; borrador hasta aprobarla                                        |
 
 La home vive en `/` y la carta es un botón de ella; la carta sigue en `/carta/` para que los QR impresos no cambien nunca. Los enlaces antiguos del tipo `/#marino` (la carta era la raíz) se reenvían a la carta con un script en línea mínimo.
 

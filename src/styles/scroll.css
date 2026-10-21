@@ -1,0 +1,136 @@
+/*
+ * Scroll effects, in CSS only (scroll-driven animations: Chrome/Edge 115+, Safari 26+). They are a
+ * layer on top of a page that is complete without them:
+ *   - browsers without support, and anyone who asks for reduced motion, see the static page;
+ *   - nothing starts invisible unless the browser will animate it in, so content never hides;
+ *   - effects are short and small (12–16 px moves), as reveals, never as scroll-jacking.
+ */
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The brand bar draws itself once the page has loaded: gold, then terracotta, then olive. */
+    .brand-bar i {
+      transform-origin: 0 50%;
+      animation: bar-draw 0.6s 0.5s var(--ease-standard) both;
+    }
+
+    .brand-bar i:nth-child(2) {
+      animation-delay: 0.65s;
+    }
+
+    .brand-bar i:nth-child(3) {
+      animation-delay: 0.8s;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      /* Header gains a soft shadow once the page moves under it. */
+      .masthead--home {
+        animation: header-shade linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 120px;
+      }
+
+      /* Hero: the photo drifts slower than the page (depth) and the text lifts away. */
+      .hero__img {
+        animation:
+          hero-settle 1.6s var(--ease-standard) both,
+          hero-drift linear both;
+        animation-timeline: auto, scroll(root);
+        animation-range:
+          normal,
+          0 100vh;
+      }
+
+      .hero__content {
+        animation:
+          hero-rise 0.7s 0.15s var(--ease-standard) both,
+          hero-leave linear both;
+        animation-timeline: auto, scroll(root);
+        animation-range:
+          normal,
+          10vh 70vh;
+      }
+
+      /* Headings, tiles, cards and the reviews rise into place as they enter, one after another. */
+      .actions__title,
+      .section-heading,
+      .band--olive .review,
+      .mdd__prices,
+      .tile,
+      .dish-card {
+        animation: reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
+
+      .actions__list li:nth-child(2) .tile,
+      .more li:nth-child(2) .tile,
+      .dishes__list li:nth-child(3n + 2) .dish-card {
+        animation-range: entry 10% entry 80%;
+      }
+
+      .actions__list li:nth-child(3) .tile,
+      .more li:nth-child(3) .tile,
+      .dishes__list li:nth-child(3n) .dish-card {
+        animation-range: entry 20% entry 90%;
+      }
+
+      .actions__list li:nth-child(4) .tile {
+        animation-range: entry 30% entry 100%;
+      }
+
+      /* Phone row of dishes: the card in the middle of the row is full size, the edges recede. */
+      @media (max-width: 899px) {
+        .dishes__list > li {
+          animation: card-focus linear both;
+          animation-timeline: view(inline);
+        }
+      }
+    }
+  }
+
+  @keyframes header-shade {
+    to {
+      box-shadow: 0 8px 24px rgb(51 26 19 / 0.12);
+    }
+  }
+
+  @keyframes hero-drift {
+    to {
+      translate: 0 16%;
+    }
+  }
+
+  @keyframes hero-leave {
+    to {
+      opacity: 0.2;
+      translate: 0 -48px;
+    }
+  }
+
+  @keyframes bar-draw {
+    from {
+      scale: 0 1;
+    }
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      translate: 0 16px;
+    }
+  }
+
+  @keyframes card-focus {
+    0%,
+    100% {
+      scale: 0.92;
+    }
+
+    35%,
+    65% {
+      scale: 1;
+    }
+  }
+}

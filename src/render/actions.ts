@@ -1,4 +1,4 @@
-import { WHATSAPP_INTENTS, type WhatsappIntent } from '../data/whatsapp';
+import { type HomeIntent, WHATSAPP_INTENTS } from '../data/whatsapp';
 import { html, type SafeHtml } from '../lib/html';
 import { whatsappIntentLink } from './contact';
 import type { Page } from './context';
@@ -9,14 +9,14 @@ const LABEL = {
   recoger: 'waRecoger',
   domicilio: 'waDomicilio',
   consulta: 'waConsulta',
-} as const satisfies Record<WhatsappIntent, string>;
+} as const satisfies Record<HomeIntent, string>;
 
 const ICON = {
   reservar: 'calendar',
   recoger: 'shopping-bag',
   domicilio: 'bike',
   consulta: 'message-circle',
-} as const satisfies Record<WhatsappIntent, string>;
+} as const satisfies Record<HomeIntent, string>;
 
 /**
  * The main call to action: write to the restaurant on WhatsApp with the message for what the

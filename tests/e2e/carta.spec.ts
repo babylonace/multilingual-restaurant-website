@@ -255,6 +255,31 @@ test.describe('home page actions', () => {
     }
   });
 
+  test('opens the menú del día from the hero, and the carta from the header', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Menú del día' }).first().click();
+    await expect(page).toHaveURL(/\/menu-del-dia\/$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Menú del día');
+    await expect(page.getByRole('link', { name: /¿Qué hay hoy de menú\?/ })).toHaveAttribute(
+      'href',
+      /^https:\/\/wa\.me\/34614922183\?text=/,
+    );
+    await page.locator('.masthead__tools').getByRole('link', { name: 'La Carta' }).click();
+    await expect(page).toHaveURL(/\/carta\/$/);
+  });
+
+  test('keeps the header on screen while scrolling, without covering the WhatsApp band', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByRole('link', { name: /Escríbenos por WhatsApp/ }).click();
+    await expect(page.locator('#pedir')).toBeInViewport();
+    const header = await page.locator('.masthead--home').boundingBox();
+    const title = await page.locator('#actions-title').boundingBox();
+    expect(header?.y).toBe(0);
+    expect(title?.y ?? 0).toBeGreaterThanOrEqual((header?.y ?? 0) + (header?.height ?? 0));
+  });
+
   test('shows the photo with room reserved, before any script runs', async ({ page }) => {
     await page.goto('/');
     const photo = page.locator('.cover__img');

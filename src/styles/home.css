@@ -1,7 +1,54 @@
 @layer components {
   /* ---- Home page ---- */
+  /*
+   * Compact header that stays at the top: logo, where we are, the carta and the language. It
+   * never covers what it links to: anchors scroll with a matching margin.
+   */
   .masthead--home {
+    position: sticky;
+    top: 0;
+    z-index: 40;
     border-bottom: 0;
+    background: rgb(237 235 228 / 0.94);
+    backdrop-filter: blur(10px);
+  }
+
+  .masthead__brand,
+  .masthead__tools {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .masthead__place {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding-inline-start: var(--space-3);
+    border-inline-start: 1px solid var(--border-default);
+    font-size: 0.75rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-strong);
+  }
+
+  .masthead__place .icon {
+    color: var(--terra-700);
+  }
+
+  @media (min-width: 900px) {
+    .masthead__place {
+      display: inline-flex;
+    }
+  }
+
+  /* Phones: the flag alone names the language (the button keeps its accessible label). */
+  @media (max-width: 639px) {
+    .masthead__bar--wide .lang__current,
+    .masthead__bar--wide .lang__chevron {
+      display: none;
+    }
   }
 
   /*
@@ -54,16 +101,48 @@
     animation: hero-rise 0.7s 0.15s var(--ease-standard) both;
   }
 
-  .hero__eyebrow {
+  /* What and where, as two chips above the name, so neither gets lost on the photo. */
+  .hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
     font-size: 0.75rem;
     font-weight: var(--fw-bold);
-    letter-spacing: 0.26em;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
     text-transform: uppercase;
+  }
+
+  .chip--gold {
+    background: var(--gold-500);
+    color: var(--brown-900);
+  }
+
+  .chip--glass {
+    border: 1px solid rgb(245 244 240 / 0.45);
+    background: rgb(51 26 19 / 0.55);
+    color: var(--cream-100);
+    backdrop-filter: blur(6px);
+  }
+
+  .chip__icon {
+    flex: none;
+    width: 14px;
+    height: 14px;
     color: var(--gold-300);
   }
 
   .hero__title {
-    margin-top: var(--space-2);
+    margin-top: var(--space-3);
     font-size: clamp(3rem, 1.6rem + 6vw, 6rem);
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -77,10 +156,27 @@
     font-style: var(--italic);
   }
 
+  /* Phone: carta and menú del día side by side, WhatsApp under them. */
   .hero__ctas {
     display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-3);
     margin-top: var(--space-6);
+  }
+
+  .hero__ctas .pill {
+    padding-inline: var(--space-3);
+  }
+
+  @media (max-width: 639px) {
+    .hero__ctas .pill--lg {
+      font-size: 0.8125rem;
+      letter-spacing: 0.08em;
+    }
+  }
+
+  .hero__ctas .pill--ghost {
+    grid-column: 1 / -1;
   }
 
   @media (min-width: 640px) {
@@ -112,16 +208,17 @@
     }
   }
 
+  /* Individual `scale` / `translate` so these compose with the scroll effects further down. */
   @keyframes hero-settle {
     from {
-      transform: scale(1.06);
+      scale: 1.06;
     }
   }
 
   @keyframes hero-rise {
     from {
       opacity: 0;
-      transform: translateY(14px);
+      translate: 0 14px;
     }
   }
 
@@ -163,7 +260,8 @@
 
   .band--brown {
     background: var(--brown-700);
-    scroll-margin-top: var(--space-4);
+    /* clears the sticky header when "Escríbenos por WhatsApp" jumps here */
+    scroll-margin-top: 64px;
   }
 
   /* Isotype watermark at 6%, always whole inside the band, never over the photo. */

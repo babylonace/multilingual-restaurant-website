@@ -44,7 +44,15 @@
     "viewHours": "Ver horario",
     "homeMetaTitle": "Inkawasi · Cocina tradicional peruana en Ferrol",
     "homeMetaDescription": "Inkawasi, cocina tradicional peruana en Ferrol: ceviche, chaufa, lomo saltado y más. Mira la carta, pide para llevar o a domicilio y escríbenos por WhatsApp.",
-    "coverAlt": "Interior de Inkawasi: la barra de madera a la izquierda y las mesas del comedor a la derecha"
+    "coverAlt": "Interior de Inkawasi: la barra de madera a la izquierda y las mesas del comedor a la derecha",
+    "location": "Ferrol · Galicia",
+    "menuDelDia": "Menú del día",
+    "mddLead": "De 13:00 a 16:00. Elige entre dos primeros y dos segundos, con bebida y postre.",
+    "mddFull": "Menú completo",
+    "mddHalf": "Medio menú",
+    "mddToday": "El menú cambia cada día. Escríbenos y te contamos qué hay hoy.",
+    "waMenu": "¿Qué hay hoy de menú?",
+    "mddMetaDescription": "Menú del día de Inkawasi en Ferrol: de 13:00 a 16:00, dos primeros y dos segundos para elegir, con bebida y postre. Menú completo y medio menú."
   },
   "allergens": {
     "gluten": "Gluten",

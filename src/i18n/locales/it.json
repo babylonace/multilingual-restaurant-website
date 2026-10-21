@@ -44,7 +44,15 @@
     "viewHours": "Vedi gli orari",
     "homeMetaTitle": "Inkawasi · Cucina tradizionale peruviana a Ferrol",
     "homeMetaDescription": "Inkawasi, cucina tradizionale peruviana a Ferrol: ceviche, chaufa, lomo saltado e altro. Guarda il menù, ordina da asporto o a domicilio e scrivici su WhatsApp.",
-    "coverAlt": "Interno di Inkawasi: il bancone in legno a sinistra e i tavoli della sala a destra"
+    "coverAlt": "Interno di Inkawasi: il bancone in legno a sinistra e i tavoli della sala a destra",
+    "location": "Ferrol · Galizia, Spagna",
+    "menuDelDia": "Menù del giorno",
+    "mddLead": "Dalle 13:00 alle 16:00. Scegli tra due primi e due secondi, con bevanda e dessert.",
+    "mddFull": "Menù completo",
+    "mddHalf": "Mezzo menù",
+    "mddToday": "Il menù cambia ogni giorno. Scrivici e ti diciamo cosa c’è oggi.",
+    "waMenu": "Cosa c’è oggi nel menù?",
+    "mddMetaDescription": "Menù del giorno di Inkawasi a Ferrol: dalle 13:00 alle 16:00, due primi e due secondi a scelta, con bevanda e dessert. Menù completo o mezzo menù."
   },
   "allergens": {
     "gluten": "Glutine",

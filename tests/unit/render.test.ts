@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { LANGS } from '../../src/data/langs';
 import { DISHES } from '../../src/data/menu';
 import { LOCALES } from '../../src/i18n';
-import { renderHomePage, renderPage } from '../../src/render/page';
+import { renderHomePage, renderMenuDelDiaPage, renderPage } from '../../src/render/page';
 
 const SITE = 'https://example.test';
 
@@ -123,6 +123,20 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(body).toContain(ui.viewMenu);
   });
 
+  it('puts the menú del día next to the carta, and says what and where on the photo', () => {
+    const menuDelDia = code === 'es' ? '/menu-del-dia/' : `/${code}/menu-del-dia/`;
+    expect(body).toMatch(new RegExp(`class="pill pill--cream pill--lg"\\s+href="${menuDelDia}"`));
+    const tags = /<p class="hero__tags">.*?<\/p>/s.exec(body)?.[0] ?? '';
+    expect(tags).toContain(ui.eyebrow);
+    expect(tags).toContain(ui.location);
+  });
+
+  it('keeps the carta and the location in the compact header', () => {
+    const bar = /<div class="masthead__bar masthead__bar--wide">.*?<details/s.exec(body)?.[0] ?? '';
+    expect(bar).toContain(`href="${carta}"`);
+    expect(bar).toContain(ui.location);
+  });
+
   it('offers a ready-made WhatsApp message per intent', () => {
     const actions = /<section class="actions".*?<\/section>/s.exec(body)?.[0] ?? '';
     const links = [
@@ -182,6 +196,33 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
   it('prints every visible string from the locale, with no template artifacts', () => {
     const visible = (body + head).replace(/<script[\s\S]*?<\/script>/g, '');
     expect(visible).not.toMatch(/undefined|\[object|NaN|\{\{/);
+  });
+});
+
+describe.each(LANGS)('menú del día "$code"', ({ code }) => {
+  const ui = LOCALES[code].ui;
+  const { body, head, lang } = renderMenuDelDiaPage({ lang: code, base: '/', siteUrl: SITE });
+  const self = code === 'es' ? '/menu-del-dia/' : `/${code}/menu-del-dia/`;
+
+  it('is its own page with its own title, canonical and alternates', () => {
+    expect(lang).toBe(code);
+    expect(head).toContain(`<title>${ui.menuDelDia} · Inkawasi</title>`);
+    expect(head).toContain(`<link rel="canonical" href="${SITE}${self}"`);
+    expect(head).toContain(`hreflang="x-default" href="${SITE}/menu-del-dia/"`);
+  });
+
+  it('states the confirmed hours, structure and prices', () => {
+    expect(body).toContain(ui.mddLead);
+    expect(body).toMatch(/13(:| h )00/);
+    expect(body).toMatch(/13(,00)?\s?€|€\s?13(\.00)?|13(\.00)?\s?€/);
+    expect(body).toMatch(/8(,00)?\s?€|€\s?8(\.00)?|8(\.00)?\s?€/);
+  });
+
+  it('asks on WhatsApp what is on today, since the dishes change every day', () => {
+    expect(body).toContain(ui.waMenu);
+    expect(body).toMatch(
+      /href="https:\/\/wa\.me\/34614922183\?text=Hola%2C%20%C2%BFqu%C3%A9%20hay%20hoy/,
+    );
   });
 });
 

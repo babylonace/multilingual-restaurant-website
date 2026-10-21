@@ -8,6 +8,7 @@ import { homeBody } from './home';
 import { spriteSheet } from './icons';
 import { allergenLegend, reviewCallout } from './info';
 import { menu } from './menu';
+import { menuDelDiaBody } from './menu-del-dia';
 import { legacyTabScript, redirectScript } from './redirect';
 import { head } from './seo';
 
@@ -50,5 +51,16 @@ export function renderHomePage(ctx: RenderContext): RenderedPage {
     dir: page.dir,
     head: html`${ctx.lang === DEFAULT_LANG && redirectScript(ctx, 'home')}${legacyTabScript(ctx)}${head(page)}`.toString(),
     body: homeBody(page).toString(),
+  };
+}
+
+/** The menú del día of one language. */
+export function renderMenuDelDiaPage(ctx: RenderContext): RenderedPage {
+  const page = createPage(ctx, 'menu');
+  return {
+    lang: ctx.lang,
+    dir: page.dir,
+    head: head(page).toString(),
+    body: menuDelDiaBody(page).toString(),
   };
 }

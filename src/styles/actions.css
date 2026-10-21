@@ -48,6 +48,40 @@
     color: var(--brown-900);
   }
 
+  .pill--cream {
+    background: var(--cream-100);
+    color: var(--brown-900);
+  }
+
+  .pill--cream:hover {
+    background: var(--gold-300);
+  }
+
+  .pill--olive {
+    background: var(--olive-500);
+    color: var(--cream-100);
+  }
+
+  .pill--olive:hover {
+    background: var(--brown-900);
+  }
+
+  .pill--outline {
+    border-color: var(--text-strong);
+    color: var(--text-strong);
+  }
+
+  .pill--outline:hover {
+    background: var(--text-strong);
+    color: var(--cream-100);
+  }
+
+  .pill--sm {
+    min-height: 40px;
+    padding: 0 var(--space-4);
+    font-size: 0.75rem;
+  }
+
   .pill--lg {
     min-height: 56px;
     font-size: 0.9375rem;

@@ -10,8 +10,8 @@ export interface RenderContext {
   siteUrl?: string;
 }
 
-/** The two kinds of page that exist in every language. */
-export type PageKind = 'home' | 'carta';
+/** The kinds of page that exist in every language. */
+export type PageKind = 'home' | 'carta' | 'menu';
 
 export interface Page {
   ctx: RenderContext;
@@ -51,9 +51,13 @@ export function langUrl(ctx: RenderContext, lang: LangCode): string | undefined 
   return ctx.siteUrl ? `${ctx.siteUrl}${langHref(ctx, lang)}` : undefined;
 }
 
-/** Folder of a page kind in a language: `""` / `"en/"` for the home, `"carta/"` / `"en/carta/"` for the carta. */
+/** The menú del día keeps its Spanish name in every language, like the carta. */
+export const MENU_ROUTE = 'menu-del-dia/';
+
+/** Folder of a page kind in a language: `""`, `"carta/"`, `"menu-del-dia/"`, each under `"en/"`… outside Spanish. */
 export function kindPath(kind: PageKind, lang: LangCode): string {
-  return kind === 'home' ? langPath(lang) : cartaPath(lang);
+  if (kind === 'home') return langPath(lang);
+  return kind === 'carta' ? cartaPath(lang) : `${langPath(lang)}${MENU_ROUTE}`;
 }
 
 /** Link to the same kind of page in another language, so the language switcher stays on the page. */

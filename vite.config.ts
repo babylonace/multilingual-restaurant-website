@@ -40,7 +40,12 @@ function renderPagesInDev(): Plugin {
             const pages = await server.ssrLoadModule('/src/render/page.ts');
             const { applyTemplate } = await server.ssrLoadModule('/src/render/template.ts');
             const template = await readFile(resolve('index.html'), 'utf8');
-            const page = route.kind === 'home' ? pages.renderHomePage(ctx) : pages.renderPage(ctx);
+            const render = {
+              home: pages.renderHomePage,
+              carta: pages.renderPage,
+              menu: pages.renderMenuDelDiaPage,
+            }[route.kind as 'home' | 'carta' | 'menu'];
+            const page = render(ctx);
             html = await server.transformIndexHtml(req.url ?? '/', applyTemplate(template, page));
           }
           res.setHeader('Content-Type', 'text/html; charset=utf-8');

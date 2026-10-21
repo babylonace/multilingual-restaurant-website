@@ -5,10 +5,11 @@ import { DEFAULT_LANG, isLangCode } from '../i18n';
 /**
  * URL space of the site, relative to the base path:
  *
- *   /carta/        carta, Spanish (default language)
- *   /en/carta/     carta, any other language
- *   /  /en/  …     home page of each language (photo and the ways to reach the restaurant)
- *   /aviso-legal/  legal pages, Spanish only (they are required by Spanish law)
+ *   /carta/          carta, Spanish (default language)
+ *   /en/carta/       carta, any other language
+ *   /  /en/  …       home page of each language (photo and the ways to reach the restaurant)
+ *   /menu-del-dia/   menú del día, Spanish; /en/menu-del-dia/ … in the other languages
+ *   /aviso-legal/    legal pages, Spanish only (they are required by Spanish law)
  *   /privacidad/
  *
  * The printed QR codes point at `/carta/`, so that URL must never move.
@@ -16,6 +17,7 @@ import { DEFAULT_LANG, isLangCode } from '../i18n';
 export type Route =
   | { kind: 'carta'; lang: LangCode }
   | { kind: 'home'; lang: LangCode }
+  | { kind: 'menu'; lang: LangCode }
   | { kind: 'legal'; lang: 'es'; legal: LegalId };
 
 const LEGAL_ROUTE = new RegExp(`^/(${LEGAL_PAGES.join('|')})/(?:index\\.html)?$`);
@@ -25,11 +27,12 @@ export function resolveRoute(pathname: string): Route | undefined {
   const legal = LEGAL_ROUTE.exec(pathname)?.[1];
   if (legal) return { kind: 'legal', lang: 'es', legal: legal as LegalId };
 
-  const match = /^\/(?:([a-z]{2})\/)?(carta\/)?(?:index\.html)?$/.exec(pathname);
+  const match = /^\/(?:([a-z]{2})\/)?(carta\/|menu-del-dia\/)?(?:index\.html)?$/.exec(pathname);
   if (!match) return undefined;
 
   const lang = match[1] ?? DEFAULT_LANG;
   // The default language lives at the root, never under its own prefix.
   if (!isLangCode(lang) || (match[1] && lang === DEFAULT_LANG)) return undefined;
-  return { kind: match[2] ? 'carta' : 'home', lang };
+  if (match[2] === 'carta/') return { kind: 'carta', lang };
+  return { kind: match[2] ? 'menu' : 'home', lang };
 }

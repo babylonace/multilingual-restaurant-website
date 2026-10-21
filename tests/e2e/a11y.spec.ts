@@ -10,6 +10,8 @@ const PAGES = [
   '/ar/carta/',
   '/zh/carta/',
   '/ru/carta/',
+  '/menu-del-dia/',
+  '/ar/menu-del-dia/',
   '/aviso-legal/',
   '/privacidad/',
 ];

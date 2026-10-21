@@ -18,6 +18,12 @@ describe('resolveRoute', () => {
     expect(resolveRoute('/gl/')).toEqual({ kind: 'home', lang: 'gl' });
   });
 
+  it('serves the menú del día in every language, keeping its Spanish slug', () => {
+    expect(resolveRoute('/menu-del-dia/')).toEqual({ kind: 'menu', lang: 'es' });
+    expect(resolveRoute('/en/menu-del-dia/')).toEqual({ kind: 'menu', lang: 'en' });
+    expect(resolveRoute('/es/menu-del-dia/')).toBeUndefined();
+  });
+
   it('serves the legal pages in Spanish only', () => {
     expect(resolveRoute('/aviso-legal/')).toEqual({
       kind: 'legal',

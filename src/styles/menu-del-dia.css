@@ -1,0 +1,93 @@
+@layer components {
+  /* ---- Menú del día ---- */
+  /* Short page: the main area grows so the footer sits at the bottom of the screen. */
+  body:has(.mdd) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mdd {
+    flex: 1;
+    background:
+      radial-gradient(circle at 100% 0%, rgb(209 158 43 / 0.16), transparent 45%),
+      var(--surface-page);
+  }
+
+  .mdd__inner {
+    max-width: 720px;
+    margin-inline: auto;
+    padding: 48px var(--gutter) 64px;
+  }
+
+  .mdd__title {
+    margin-top: var(--space-4);
+    font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    color: var(--text-strong);
+  }
+
+  .mdd__lead {
+    margin-top: var(--space-4);
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+    line-height: 1.5;
+  }
+
+  .mdd__prices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .price-card {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border-radius: 26px;
+    background: var(--brown-700);
+    color: var(--cream-100);
+  }
+
+  .price-card--half {
+    background: var(--olive-500);
+  }
+
+  .price-card__label {
+    font-size: 0.75rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .price-card__value {
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--gold-300);
+  }
+
+  .mdd__today {
+    margin-top: var(--space-6);
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-style: var(--italic);
+  }
+
+  .mdd__ctas {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  @media (min-width: 640px) {
+    .mdd__ctas {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}

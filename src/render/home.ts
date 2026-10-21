@@ -32,7 +32,10 @@ function hero(page: Page): SafeHtml {
       decoding="async"
     />
     <div class="hero__content">
-      <p class="hero__eyebrow">${t.eyebrow}</p>
+      <p class="hero__tags">
+        <span class="chip chip--gold">${t.eyebrow}</span>
+        <span class="chip chip--glass">${uiIcon('map-pin', 'chip__icon')}${t.location}</span>
+      </p>
       <h1 class="hero__title" id="home-title">${CONTACT.name}</h1>
       <p class="hero__quote">${t.quote}</p>
       <div class="hero__ctas">
@@ -41,6 +44,12 @@ function hero(page: Page): SafeHtml {
           href="${kindHref(ctx, 'carta', ctx.lang)}"
           data-event="carta_clic"
           >${t.viewMenu}</a
+        >
+        <a
+          class="pill pill--cream pill--lg"
+          href="${kindHref(ctx, 'menu', ctx.lang)}"
+          data-event="menu_dia_clic"
+          >${t.menuDelDia}</a
         >
         <a class="pill pill--ghost" href="#pedir"
           >${brandIcon('whatsapp', 'pill__icon')}${t.waTitle}</a

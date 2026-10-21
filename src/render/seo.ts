@@ -124,12 +124,20 @@ function alternate(hreflang: string, href: string | undefined): SafeHtml {
 export function head(page: Page): SafeHtml {
   const { t, ctx, kind } = page;
   const canonical = kindUrl(ctx, kind, ctx.lang);
-  const title = kind === 'home' ? t.homeMetaTitle : t.metaTitle;
-  const description = kind === 'home' ? t.homeMetaDescription : t.metaDescription;
+  const title = {
+    home: t.homeMetaTitle,
+    carta: t.metaTitle,
+    menu: `${t.menuDelDia} · ${CONTACT.name}`,
+  }[kind];
+  const description = {
+    home: t.homeMetaDescription,
+    carta: t.metaDescription,
+    menu: t.mddMetaDescription,
+  }[kind];
 
   return html`<title>${title}</title>
     <meta name="description" content="${description}" />
-    <meta property="og:type" content="${kind === 'home' ? 'website' : 'restaurant.menu'}" />
+    <meta property="og:type" content="${kind === 'carta' ? 'restaurant.menu' : 'website'}" />
     <meta property="og:site_name" content="${CONTACT.name}" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />

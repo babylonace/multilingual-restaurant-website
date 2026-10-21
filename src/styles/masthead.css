@@ -11,7 +11,8 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-4);
-    padding-block: var(--space-5);
+    /* Compact: the bar is a signpost, not a band; the first screen belongs to the content. */
+    padding-block: 10px;
   }
 
   .masthead__bar--wide {
@@ -21,7 +22,7 @@
   }
 
   .masthead__logo img {
-    height: 50px;
+    height: 40px;
     width: auto;
   }
 

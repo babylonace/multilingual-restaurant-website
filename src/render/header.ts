@@ -2,7 +2,7 @@ import { LANGS } from '../data/langs';
 import { DEFAULT_LANG } from '../i18n';
 import { html, type SafeHtml } from '../lib/html';
 import { kindHref, type Page } from './context';
-import { flagIcon } from './icons';
+import { flagIcon, uiIcon } from './icons';
 
 /** Spanish first, the rest alphabetical by endonym (fixed locale so the build is reproducible). */
 const SORTED_LANGS = [...LANGS].sort((a, b) => {
@@ -42,22 +42,34 @@ function languageMenu(page: Page): SafeHtml {
   </details>`;
 }
 
-/** Logo (linking to the home page) and language switcher. */
+/**
+ * Logo (linking to the home page) and language switcher. Outside the carta the bar is wider,
+ * says where the restaurant is and keeps a button to the carta always in reach.
+ */
 export function mastheadBar(page: Page): SafeHtml {
-  const { ctx } = page;
-  // The carta is 820 px wide; the home is wider, so its bar is too.
-  const width = page.kind === 'home' ? 'masthead__bar--wide' : 'container';
-  return html`<div class="masthead__bar ${width}">
-    <a class="masthead__logo" href="${kindHref(ctx, 'home', ctx.lang)}">
-      <img
-        src="${ctx.base}assets/logo.webp"
-        width="162"
-        height="50"
-        alt="Inkawasi"
-        ${page.kind === 'carta' && html`fetchpriority="high"`}
-      />
-    </a>
-    ${languageMenu(page)}
+  const { ctx, t, kind } = page;
+  const logo = html`<a class="masthead__logo" href="${kindHref(ctx, 'home', ctx.lang)}">
+    <img
+      src="${ctx.base}assets/logo.webp"
+      width="162"
+      height="50"
+      alt="Inkawasi"
+      ${kind === 'carta' && html`fetchpriority="high"`}
+    />
+  </a>`;
+
+  if (kind === 'carta') {
+    return html`<div class="masthead__bar container">${logo} ${languageMenu(page)}</div>`;
+  }
+  return html`<div class="masthead__bar masthead__bar--wide">
+    <div class="masthead__brand">
+      ${logo}
+      <span class="masthead__place">${uiIcon('map-pin', 'icon')}${t.location}</span>
+    </div>
+    <div class="masthead__tools">
+      <a class="pill pill--gold pill--sm" href="${kindHref(ctx, 'carta', ctx.lang)}">${t.title}</a>
+      ${languageMenu(page)}
+    </div>
   </div>`;
 }
 

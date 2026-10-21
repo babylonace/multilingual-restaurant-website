@@ -45,13 +45,14 @@ tests/           unit (Vitest) and e2e + accessibility (Playwright)
 
 ### URL structure
 
-| URL                         | What it is                                                             |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `/carta/`                   | Menu in Spanish (default language). **The URL on the table QR codes.** |
-| `/en/carta/`, `/gl/carta/`… | Menu in each of the other 9 languages                                  |
-| `/`, `/en/`…                | Home page in each language: dining-room photo and the ways to reach us |
-| `/aviso-legal/`             | Legal notice (LSSI). Spanish only; draft until approved                |
-| `/privacidad/`              | Privacy policy (GDPR). Spanish only; draft until approved              |
+| URL                                    | What it is                                                                                                |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `/carta/`                              | Menu in Spanish (default language). **The URL on the table QR codes.**                                    |
+| `/en/carta/`, `/gl/carta/`…            | Menu in each of the other 9 languages                                                                     |
+| `/`, `/en/`…                           | Home page in each language: dining-room photo and the ways to reach us                                    |
+| `/menu-del-dia/`, `/en/menu-del-dia/`… | Daily set menu: hours, structure and prices; today's dishes are asked on WhatsApp until the CMS (stage 4) |
+| `/aviso-legal/`                        | Legal notice (LSSI). Spanish only; draft until approved                                                   |
+| `/privacidad/`                         | Privacy policy (GDPR). Spanish only; draft until approved                                                 |
 
 The home page lives at `/` and the menu is one button on it; the menu stays at `/carta/` so printed QR codes never change. Old links of the form `/#marino` (the menu used to be the root) are forwarded to the menu by a tiny inline script.
 
