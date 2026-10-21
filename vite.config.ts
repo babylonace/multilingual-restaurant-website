@@ -8,7 +8,8 @@ const { base, siteUrl } = getBuildConfig();
 
 /**
  * Dev-only: renders the same pre-rendered pages the production build emits, for every
- * language (`/`, `/en/`, …), so what you see in `npm run dev` is what ships.
+ * language (`/carta/`, `/en/carta/`, …) and the language-root redirects, so what you see
+ * in `npm run dev` is what ships.
  */
 function renderPagesInDev(): Plugin {
   return {
@@ -17,22 +18,28 @@ function renderPagesInDev(): Plugin {
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         const pathname = (req.url ?? '/').split('?')[0] ?? '/';
-        const match = /^\/(?:([a-z]{2})\/)?(?:index\.html)?$/.exec(pathname);
-        if (!match) return next();
 
         try {
-          const { isLangCode, DEFAULT_LANG } = await server.ssrLoadModule('/src/i18n/index.ts');
-          const lang = match[1] ?? DEFAULT_LANG;
-          if (!isLangCode(lang)) return next();
+          const { resolveRoute } = await server.ssrLoadModule('/src/render/routes.ts');
+          const route = resolveRoute(pathname);
+          if (!route) return next();
 
-          const { renderPage } = await server.ssrLoadModule('/src/render/page.ts');
-          const { applyTemplate } = await server.ssrLoadModule('/src/render/template.ts');
-          const template = await readFile(resolve('index.html'), 'utf8');
-          const page = renderPage({ lang, base, siteUrl });
-          const html = await server.transformIndexHtml(
-            req.url ?? '/',
-            applyTemplate(template, page),
-          );
+          const ctx = { lang: route.lang, base, siteUrl };
+          let html: string;
+          if (route.kind === 'redirect') {
+            const { renderRedirectPage } = await server.ssrLoadModule(
+              '/src/render/redirect-page.ts',
+            );
+            html = renderRedirectPage(ctx);
+          } else {
+            const { renderPage } = await server.ssrLoadModule('/src/render/page.ts');
+            const { applyTemplate } = await server.ssrLoadModule('/src/render/template.ts');
+            const template = await readFile(resolve('index.html'), 'utf8');
+            html = await server.transformIndexHtml(
+              req.url ?? '/',
+              applyTemplate(template, renderPage(ctx)),
+            );
+          }
           res.setHeader('Content-Type', 'text/html; charset=utf-8');
           res.end(html);
         } catch (error) {

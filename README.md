@@ -40,8 +40,18 @@ tests/           unit (Vitest) and e2e + accessibility (Playwright)
 ```
 
 1. `vite build` compiles CSS/JS and leaves `dist/index.html` as a template.
-2. `scripts/prerender.ts` writes `dist/index.html` (es) and `dist/<lang>/index.html`, each with the whole menu already in the markup, metadata, `hreflang` and JSON-LD (`Restaurant` + `Menu`).
+2. `scripts/prerender.ts` writes `dist/carta/index.html` (es) and `dist/<lang>/carta/index.html`, each with the whole menu already in the markup, metadata, `hreflang` and JSON-LD (`Restaurant` + `Menu`).
 3. In development a Vite plugin renders those same pages, so `npm run dev` shows exactly what ships.
+
+### URL structure
+
+| URL                         | What it is                                                             |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `/carta/`                   | Menu in Spanish (default language). **The URL on the table QR codes.** |
+| `/en/carta/`, `/gl/carta/`… | Menu in each of the other 9 languages                                  |
+| `/`, `/en/`…                | Redirect to the matching menu, until the site has a home page          |
+
+The menu is under `/carta/` so that a home page can take over `/` later without changing any printed URL. Roots redirect with a real `302` (`dist/_redirects`, read by Cloudflare Pages and Netlify) and a static fallback page for any other host.
 
 ## Design decisions
 

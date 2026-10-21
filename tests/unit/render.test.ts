@@ -55,10 +55,17 @@ describe.each(LANGS)('page "$code"', ({ code, rtl }) => {
 
 describe('rendering rules', () => {
   it('links languages through the base path', () => {
-    const { body } = renderPage({ lang: 'es', base: '/carta/' });
-    expect(body).toContain('href="/carta/en/"');
-    expect(body).toContain('href="/carta/"');
-    expect(body).toContain('src="/carta/assets/logo.webp"');
+    const { body } = renderPage({ lang: 'es', base: '/site/' });
+    expect(body).toContain('href="/site/en/carta/"');
+    expect(body).toContain('href="/site/carta/"');
+    expect(body).toContain('src="/site/assets/logo.webp"');
+  });
+
+  it('puts every canonical and alternate URL under /carta/', () => {
+    const { head } = renderPage({ lang: 'gl', base: '/', siteUrl: SITE });
+    expect(head).toContain(`<link rel="canonical" href="${SITE}/gl/carta/"`);
+    expect(head).toContain(`hreflang="es" href="${SITE}/carta/"`);
+    expect(head).toContain(`hreflang="x-default" href="${SITE}/carta/"`);
   });
 
   it('skips canonical and hreflang without a site URL', () => {

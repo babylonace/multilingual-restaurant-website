@@ -40,8 +40,18 @@ tests/           unitarios (Vitest) y e2e + accesibilidad (Playwright)
 ```
 
 1. `vite build` compila CSS/JS y deja `dist/index.html` como plantilla.
-2. `scripts/prerender.ts` genera `dist/index.html` (es) y `dist/<idioma>/index.html` con todo el menú ya escrito, metadatos, `hreflang` y JSON-LD (`Restaurant` + `Menu`).
+2. `scripts/prerender.ts` genera `dist/carta/index.html` (es) y `dist/<idioma>/carta/index.html` con todo el menú ya escrito, metadatos, `hreflang` y JSON-LD (`Restaurant` + `Menu`).
 3. En desarrollo, un plugin de Vite renderiza esas mismas páginas, así que `npm run dev` muestra lo que se publica.
+
+### Estructura de URLs
+
+| URL                         | Qué es                                                                    |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `/carta/`                   | Carta en español (idioma por defecto). **La URL de los QR de las mesas.** |
+| `/en/carta/`, `/gl/carta/`… | Carta en cada uno de los otros 9 idiomas                                  |
+| `/`, `/en/`…                | Redirigen a la carta correspondiente, hasta que exista una home           |
+
+La carta cuelga de `/carta/` para que una home pueda ocupar `/` más adelante sin cambiar ninguna URL impresa. Las raíces redirigen con un `302` real (`dist/_redirects`, que leen Cloudflare Pages y Netlify) y con una página estática de respaldo para cualquier otro alojamiento.
 
 ## Decisiones
 
