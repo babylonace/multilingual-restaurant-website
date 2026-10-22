@@ -27,31 +27,32 @@
 
   .legal__title {
     font-family: var(--font-serif);
-    font-size: clamp(2rem, 1.6rem + 2vw, 2.5rem);
+    font-size: 1.5rem;
     font-weight: var(--fw-semibold);
-    line-height: 1.1;
+    line-height: 1.2;
     color: var(--text-strong);
   }
 
   .legal__updated {
     margin-top: var(--space-2);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-muted);
   }
 
   .legal h2 {
-    margin-top: var(--space-6);
-    font-size: 1.125rem;
+    margin-top: var(--space-5);
+    font-size: 0.9375rem;
     font-weight: var(--fw-bold);
     color: var(--text-strong);
   }
 
   .legal p,
-  .legal li {
-    margin-top: var(--space-3);
+  .legal li,
+  .legal dl {
+    margin-top: var(--space-2);
     font-family: var(--font-serif);
-    font-size: 1rem;
-    line-height: 1.65;
+    font-size: 0.875rem;
+    line-height: 1.6;
   }
 
   .legal ul {
