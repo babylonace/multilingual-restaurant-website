@@ -150,8 +150,8 @@ function privacidad({ titular, siteUrl }: LegalInput): SafeHtml {
     <h2>5. Quién más puede recibir datos</h2>
     <ul>
       <li>
-        <strong>Alojamiento web:</strong> el proveedor que sirve esta web (hoy Netlify; más adelante
-        Cloudflare), como encargado del tratamiento.
+        <strong>Alojamiento web:</strong> Cloudflare, que sirve esta web y su dominio, y Netlify,
+        que redirige la dirección antigua inkawasi.netlify.app, como encargados del tratamiento.
       </li>
       <li>
         <strong>WhatsApp (Meta):</strong> si nos escribes por WhatsApp, esa plataforma trata tus

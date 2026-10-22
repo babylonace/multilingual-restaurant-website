@@ -14,6 +14,7 @@ const PAGES = [
   '/ar/menu-del-dia/',
   '/aviso-legal/',
   '/privacidad/',
+  '/404.html',
 ];
 const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 

@@ -1,7 +1,7 @@
 /**
  * Post-build step: turns the Vite-built `dist/index.html` shell into static pages: a home page
  * and a carta per language (`dist/index.html`, `dist/carta/index.html`, `dist/en/index.html`,
- * `dist/en/carta/index.html`, …), the two legal pages, sitemap.xml and robots.txt.
+ * `dist/en/carta/index.html`, …), the two legal pages, 404.html, sitemap.xml and robots.txt.
  *
  * Run by `npm run build` after `vite build`, so asset URLs already carry their content hashes.
  */
@@ -11,6 +11,7 @@ import { LANGS } from '../src/data/langs';
 import { LEGAL_DRAFT, LEGAL_PAGES } from '../src/data/legal';
 import { kindPath, kindUrl, type PageKind } from '../src/render/context';
 import { renderLegalPage } from '../src/render/legal';
+import { renderNotFoundPage } from '../src/render/not-found';
 import { renderHomePage, renderMenuDelDiaPage, renderPage } from '../src/render/page';
 import { applyTemplate, PLACEHOLDERS } from '../src/render/template';
 import { getBuildConfig } from './config';
@@ -63,6 +64,9 @@ for (const id of LEGAL_PAGES) {
 console.log(
   `Pre-rendered ${LEGAL_PAGES.length} legal pages${LEGAL_DRAFT ? ' (draft, noindex)' : ''}`,
 );
+
+await write('404.html', applyTemplate(template, renderNotFoundPage({ lang: 'es', base, siteUrl })));
+console.log('Pre-rendered 404.html');
 
 if (siteUrl) {
   const ctx = { lang: 'es', base, siteUrl } as const;

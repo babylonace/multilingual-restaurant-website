@@ -46,6 +46,7 @@ describe('contents', () => {
   it('states there are no cookies and names the processors', () => {
     const { body } = renderLegalPage(CTX, 'privacidad', TITULAR, true);
     expect(body).toContain('no usa cookies');
+    expect(body).toContain('Cloudflare');
     expect(body).toContain('Netlify');
     expect(body).toContain('aepd.es');
   });
