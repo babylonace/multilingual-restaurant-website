@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 test.describe('carta', () => {
   test('loads the Spanish carta with the first tab open', async ({ page }) => {
@@ -348,6 +348,32 @@ test.describe('carta extras', () => {
   test('asks for a review on Google Maps and on TripAdvisor', async ({ page }) => {
     await page.goto('/carta/');
     await expect(page.locator('.review__link')).toHaveCount(2);
+  });
+});
+
+test.describe('isotype sunrise in the brown band', () => {
+  const rayOpacities = (page: Page) =>
+    page
+      .locator('.sun-mark__ray')
+      .evaluateAll((rays) => rays.map((r) => Number(getComputedStyle(r).opacity)));
+
+  test('lights all nine rays once the band is on screen (desktop only)', async ({ page }) => {
+    await page.goto('/');
+    if (test.info().project.name === 'mobile') {
+      await expect(page.locator('.sun-mark')).toBeHidden();
+      return;
+    }
+    await page.locator('#pedir').scrollIntoViewIfNeeded();
+    await expect(page.locator('.sun-mark')).toBeVisible();
+    await expect.poll(() => rayOpacities(page), { timeout: 5000 }).toEqual(Array(9).fill(1));
+  });
+
+  test('stays still and fully drawn for anyone who asks for reduced motion', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await expect(page.locator('.sun-mark')).not.toHaveAttribute('data-sun', /.+/);
+    expect(await rayOpacities(page)).toEqual(Array(9).fill(1));
   });
 });
 

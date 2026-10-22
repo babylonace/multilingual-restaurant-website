@@ -8,6 +8,7 @@ import { footer } from './footer';
 import { mastheadBar } from './header';
 import { brandIcon, spriteSheet, uiIcon } from './icons';
 import { reviewCallout } from './info';
+import { isotype } from './isotype';
 import { picture, pictureOf } from './picture';
 
 /** A plate is 280 px wide in the phone's swipe row and a third of the 1100 px column on desktop. */
@@ -59,12 +60,12 @@ function hero(page: Page): SafeHtml {
 /** Gold, terracotta and olive: the bar at the foot of every Instagram piece. */
 const brandBar = html`<div class="brand-bar" aria-hidden="true"></div>`;
 
-/** Ordering and getting there, as large tiles on the brand brown, with the isotype as watermark. */
+/** Ordering and getting there, as large tiles on the brand brown, with the isotype beside them. */
 function orderBand(page: Page): SafeHtml {
   const { t } = page;
   return html`<div class="band band--brown" id="pedir">
     <div class="band__inner">
-      ${actions(page)}
+      ${isotype('sun-mark')} ${actions(page)}
       <ul class="more">
         <li>
           <a

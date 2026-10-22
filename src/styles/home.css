@@ -284,25 +284,29 @@
   }
 
   /*
-   * The isotype for brown backgrounds (cream fork, gold sun) gets its own column to the right of
-   * the tiles on wide screens, vertically centred on them, so no tile covers it and it never sits
-   * under text. On narrower screens there is no room beside the tiles, so it is left out.
+   * The isotype for brown backgrounds (cream fork, gold sun), in full colour, gets its own column
+   * to the right of the tiles on wide screens, vertically centred on them, so no tile covers it
+   * and it never sits under text. Its rays light up one by one (scroll.css). On narrower screens
+   * there is no room beside the tiles, so it is left out.
    */
+  .sun-mark {
+    display: none;
+  }
+
   @media (min-width: 900px) {
     .band--brown .band__inner {
       padding-inline-end: calc(var(--gutter) + 240px);
     }
 
-    .band--brown .band__inner::after {
-      content: '';
+    .sun-mark {
+      display: block;
       position: absolute;
       inset-block: 0;
       inset-inline-end: var(--gutter);
       margin-block: auto;
       width: 200px;
+      height: auto;
       aspect-ratio: 1144 / 1471;
-      background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
-      opacity: 0.35;
       pointer-events: none;
     }
   }
