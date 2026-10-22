@@ -124,7 +124,7 @@ Configuración en GitHub. Los secretos van en el entorno `production` (Settings 
 
 `public/_headers` añade `X-Robots-Tag: noindex` a las URL `*.pages.dev`, así que solo se indexa `inkawasi.es`. `www.inkawasi.es` redirige a `https://inkawasi.es` con una regla de redirección 301 de la zona en Cloudflare.
 
-`inkawasi.netlify.app` es un redirector 301 permanente: la carpeta `netlify-redirector/` se sube una vez a mano en Netlify (Deploys → arrastrar la carpeta). El proyecto de Netlify no se borra nunca. Vuelta atrás: en Netlify, publicar de nuevo el deploy anterior.
+`inkawasi.netlify.app` es un redirector 301 permanente a `https://inkawasi.es/carta/` (la web antigua era la propia carta, así que toda dirección antigua llega ahí en un salto): la carpeta `netlify-redirector/` se sube una vez a mano en Netlify (Deploys → arrastrar la carpeta). El proyecto de Netlify no se borra nunca. Vuelta atrás: en Netlify, publicar de nuevo el deploy anterior.
 
 Build local de producción:
 

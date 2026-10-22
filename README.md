@@ -124,7 +124,7 @@ GitHub settings. The secrets live in the `production` environment (Settings → 
 
 `public/_headers` adds `X-Robots-Tag: noindex` to the `*.pages.dev` URLs, so only `inkawasi.es` gets indexed. `www.inkawasi.es` redirects to `https://inkawasi.es` through a 301 redirect rule on the Cloudflare zone.
 
-`inkawasi.netlify.app` is a permanent 301 redirector: the `netlify-redirector/` folder is uploaded once by hand on Netlify (Deploys → drag and drop the folder). Never delete the Netlify project. Rollback: republish the previous deploy on Netlify.
+`inkawasi.netlify.app` is a permanent 301 redirector to `https://inkawasi.es/carta/` (the old site was the carta itself, so every old address lands there in one hop): the `netlify-redirector/` folder is uploaded once by hand on Netlify (Deploys → drag and drop the folder). Never delete the Netlify project. Rollback: republish the previous deploy on Netlify.
 
 Local production build:
 

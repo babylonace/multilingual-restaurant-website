@@ -1,4 +1,5 @@
-# inkawasi.netlify.app is a permanent redirector to inkawasi.es. Deploy this folder once
-# (Netlify → Deploys → drag and drop). Never delete the Netlify project.
-/    https://inkawasi.es/        301!
-/*   https://inkawasi.es/:splat  301!
+# inkawasi.netlify.app is a permanent redirector. The old site was the carta itself, so every
+# old address lands on the carta of inkawasi.es in one 301 (a /#marino link keeps its tab).
+# Deploy this folder once (Netlify → Deploys → drag and drop). Never delete the Netlify project.
+/    https://inkawasi.es/carta/  301!
+/*   https://inkawasi.es/carta/  301!
