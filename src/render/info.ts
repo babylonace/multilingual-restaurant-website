@@ -46,9 +46,7 @@ export function reviewCallout(page: Page): SafeHtml {
                 rel="noopener"
                 data-event="resena_clic"
                 data-prop-site="${site.id}"
-                >${site.name}${uiIcon('arrow-right', 'review__arrow')}<span class="visually-hidden">
-                  ${t.newTab}</span
-                ></a
+                >${site.name}<span class="visually-hidden"> ${t.newTab}</span></a
               >
             </li>`,
         )}

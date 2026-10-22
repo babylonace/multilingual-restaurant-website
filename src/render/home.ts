@@ -33,7 +33,7 @@ function hero(page: Page): SafeHtml {
     />
     <div class="hero__content">
       <p class="hero__tags">
-        <span class="chip chip--gold">${t.eyebrow}</span>
+        <span class="chip chip--brand">${t.eyebrow}</span>
         <span class="chip chip--glass">${uiIcon('map-pin', 'chip__icon')}${t.location}</span>
       </p>
       <h1 class="hero__title" id="home-title">${CONTACT.name}</h1>
@@ -108,7 +108,10 @@ function orderBand(page: Page): SafeHtml {
   </div>`;
 }
 
-/** The house favourites, each one a way into its section of the carta. */
+/**
+ * The house favourites, each one a way into its section of the carta. Set like a line of the
+ * printed carta (name, dotted leader, price) rather than as a stack of identical cards.
+ */
 function dishes(page: Page): SafeHtml {
   const { ctx, t } = page;
   const carta = kindHref(ctx, 'carta', ctx.lang);
@@ -119,10 +122,10 @@ function dishes(page: Page): SafeHtml {
         ${FAVORITES.map(({ dish, section, image }) => {
           const { name, priceCents } = DISHES[dish];
           return html`<li>
-            <a class="dish-card" href="${carta}#${section}">
-              <span class="dish-card__frame">
+            <a class="plate" href="${carta}#${section}">
+              <span class="plate__frame">
                 <img
-                  class="dish-card__img"
+                  class="plate__img"
                   src="${ctx.base}assets/favoritos/${image}.webp"
                   width="476"
                   height="291"
@@ -131,9 +134,9 @@ function dishes(page: Page): SafeHtml {
                   decoding="async"
                 />
               </span>
-              <span class="dish-card__body">
-                <span class="dish-card__section">${t[section]}</span>
-                <span class="dish-card__name">${name}</span>
+              <span class="plate__line">
+                <span class="plate__name">${name}</span>
+                <span class="leader" aria-hidden="true"></span>
                 <span class="price">${formatPrice(priceCents, ctx.lang)}</span>
               </span>
             </a>

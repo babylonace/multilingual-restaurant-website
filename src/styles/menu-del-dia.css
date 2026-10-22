@@ -1,5 +1,10 @@
 @layer components {
-  /* ---- Menú del día ---- */
+  /*
+   * Menú del día: the whole page on the brand brown, like the menú del día pieces of Instagram,
+   * with the two prices as the one large typographic moment. Text in cream (7.9:1 on brown);
+   * the full-menu price in gold-300 and the half menu in cream, both far above 3:1 at that size.
+   */
+
   /* Short page: the main area grows so the footer sits at the bottom of the screen. */
   body:has(.mdd) {
     display: flex;
@@ -7,75 +12,100 @@
   }
 
   .mdd {
+    position: relative;
     flex: 1;
-    background:
-      radial-gradient(circle at 100% 0%, rgb(209 158 43 / 0.16), transparent 45%),
-      var(--surface-page);
-  }
-
-  .mdd__inner {
-    max-width: 720px;
-    margin-inline: auto;
-    padding: 48px var(--gutter) 64px;
-  }
-
-  .mdd__title {
-    margin-top: var(--space-4);
-    font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
-    color: var(--text-strong);
-  }
-
-  .mdd__lead {
-    margin-top: var(--space-4);
-    font-family: var(--font-serif);
-    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
-    line-height: 1.5;
-  }
-
-  .mdd__prices {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4);
-    margin-top: var(--space-6);
-  }
-
-  .price-card {
-    display: grid;
-    gap: var(--space-2);
-    padding: var(--space-5);
-    border-radius: 26px;
+    overflow: hidden;
     background: var(--brown-700);
     color: var(--cream-100);
   }
 
-  .price-card--half {
-    background: var(--olive-500);
+  /* The sun of the logo, whole, low on the right, as in the brown band of the home page. */
+  .mdd::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: 3%;
+    bottom: 32px;
+    width: min(42vw, 420px);
+    aspect-ratio: 1144 / 965;
+    background: url('/assets/brand/sol.svg') center / contain no-repeat;
+    opacity: 0.18;
+    pointer-events: none;
   }
 
-  .price-card__label {
-    font-size: 0.75rem;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+  /* On a phone the sun would sit behind the buttons: it only appears where there is room. */
+  @media (max-width: 899px) {
+    .mdd::after {
+      display: none;
+    }
   }
 
-  .price-card__value {
+  .mdd__inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding: 56px var(--gutter) 64px;
+  }
+
+  .mdd__title {
+    font-size: clamp(2.75rem, 1.6rem + 5vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  .mdd__lead {
+    max-width: 34ch;
+    margin-top: var(--space-4);
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+    line-height: 1.55;
+  }
+
+  .mdd__prices {
+    display: flex;
+    gap: 24px;
+    margin: 40px 0 0;
+  }
+
+  .mdd__price {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  /* A gold rule between the two prices (the DS section rule), from the second one on. */
+  .mdd__price + .mdd__price {
+    padding-inline-start: 24px;
+    border-inline-start: 3px solid var(--gold-500);
+  }
+
+  .mdd__price dt {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-style: var(--italic);
+  }
+
+  .mdd__price dd {
+    margin: 0;
+    font-size: clamp(3.25rem, 1.6rem + 8vw, 8rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: var(--gold-300);
     direction: ltr;
     unicode-bidi: isolate;
-    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: var(--gold-300);
+  }
+
+  .mdd__price--half dd {
+    color: var(--cream-100);
   }
 
   .mdd__today {
-    margin-top: var(--space-6);
+    max-width: 40ch;
+    margin-top: 48px;
     font-family: var(--font-serif);
     font-size: 1.0625rem;
-    font-style: var(--italic);
+    line-height: 1.6;
   }
 
   .mdd__ctas {
@@ -88,6 +118,20 @@
     .mdd__ctas {
       display: flex;
       flex-wrap: wrap;
+    }
+  }
+
+  .mdd :focus-visible {
+    outline-color: var(--gold-400);
+  }
+
+  @media (min-width: 640px) {
+    .mdd__prices {
+      gap: 48px;
+    }
+
+    .mdd__price + .mdd__price {
+      padding-inline-start: 48px;
     }
   }
 }

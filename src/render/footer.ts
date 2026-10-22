@@ -9,7 +9,7 @@ export function footer(page: Page): SafeHtml {
     <div class="footer__inner container">
       <address class="footer__contact">
         <span class="footer__item"
-          >${uiIcon('map-pin', 'icon icon--gold')}${CONTACT.streetAddress} ·
+          >${uiIcon('map-pin', 'icon icon--gold')}${CONTACT.streetAddress},
           ${CONTACT.locality}</span
         >
         <a

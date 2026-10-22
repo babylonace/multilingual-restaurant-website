@@ -131,10 +131,15 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(tags).toContain(ui.location);
   });
 
-  it('keeps the carta and the location in the compact header', () => {
+  it('keeps the header quiet: logo and language only', () => {
     const bar = /<div class="masthead__bar masthead__bar--wide">.*?<details/s.exec(body)?.[0] ?? '';
-    expect(bar).toContain(`href="${carta}"`);
-    expect(bar).toContain(ui.location);
+    expect(bar).toContain('class="masthead__logo"');
+    expect(bar).not.toContain(`href="${carta}"`);
+    expect(bar).not.toContain(ui.location);
+  });
+
+  it('writes the place with commas, not middle dots', () => {
+    expect(ui.location).not.toContain('·');
   });
 
   it('offers a ready-made WhatsApp message per intent', () => {
@@ -170,7 +175,8 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
   });
 
   it('shows the six favourite dishes, each linking to its section of the carta', () => {
-    const cards = [...body.matchAll(/class="dish-card" href="([^"]+)"/g)].map((m) => m[1]);
+    const cards = [...body.matchAll(/class="plate" href="([^"]+)"/g)].map((m) => m[1]);
+    expect(body).toMatch(/class="plate__name">[^<]+<\/span>\s*<span class="leader"/);
     expect(cards).toHaveLength(6);
     for (const href of cards) expect(href).toMatch(new RegExp(`^${carta}#[a-z]+$`));
   });

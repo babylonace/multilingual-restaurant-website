@@ -255,7 +255,7 @@ test.describe('home page actions', () => {
     }
   });
 
-  test('opens the menú del día from the hero, and the carta from the header', async ({ page }) => {
+  test('opens the menú del día from the hero, and the carta from there', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Menú del día' }).first().click();
     await expect(page).toHaveURL(/\/menu-del-dia\/$/);
@@ -264,7 +264,7 @@ test.describe('home page actions', () => {
       'href',
       /^https:\/\/wa\.me\/34614922183\?text=/,
     );
-    await page.locator('.masthead__tools').getByRole('link', { name: 'La Carta' }).click();
+    await page.locator('.mdd').getByRole('link', { name: 'Ver la carta' }).click();
     await expect(page).toHaveURL(/\/carta\/$/);
   });
 
