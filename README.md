@@ -112,17 +112,28 @@ The legal pages stay `noindex` and marked as a draft until `LEGAL_DRAFT` in `src
 
 ## Deployment
 
-`.github/workflows/ci.yml` runs formatting, lint, types, unit and e2e tests on every push and pull request.
+`.github/workflows/ci.yml` runs formatting, lint, types, unit and e2e tests on every push and pull request. When everything passes on `main`, the `deploy` job builds with `SITE_URL=https://inkawasi.es` (canonical URLs, `hreflang` and `sitemap.xml`) and uploads `dist/` to Cloudflare Pages with `wrangler pages deploy` (project `inkawasi`). The build runs in GitHub Actions rather than on Cloudflare because the menú del día images will later be rendered with Playwright.
 
-Production will be Cloudflare Pages on `inkawasi.es` (domain not purchased yet). To enable canonical URLs, `hreflang` and `sitemap.xml`, set the site origin at build time:
+GitHub settings (Settings → Secrets and variables → Actions):
+
+| Name                    | Kind     | Value                                             |
+| ----------------------- | -------- | ------------------------------------------------- |
+| `CLOUDFLARE_ACCOUNT_ID` | variable | Cloudflare account ID; nothing deploys without it |
+| `CLOUDFLARE_API_TOKEN`  | secret   | token with the Cloudflare Pages: Edit permission  |
+| `INKAWASI_PRIVATE_JSON` | secret   | the contents of `private/negocio.privado.json`    |
+
+`public/_headers` adds `X-Robots-Tag: noindex` to the `*.pages.dev` URLs, so only `inkawasi.es` gets indexed. `www.inkawasi.es` redirects to `https://inkawasi.es` through a 301 redirect rule on the Cloudflare zone.
+
+`inkawasi.netlify.app` is a permanent 301 redirector: the `netlify-redirector/` folder is uploaded once by hand on Netlify (Deploys → drag and drop the folder). Never delete the Netlify project. Rollback: republish the previous deploy on Netlify.
+
+Local production build:
 
 ```bash
-SITE_URL=https://inkawasi.es BASE_PATH=/ npm run build
+SITE_URL=https://inkawasi.es npm run build
 ```
 
 ## To do
 
-- Register `inkawasi.es` and deploy to Cloudflare Pages.
 - Review the legal texts and set `LEGAL_DRAFT` to `false`.
 - Replace the Open Graph image with one that uses a photo of the restaurant.
 - Logo, photos and brand belong to Inkawasi.

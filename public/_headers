@@ -1,0 +1,7 @@
+# Cloudflare Pages. Preview and project URLs on *.pages.dev must never be indexed;
+# only https://inkawasi.es is the public site.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

@@ -1,0 +1,4 @@
+# inkawasi.netlify.app is a permanent redirector to inkawasi.es. Deploy this folder once
+# (Netlify → Deploys → drag and drop). Never delete the Netlify project.
+/    https://inkawasi.es/        301!
+/*   https://inkawasi.es/:splat  301!

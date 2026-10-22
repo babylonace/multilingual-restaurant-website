@@ -112,17 +112,28 @@ Las páginas legales siguen en `noindex` y marcadas como borrador hasta que `LEG
 
 ## Despliegue
 
-`.github/workflows/ci.yml` ejecuta formato, lint, tipos, tests unitarios y e2e en cada push y pull request.
+`.github/workflows/ci.yml` ejecuta formato, lint, tipos, tests unitarios y e2e en cada push y pull request. Si todo pasa en `main`, el job `deploy` construye con `SITE_URL=https://inkawasi.es` (canonical, `hreflang` y `sitemap.xml`) y sube `dist/` a Cloudflare Pages con `wrangler pages deploy` (proyecto `inkawasi`). El build se hace en GitHub Actions y no en Cloudflare porque más adelante las imágenes del menú del día se generan con Playwright.
 
-El destino de producción será Cloudflare Pages con el dominio `inkawasi.es` (pendiente de contratar). Para activar canonical, `hreflang` y `sitemap.xml` hay que definir el dominio al construir:
+Configuración en GitHub (Settings → Secrets and variables → Actions):
+
+| Nombre                  | Tipo     | Contenido                                             |
+| ----------------------- | -------- | ----------------------------------------------------- |
+| `CLOUDFLARE_ACCOUNT_ID` | variable | ID de la cuenta de Cloudflare; sin ella no se publica |
+| `CLOUDFLARE_API_TOKEN`  | secreto  | token con permiso Cloudflare Pages: Edit              |
+| `INKAWASI_PRIVATE_JSON` | secreto  | el contenido de `private/negocio.privado.json`        |
+
+`public/_headers` añade `X-Robots-Tag: noindex` a las URL `*.pages.dev`, así que solo se indexa `inkawasi.es`. `www.inkawasi.es` redirige a `https://inkawasi.es` con una regla de redirección 301 de la zona en Cloudflare.
+
+`inkawasi.netlify.app` es un redirector 301 permanente: la carpeta `netlify-redirector/` se sube una vez a mano en Netlify (Deploys → arrastrar la carpeta). El proyecto de Netlify no se borra nunca. Vuelta atrás: en Netlify, publicar de nuevo el deploy anterior.
+
+Build local de producción:
 
 ```bash
-SITE_URL=https://inkawasi.es BASE_PATH=/ npm run build
+SITE_URL=https://inkawasi.es npm run build
 ```
 
 ## Pendiente
 
-- Dominio `inkawasi.es` y despliegue en Cloudflare Pages.
 - Revisar los textos legales y poner `LEGAL_DRAFT` en `false`.
 - Sustituir la imagen Open Graph por una con foto del local.
 - Logo, fotos y marca pertenecen a Inkawasi.
