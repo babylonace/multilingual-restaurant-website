@@ -6,3 +6,6 @@ playwright-report
 test-results
 coverage
 docs
+
+# Search Console verification files: their exact bytes matter
+netlify-redirector/google*.html
