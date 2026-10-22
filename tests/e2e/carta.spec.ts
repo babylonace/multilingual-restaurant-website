@@ -365,15 +365,60 @@ test.describe('isotype sunrise in the brown band', () => {
     }
     await page.locator('#pedir').scrollIntoViewIfNeeded();
     await expect(page.locator('.sun-mark')).toBeVisible();
-    await expect.poll(() => rayOpacities(page), { timeout: 5000 }).toEqual(Array(9).fill(1));
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', 'in');
+    await expect.poll(() => rayOpacities(page), { timeout: 6000 }).toEqual(Array(9).fill(1));
+    // The arc is fully drawn once its mask stroke has run its length.
+    await expect
+      .poll(() =>
+        page
+          .locator('.sun-mark__arc-reveal')
+          .evaluate((p) => parseFloat(getComputedStyle(p).strokeDashoffset)),
+      )
+      .toBeCloseTo(0, 3);
+  });
+
+  test('keeps the rays breathing after the sunrise, and pauses them off screen', async ({
+    page,
+  }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    await page.goto('/');
+    await page.locator('#pedir').scrollIntoViewIfNeeded();
+    const ray = page.locator('.sun-mark__ray').first();
+    await expect
+      .poll(() => ray.evaluate((r) => getComputedStyle(r).transform), {
+        timeout: 8000,
+      })
+      .not.toBe('none');
+    await page.locator('.footer').scrollIntoViewIfNeeded();
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-offscreen', '');
   });
 
   test('stays still and fully drawn for anyone who asks for reduced motion', async ({ page }) => {
     test.skip(test.info().project.name === 'mobile', 'desktop only');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
-    await expect(page.locator('.sun-mark')).not.toHaveAttribute('data-sun', /.+/);
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', '');
     expect(await rayOpacities(page)).toEqual(Array(9).fill(1));
+    expect(
+      await page
+        .locator('.sun-mark__arc-reveal')
+        .evaluate((p) => parseFloat(getComputedStyle(p).strokeDashoffset)),
+    ).toBe(0);
+  });
+});
+
+test.describe('Andean borders of the olive band', () => {
+  test('draw themselves from the centre outwards when the band comes into view', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const band = page.locator('.band--olive');
+    await expect(band).toHaveAttribute('data-reveal', 'waiting');
+    await band.scrollIntoViewIfNeeded();
+    await expect(band).toHaveAttribute('data-reveal', 'in');
+    await expect
+      .poll(() => band.evaluate((b) => getComputedStyle(b, '::before').clipPath), { timeout: 4000 })
+      .toMatch(/^(none|inset\(0px( 0%)?\))$/);
   });
 });
 

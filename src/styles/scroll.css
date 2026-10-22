@@ -1,8 +1,8 @@
 /*
  * Motion, deliberately little (see docs/diseno.md):
  *   - one load sequence: the photo settles, the brand bar opens, a shine crosses the two chips;
- *   - one moment tied to the brand: when the brown band comes into view, the isotype's sun
- *     rises and its rays light up one by one, like a sunrise (client/sun.ts starts it);
+ *   - one moment tied to the brand: when the brown band comes into view, the isotype draws
+ *     itself like a sunrise and its rays keep shining; the olive band draws its borders;
  *   - depth on the hero, the phone row of dishes answering the swipe, a shadow under the header.
  * Scroll effects are CSS scroll-driven animations (Chrome/Edge 115+, Safari 26+). Browsers without
  * them, and anyone who asks for reduced motion, get the static page; nothing starts hidden unless
@@ -82,41 +82,112 @@
   }
 
   /*
-   * Amanecer. client/sun.ts sets data-sun="waiting" while the band is still below the screen (so
-   * the isotype is never hidden without JavaScript, with reduced motion, or if the band is already
-   * on screen), then "up" when it comes into view: the arc and the fork rise, then the nine rays
-   * light up from the lower left, over the top, to the right.
+   * Amanecer, in four soft steps once the brown band comes into view (client/reveal.ts sets
+   * data-reveal="waiting" while it is below the screen, then "in"; without JavaScript or with
+   * reduced motion the isotype is simply there, whole and still):
+   *   1. the fork rises into place;
+   *   2. the arc of the sun draws itself from its lower-left end, over the top, to the right
+   *      (a mask whose stroke runs along it, so the official drawing is never altered);
+   *   3. the nine rays light up one by one, each growing out from the sun;
+   *   4. then the rays keep breathing, lengthening and shortening in a slow wave, so the sun
+   *      seems to shine. Paused while the band is off screen.
+   * Each ray grows along its own direction (--a) from the point next to the arc (its
+   * transform-origin), both measured from the path data in src/render/isotype.ts.
    */
-  .sun-mark__ray,
-  .sun-mark__arc,
   .sun-mark__fork {
     transform-box: fill-box;
     transform-origin: center;
   }
 
-  .sun-mark[data-sun='waiting'] :is(.sun-mark__arc, .sun-mark__fork, .sun-mark__ray) {
+  .sun-mark__ray {
+    transform-box: fill-box;
+  }
+
+  .sun-mark__arc-reveal {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .sun-mark[data-reveal='waiting'] :is(.sun-mark__fork, .sun-mark__ray) {
     opacity: 0;
   }
 
-  .sun-mark[data-sun='up'] :is(.sun-mark__arc, .sun-mark__fork) {
-    animation: sun-rise 0.8s var(--ease-out) both;
+  .sun-mark[data-reveal='waiting'] .sun-mark__arc-reveal {
+    stroke-dashoffset: 1;
   }
 
-  .sun-mark[data-sun='up'] .sun-mark__ray {
-    animation: ray-light 0.5s calc(0.55s + var(--i) * 0.11s) var(--ease-out) both;
+  .sun-mark[data-reveal='in'] .sun-mark__fork {
+    animation: fork-rise 1s var(--ease-out) both;
   }
 
-  @keyframes sun-rise {
+  .sun-mark[data-reveal='in'] .sun-mark__arc-reveal {
+    animation: arc-draw 1.5s 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+
+  .sun-mark[data-reveal='in'] .sun-mark__ray {
+    animation:
+      ray-light 0.7s calc(1.7s + var(--i) * 0.13s) var(--ease-out) both,
+      ray-breathe 3.2s calc(3.6s + var(--i) * 0.35s) ease-in-out infinite;
+  }
+
+  .sun-mark[data-offscreen] .sun-mark__ray {
+    animation-play-state: paused;
+  }
+
+  @keyframes fork-rise {
     from {
       opacity: 0;
-      translate: 0 18%;
+      translate: 0 14%;
+    }
+  }
+
+  @keyframes arc-draw {
+    from {
+      stroke-dashoffset: 1;
     }
   }
 
   @keyframes ray-light {
     from {
       opacity: 0;
-      scale: 0.2;
+      scale: 0.15;
+    }
+  }
+
+  /* Stretch along the ray's own direction only: rotate onto x, scale x, rotate back. */
+  @keyframes ray-breathe {
+    0%,
+    100% {
+      transform: rotate(var(--a)) scaleX(1) rotate(calc(-1 * var(--a)));
+    }
+
+    30% {
+      transform: rotate(var(--a)) scaleX(1.14) rotate(calc(-1 * var(--a)));
+    }
+
+    70% {
+      transform: rotate(var(--a)) scaleX(0.86) rotate(calc(-1 * var(--a)));
+    }
+  }
+
+  /* The olive band's Andean borders draw themselves from the centre outwards, both at once. */
+  .band--olive[data-reveal='waiting']::before,
+  .band--olive[data-reveal='waiting']::after {
+    clip-path: inset(0 50%);
+  }
+
+  .band--olive[data-reveal='in']::before,
+  .band--olive[data-reveal='in']::after {
+    animation: motif-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+
+  @keyframes motif-draw {
+    from {
+      clip-path: inset(0 50%);
+    }
+
+    to {
+      clip-path: inset(0 0);
     }
   }
 

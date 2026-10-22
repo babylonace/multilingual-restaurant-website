@@ -154,7 +154,7 @@ export function homeBody(page: Page): SafeHtml {
     <header class="masthead masthead--home">${mastheadBar(page)}</header>
     <main id="content">
       ${hero(page)} ${brandBar} ${orderBand(page)} ${dishes(page)}
-      <div class="band band--olive">
+      <div class="band band--olive" data-reveal>
         <div class="band__inner">${reviewCallout(page)}</div>
       </div>
     </main>
