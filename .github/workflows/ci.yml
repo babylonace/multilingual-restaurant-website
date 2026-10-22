@@ -39,11 +39,15 @@ jobs:
 
   # Production: build for https://inkawasi.es and upload dist/ to Cloudflare Pages.
   # Runs only on main and only once the repository variable CLOUDFLARE_ACCOUNT_ID exists.
-  # Secrets: CLOUDFLARE_API_TOKEN (Pages: Edit) and INKAWASI_PRIVATE_JSON.
+  # Secrets live in the `production` environment (limited to main), not in the repository:
+  # CLOUDFLARE_API_TOKEN (Pages: Edit) and INKAWASI_PRIVATE_JSON.
   deploy:
     needs: verify
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://inkawasi.es
     concurrency:
       group: deploy-production
       cancel-in-progress: false

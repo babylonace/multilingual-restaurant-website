@@ -114,13 +114,13 @@ Las páginas legales siguen en `noindex` y marcadas como borrador hasta que `LEG
 
 `.github/workflows/ci.yml` ejecuta formato, lint, tipos, tests unitarios y e2e en cada push y pull request. Si todo pasa en `main`, el job `deploy` construye con `SITE_URL=https://inkawasi.es` (canonical, `hreflang` y `sitemap.xml`) y sube `dist/` a Cloudflare Pages con `wrangler pages deploy` (proyecto `inkawasi`). El build se hace en GitHub Actions y no en Cloudflare porque más adelante las imágenes del menú del día se generan con Playwright.
 
-Configuración en GitHub (Settings → Secrets and variables → Actions):
+Configuración en GitHub. Los secretos van en el entorno `production` (Settings → Environments), limitado a la rama `main`, para que ningún otro job ni rama pueda leerlos:
 
-| Nombre                  | Tipo     | Contenido                                             |
-| ----------------------- | -------- | ----------------------------------------------------- |
-| `CLOUDFLARE_ACCOUNT_ID` | variable | ID de la cuenta de Cloudflare; sin ella no se publica |
-| `CLOUDFLARE_API_TOKEN`  | secreto  | token con permiso Cloudflare Pages: Edit              |
-| `INKAWASI_PRIVATE_JSON` | secreto  | el contenido de `private/negocio.privado.json`        |
+| Nombre                  | Dónde                            | Contenido                                             |
+| ----------------------- | -------------------------------- | ----------------------------------------------------- |
+| `CLOUDFLARE_ACCOUNT_ID` | variable del repositorio         | ID de la cuenta de Cloudflare; sin ella no se publica |
+| `CLOUDFLARE_API_TOKEN`  | secreto del entorno `production` | token con permiso Cloudflare Pages: Edit              |
+| `INKAWASI_PRIVATE_JSON` | secreto del entorno `production` | el contenido de `private/negocio.privado.json`        |
 
 `public/_headers` añade `X-Robots-Tag: noindex` a las URL `*.pages.dev`, así que solo se indexa `inkawasi.es`. `www.inkawasi.es` redirige a `https://inkawasi.es` con una regla de redirección 301 de la zona en Cloudflare.
 

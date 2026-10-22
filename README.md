@@ -114,13 +114,13 @@ The legal pages stay `noindex` and marked as a draft until `LEGAL_DRAFT` in `src
 
 `.github/workflows/ci.yml` runs formatting, lint, types, unit and e2e tests on every push and pull request. When everything passes on `main`, the `deploy` job builds with `SITE_URL=https://inkawasi.es` (canonical URLs, `hreflang` and `sitemap.xml`) and uploads `dist/` to Cloudflare Pages with `wrangler pages deploy` (project `inkawasi`). The build runs in GitHub Actions rather than on Cloudflare because the menú del día images will later be rendered with Playwright.
 
-GitHub settings (Settings → Secrets and variables → Actions):
+GitHub settings. The secrets live in the `production` environment (Settings → Environments), limited to the `main` branch, so no other job or branch can read them:
 
-| Name                    | Kind     | Value                                             |
-| ----------------------- | -------- | ------------------------------------------------- |
-| `CLOUDFLARE_ACCOUNT_ID` | variable | Cloudflare account ID; nothing deploys without it |
-| `CLOUDFLARE_API_TOKEN`  | secret   | token with the Cloudflare Pages: Edit permission  |
-| `INKAWASI_PRIVATE_JSON` | secret   | the contents of `private/negocio.privado.json`    |
+| Name                    | Where                           | Value                                             |
+| ----------------------- | ------------------------------- | ------------------------------------------------- |
+| `CLOUDFLARE_ACCOUNT_ID` | repository variable             | Cloudflare account ID; nothing deploys without it |
+| `CLOUDFLARE_API_TOKEN`  | `production` environment secret | token with the Cloudflare Pages: Edit permission  |
+| `INKAWASI_PRIVATE_JSON` | `production` environment secret | the contents of `private/negocio.privado.json`    |
 
 `public/_headers` adds `X-Robots-Tag: noindex` to the `*.pages.dev` URLs, so only `inkawasi.es` gets indexed. `www.inkawasi.es` redirects to `https://inkawasi.es` through a 301 redirect rule on the Cloudflare zone.
 
