@@ -3,11 +3,12 @@ import { LANGS } from '../../src/data/langs';
 import { DISHES } from '../../src/data/menu';
 import { LOCALES } from '../../src/i18n';
 import { renderHomePage, renderMenuDelDiaPage, renderPage } from '../../src/render/page';
+import { TEST_PICTURES } from './fixtures';
 
 const SITE = 'https://example.test';
 
 describe.each(LANGS)('page "$code"', ({ code, rtl }) => {
-  const page = renderPage({ lang: code, base: '/', siteUrl: SITE });
+  const page = renderPage({ lang: code, base: '/', pictures: TEST_PICTURES, siteUrl: SITE });
 
   it('sets lang and direction', () => {
     expect(page.lang).toBe(code);
@@ -55,7 +56,12 @@ describe.each(LANGS)('page "$code"', ({ code, rtl }) => {
 });
 
 describe.each(LANGS)('carta "$code" extras', ({ code }) => {
-  const { body, head } = renderPage({ lang: code, base: '/', siteUrl: SITE });
+  const { body, head } = renderPage({
+    lang: code,
+    base: '/',
+    pictures: TEST_PICTURES,
+    siteUrl: SITE,
+  });
 
   it('shows all 14 allergens in the legend, with the traces note', () => {
     const legend = /<ul class="legend__grid">(.*?)<\/ul>/s.exec(body)?.[1] ?? '';
@@ -100,7 +106,12 @@ describe.each(LANGS)('carta "$code" extras', ({ code }) => {
 
 describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
   const ui = LOCALES[code].ui;
-  const { body, head, lang, dir } = renderHomePage({ lang: code, base: '/', siteUrl: SITE });
+  const { body, head, lang, dir } = renderHomePage({
+    lang: code,
+    base: '/',
+    pictures: TEST_PICTURES,
+    siteUrl: SITE,
+  });
   const carta = code === 'es' ? '/carta/' : `/${code}/carta/`;
 
   it('sets lang and direction, and has its own title', () => {
@@ -109,12 +120,18 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(head).toContain(`<title>${ui.homeMetaTitle}</title>`);
   });
 
-  it('shows the dining-room photo with its size, alt text and high priority', () => {
-    const img = /<img[^>]*class="[^"]*cover__img"[^>]*>/s.exec(body)?.[0] ?? '';
+  it('shows the dining-room photo in AVIF and WebP, with its size, alt text and high priority', () => {
+    const pic =
+      /<picture>(?:(?!<\/picture>).)*cover__img(?:(?!<\/picture>).)*<\/picture>/s.exec(body)?.[0] ??
+      '';
+    expect(pic).toMatch(/<source type="image\/avif" srcset="[^"]*640w[^"]*" sizes="100vw"/);
+    expect(pic).toMatch(/<source type="image\/webp" srcset="[^"]*640w[^"]*" sizes="100vw"/);
+    expect(pic.indexOf('image/avif')).toBeLessThan(pic.indexOf('image/webp'));
+    const img = /<img[^>]*>/s.exec(pic)?.[0] ?? '';
     expect(img).toContain('width="1600"');
     expect(img).toContain('height="900"');
     expect(img).toContain('fetchpriority="high"');
-    expect(img).toContain('assets/portada/restaurante-800.webp 800w');
+    expect(img).not.toContain('loading="lazy"');
     expect(img).toContain(`alt="${ui.coverAlt}"`);
   });
 
@@ -207,7 +224,12 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
 
 describe.each(LANGS)('menú del día "$code"', ({ code }) => {
   const ui = LOCALES[code].ui;
-  const { body, head, lang } = renderMenuDelDiaPage({ lang: code, base: '/', siteUrl: SITE });
+  const { body, head, lang } = renderMenuDelDiaPage({
+    lang: code,
+    base: '/',
+    pictures: TEST_PICTURES,
+    siteUrl: SITE,
+  });
   const self = code === 'es' ? '/menu-del-dia/' : `/${code}/menu-del-dia/`;
 
   it('is its own page with its own title, canonical and alternates', () => {
@@ -243,8 +265,10 @@ describe('structured data', () => {
     JSON.parse(
       /<script type="application\/ld\+json">(.*?)<\/script>/s.exec(page.head)?.[1] ?? '{}',
     );
-  const data = read(renderPage({ lang: 'es', base: '/', siteUrl: SITE }));
-  const home = read(renderHomePage({ lang: 'es', base: '/', siteUrl: SITE }));
+  const data = read(renderPage({ lang: 'es', base: '/', pictures: TEST_PICTURES, siteUrl: SITE }));
+  const home = read(
+    renderHomePage({ lang: 'es', base: '/', pictures: TEST_PICTURES, siteUrl: SITE }),
+  );
 
   it('has coordinates, postal code, map and reservations', () => {
     expect(data.geo).toEqual({
@@ -268,7 +292,7 @@ describe('structured data', () => {
   it('carries the whole menu on the carta and points at it from the home page', () => {
     expect(data.hasMenu['@type']).toBe('Menu');
     expect(home.hasMenu).toBe(`${SITE}/carta/`);
-    expect(home.image).toBe(`${SITE}/assets/portada/restaurante-1600.webp`);
+    expect(home.image).toBe(`${SITE}${TEST_PICTURES.cover.src}`);
   });
 
   it('lists TripAdvisor among the profiles', () => {
@@ -280,16 +304,16 @@ describe('structured data', () => {
 
 describe('legacy links', () => {
   it('sends an old /#marino link from the home page to the carta of that language', () => {
-    expect(renderHomePage({ lang: 'es', base: '/' }).head).toContain(
+    expect(renderHomePage({ lang: 'es', base: '/', pictures: TEST_PICTURES }).head).toContain(
       'location.replace("/carta/"+location.hash)',
     );
-    expect(renderHomePage({ lang: 'fr', base: '/' }).head).toContain(
+    expect(renderHomePage({ lang: 'fr', base: '/', pictures: TEST_PICTURES }).head).toContain(
       'location.replace("/fr/carta/"+location.hash)',
     );
   });
 
   it('only forwards real tab names', () => {
-    const { head } = renderHomePage({ lang: 'es', base: '/' });
+    const { head } = renderHomePage({ lang: 'es', base: '/', pictures: TEST_PICTURES });
     const pattern = /test\(location\.hash\)/.test(head)
       ? /\/\^#\(([^)]*)\)\$\//.exec(head)?.[1]
       : '';
@@ -307,37 +331,41 @@ describe('legacy links', () => {
 
 describe('rendering rules', () => {
   it('links languages through the base path', () => {
-    const { body } = renderPage({ lang: 'es', base: '/site/' });
+    const { body } = renderPage({ lang: 'es', base: '/site/', pictures: TEST_PICTURES });
     expect(body).toContain('href="/site/en/carta/"');
     expect(body).toContain('href="/site/carta/"');
     expect(body).toContain('src="/site/assets/logo.webp"');
   });
 
   it('puts every canonical and alternate URL under /carta/', () => {
-    const { head } = renderPage({ lang: 'gl', base: '/', siteUrl: SITE });
+    const { head } = renderPage({ lang: 'gl', base: '/', pictures: TEST_PICTURES, siteUrl: SITE });
     expect(head).toContain(`<link rel="canonical" href="${SITE}/gl/carta/"`);
     expect(head).toContain(`hreflang="es" href="${SITE}/carta/"`);
     expect(head).toContain(`hreflang="x-default" href="${SITE}/carta/"`);
   });
 
   it('skips canonical and hreflang without a site URL', () => {
-    const { head } = renderPage({ lang: 'es', base: '/' });
+    const { head } = renderPage({ lang: 'es', base: '/', pictures: TEST_PICTURES });
     expect(head).not.toContain('rel="canonical"');
     expect(head).not.toContain('hreflang');
   });
 
   it('adds the language redirect script only on the default-language page', () => {
-    expect(renderPage({ lang: 'es', base: '/' }).head).toContain('location.replace');
-    expect(renderPage({ lang: 'en', base: '/' }).head).not.toContain('location.replace');
+    expect(renderPage({ lang: 'es', base: '/', pictures: TEST_PICTURES }).head).toContain(
+      'location.replace',
+    );
+    expect(renderPage({ lang: 'en', base: '/', pictures: TEST_PICTURES }).head).not.toContain(
+      'location.replace',
+    );
   });
 
   it('marks the current language in the switcher', () => {
-    const { body } = renderPage({ lang: 'gl', base: '/' });
+    const { body } = renderPage({ lang: 'gl', base: '/', pictures: TEST_PICTURES });
     expect(body).toMatch(/hreflang="gl"[^>]*aria-current="true"/);
   });
 
   it('prints the weekend badge on Sunday-only dishes', () => {
-    const { body } = renderPage({ lang: 'en', base: '/' });
+    const { body } = renderPage({ lang: 'en', base: '/', pictures: TEST_PICTURES });
     expect(body).toContain('Sundays');
   });
 });

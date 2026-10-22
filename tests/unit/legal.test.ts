@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { LEGAL_PAGES } from '../../src/data/legal';
 import { renderLegalPage } from '../../src/render/legal';
+import { TEST_PICTURES } from './fixtures';
 
 const TITULAR = { nombre: 'Ana Pérez', nie: 'X1234567L', domicilio: 'Calle Falsa 1, Ferrol' };
-const CTX = { lang: 'es', base: '/', siteUrl: 'https://example.test' } as const;
+const CTX = {
+  lang: 'es',
+  base: '/',
+  pictures: TEST_PICTURES,
+  siteUrl: 'https://example.test',
+} as const;
 
 describe.each(LEGAL_PAGES)('legal page "%s"', (id) => {
   const draft = renderLegalPage(CTX, id, TITULAR, true);

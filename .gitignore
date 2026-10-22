@@ -7,3 +7,9 @@ test-results
 *.local
 private/*
 !private/*.example.json
+src/styles/tokens.generated.css
+.astro
+lighthouse-report
+.lighthouseci
+lighthouse-report
+.lighthouseci

@@ -2,6 +2,7 @@ import { DISHES, FAVORITES } from '../data/menu';
 import { formatPrice } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
 import type { Page } from './context';
+import { picture, pictureOf } from './picture';
 
 /** Cards above the fold load eagerly; the rest are lazy. */
 const EAGER_COUNT = 2;
@@ -18,15 +19,13 @@ export function favorites(page: Page): SafeHtml {
         ${FAVORITES.map(({ dish, section, image }, index) => {
           const { name, priceCents } = DISHES[dish];
           return html`<li class="fav">
-            <img
-              class="fav__img"
-              src="${ctx.base}assets/favoritos/${image}.webp"
-              width="476"
-              height="291"
-              alt="${name}"
-              loading="${index < EAGER_COUNT ? 'eager' : 'lazy'}"
-              decoding="async"
-            />
+            ${picture(pictureOf(ctx.pictures, image), {
+              class: 'fav__img',
+              alt: name,
+              // A card is min(220px, 68vw) wide.
+              sizes: '220px',
+              loading: index < EAGER_COUNT ? 'eager' : 'lazy',
+            })}
             <div class="fav__body">
               <p class="eyebrow eyebrow--small">${t[section]}</p>
               <h3 class="fav__name">${name}</h3>

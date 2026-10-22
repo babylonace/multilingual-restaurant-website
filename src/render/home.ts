@@ -1,4 +1,3 @@
-import { COVER_SIZE, COVER_WIDTHS, coverPath } from '../data/cover';
 import { DISHES, FAVORITES } from '../data/menu';
 import { formatPrice } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
@@ -9,28 +8,26 @@ import { footer } from './footer';
 import { mastheadBar } from './header';
 import { brandIcon, spriteSheet, uiIcon } from './icons';
 import { reviewCallout } from './info';
+import { picture, pictureOf } from './picture';
+
+/** A plate is 280 px wide in the phone's swipe row and a third of the 1100 px column on desktop. */
+const PLATE_SIZES = '(min-width: 900px) 340px, 280px';
 
 /**
  * First screen, in the style of the Instagram pieces: the dining room full bleed under a brown
  * veil, the name, the cuisine and two buttons on top of it. The photo is the LCP element: it is
- * never faded in (only scaled), `srcset` gives a phone the 800 px file and `width`/`height`
+ * never faded in (only scaled), AVIF or WebP at the width the phone needs, and `width`/`height`
  * reserve its space.
  */
 function hero(page: Page): SafeHtml {
   const { ctx, t } = page;
-  const srcset = COVER_WIDTHS.map((w) => `${ctx.base}${coverPath(w)} ${w}w`).join(', ');
   return html`<section class="hero" aria-labelledby="home-title">
-    <img
-      class="hero__img cover__img"
-      src="${ctx.base}${coverPath(1200)}"
-      srcset="${srcset}"
-      sizes="100vw"
-      width="${COVER_SIZE.width}"
-      height="${COVER_SIZE.height}"
-      alt="${t.coverAlt}"
-      fetchpriority="high"
-      decoding="async"
-    />
+    ${picture(ctx.pictures.cover, {
+      class: 'hero__img cover__img',
+      alt: t.coverAlt,
+      sizes: '100vw',
+      fetchpriority: 'high',
+    })}
     <div class="hero__content">
       <p class="hero__tags">
         <span class="chip chip--brand">${t.eyebrow}</span>
@@ -124,15 +121,12 @@ function dishes(page: Page): SafeHtml {
           return html`<li>
             <a class="plate" href="${carta}#${section}">
               <span class="plate__frame">
-                <img
-                  class="plate__img"
-                  src="${ctx.base}assets/favoritos/${image}.webp"
-                  width="476"
-                  height="291"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                />
+                ${picture(pictureOf(ctx.pictures, image), {
+                  class: 'plate__img',
+                  alt: '',
+                  sizes: PLATE_SIZES,
+                  loading: 'lazy',
+                })}
               </span>
               <span class="plate__line">
                 <span class="plate__name">${name}</span>

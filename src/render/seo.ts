@@ -1,4 +1,3 @@
-import { coverPath } from '../data/cover';
 import { LANGS } from '../data/langs';
 import { BEERS, DISHES, SECTIONS, SOFT_DRINKS } from '../data/menu';
 import type { DishId, FoodId } from '../data/types';
@@ -67,7 +66,7 @@ function structuredData(page: Page): unknown {
   const { ctx, kind } = page;
   const url = kindUrl(ctx, kind, ctx.lang);
   const cartaUrl = kindUrl(ctx, 'carta', ctx.lang);
-  const image = ctx.siteUrl && `${ctx.siteUrl}${ctx.base}${coverPath(1600)}`;
+  const image = ctx.siteUrl && new URL(ctx.pictures.cover.src, ctx.siteUrl).href;
   return {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',

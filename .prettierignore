@@ -9,3 +9,9 @@ docs
 
 # Search Console verification files: their exact bytes matter
 netlify-redirector/google*.html
+.astro
+src/styles/tokens.generated.css
+lighthouse-report
+.lighthouseci
+lighthouse-report
+.lighthouseci

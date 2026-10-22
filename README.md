@@ -25,23 +25,32 @@ Lighthouse on mobile (simulated throttling, median of 3 runs), original version 
 
 ## Stack
 
-Vite · strict TypeScript · CSS cascade layers (`@layer`) with the brand design-system tokens · Vitest · Playwright + axe-core · ESLint · Prettier · GitHub Actions. No framework: the site is HTML that is already written when it arrives, plus a little JavaScript to enhance it.
+Astro 7 as the build tool (it emits static HTML and ships no framework to the browser) · strict TypeScript · CSS cascade layers (`@layer`) with tokens generated from the design system · Vitest · Playwright + axe-core · Lighthouse CI · ESLint · Prettier · GitHub Actions · Cloudflare Pages.
 
 ## How it works
 
 ```
-src/data/        dishes, sections, allergens and prices (in cents), fully typed
-src/i18n/        one JSON file per language; the type is derived from Spanish, so a
-                 key missing in any language is a compile error
-src/render/      pure functions (context → HTML) with automatic escaping
-src/client/      progressive enhancement: tabs, language menu, saved preference
-scripts/         prerender (one page per language), sitemap, image optimisation
-tests/           unit (Vitest) and e2e + accessibility (Playwright)
+design-system/    tokens.json copied from the design system: the only source of colours,
+                  spacing, radius, shadows and type scale
+src/data/         typed dishes, sections, allergens and prices (in cents)
+src/i18n/         one JSON per language; the type is derived from Spanish, so a key
+                  missing in any language is a compile error
+src/render/       pure functions  (context → HTML)  with automatic escaping: the content
+src/pages/        Astro routes: each page calls its renderer; sitemap.xml and robots.txt
+src/layouts/      the shared document: CSS, JS, self-hosted fonts and icons
+src/lib/          build helpers: per-language context and the image pipeline
+src/assets/fotos/ photo originals (at most 2400 px)
+src/client/       progressive enhancement: tabs, language menu, saved preference
+scripts/          tokens, favicon, logo, Open Graph image, private data
+tests/            unit (Vitest) and e2e + accessibility (Playwright)
 ```
 
-1. `vite build` compiles CSS/JS and leaves `dist/index.html` as a template.
-2. `scripts/prerender.ts` writes a home page and a carta per language (`dist/index.html`, `dist/carta/index.html`, `dist/<lang>/index.html`, `dist/<lang>/carta/index.html`), each with its content already in the markup, metadata, `hreflang` and JSON-LD (`Restaurant`, plus `Menu` on the carta).
-3. In development a Vite plugin renders those same pages, so `npm run dev` shows exactly what ships.
+1. `npm run tokens` turns `design-system/tokens.json` into `src/styles/tokens.generated.css` (not tracked). `dev`, `build` and `typecheck` run it first.
+2. `astro build` emits a home, a carta and a menú del día per language, the two legal pages, `404.html`, `sitemap.xml` and `robots.txt`. The `.astro` pages are thin: the HTML comes from the renderers in `src/render`, the same ones the unit tests exercise, with metadata, `hreflang` and JSON-LD (`Restaurant`, plus `Menu` on the carta).
+3. Photos go through `astro:assets`: AVIF and WebP at several widths, with hashed names cached for a year (`public/_headers`).
+4. Astro's font API self-hosts Montserrat and Lora (Latin and Cyrillic only), generates metric-matched fallbacks so text does not jump when the fonts arrive, and only the Latin Montserrat file is preloaded.
+
+When moving from Vite to Astro (stage 3) the HTML of all 33 pages was compared before and after: same URLs, same text, links, metadata, classes and structured data.
 
 ### URL structure
 
@@ -61,11 +70,12 @@ The home page lives at `/` and the menu is one button on it; the menu stays at `
 - **Pre-rendering instead of an SPA.** The original loaded its data with `import()` after mounting, so the first paint was empty and a search engine saw no dishes. The menu is now in the HTML.
 - **One URL per language, not a piece of state.** `/en/`, `/gl/`… are real, linkable, indexable pages. The language switcher is a set of links inside a `<details>`, so it works without JavaScript.
 - **Language redirect that does not hurt SEO.** Only from the Spanish home and the Spanish menu, using the saved choice or the browser language, and never for crawlers. The function that decides is the same one the tests exercise.
-- **No third-party requests at runtime.** Self-hosted fonts split by `unicode-range` (the browser downloads only Latin or Cyrillic, depending on the language), inline icons and flags.
+- **Astro as a build tool, not a framework.** Routing, bundling, fonts and images; the HTML still comes from tested pure functions. The migration changed no URL and no page content.
+- **No third-party requests at runtime.** Self-hosted fonts split by `unicode-range` (the browser downloads only Latin or Cyrillic, depending on the language; a test checks that all Latin and Russian text fits those two files), inline icons and flags.
 - **Prices as integers (cents)**, formatted with `Intl.NumberFormat` per language.
 - **Templates escape by default** (`html\`\``); no `innerHTML` with unsanitised data.
 - **Real right-to-left Arabic:** `dir` and `lang` on `<html>`, CSS logical properties, no `letter-spacing` (it breaks letter joining) and prices isolated with `unicode-bidi`.
-- **AA contrast.** Two design-system shades (`gold-700`, `terra-500`) fall short of 4.5:1 on cream for small text; `--gold-800` and `--terra-700` were added for text only.
+- **The design system rules.** Colours come from `tokens.json` and a test fails if a hand-written colour appears in the CSS. Text is in the brand brown `#6E3F31` (formerly `#512E24`), never grey or on white, and the brand bands use that same brown. The DS shades for small text (`gold-800`, `terra-700`) already meet AA.
 
 ## What the audit fixed
 
@@ -81,14 +91,16 @@ The home page lives at `/` and the menu is one button on it; the menu stays at `
 
 ```bash
 npm install
-npm run dev            # dev server with all 10 pages
-npm run build          # typecheck + build + pre-render  → dist/
-npm run preview        # serve dist/
-npm test               # unit tests (251)
-npm run test:e2e       # e2e + accessibility (74), builds first
+npm run dev            # dev server with every page
+npm run build          # tokens + Astro build  → dist/
+npm run preview        # serves dist/
+npm test               # unit tests (471)
+npm run test:e2e       # e2e + accessibility (112), builds first
+npm run lighthouse     # mobile Lighthouse on dist/ with the plan's thresholds
 npm run lint && npm run format:check && npm run typecheck
-npm run optimize:images
-npm run build:og       # re-render public/og-image.jpg (1200×630) with Playwright
+npm run build:favicon  # rebuilds the tab icon from the official isotype
+npm run optimize:images  # rebuilds the logo
+npm run build:og       # rebuilds public/og-image.jpg (1200×630) with Playwright
 ```
 
 ## Changing things
@@ -101,6 +113,9 @@ npm run build:og       # re-render public/og-image.jpg (1200×630) with Playwrig
 | Phone, address, links          | `src/render/contact.ts`                                                                                             |
 | The daily menu                 | Not editable yet: it arrives with the CMS in stage 4 of `docs/plan-web.md`                                          |
 | A one-off closure (holiday)    | Not editable yet: same stage 4 (CMS)                                                                                |
+| Colours, spacing or type       | Copy the design system's new `tokens.json` into `design-system/` and build. Never by hand in the CSS                |
+| A photo (cover or favourite)   | Replace the original in `src/assets/fotos/` under the same name (at most 2400 px); the build makes AVIF and WebP    |
+| The browser-tab icon           | `assets-src/brand/inkawasi-icono-light.svg` (copied untouched from the DS) and `npm run build:favicon`              |
 
 Every change is checked by `npm test`; a dish without a price or description in all 10 languages, or an allergen outside the official 14, fails the build.
 
@@ -112,7 +127,7 @@ The legal pages are always `noindex` and out of the sitemap: the law requires th
 
 ## Deployment
 
-`.github/workflows/ci.yml` runs formatting, lint, types, unit and e2e tests on every push and pull request. When everything passes on `main`, the `deploy` job builds with `SITE_URL=https://inkawasi.es` (canonical URLs, `hreflang` and `sitemap.xml`) and uploads `dist/` to Cloudflare Pages with `wrangler pages deploy` (project `inkawasi`). The build runs in GitHub Actions rather than on Cloudflare because the menú del día images will later be rendered with Playwright.
+`.github/workflows/ci.yml` runs formatting, lint, types, unit tests, e2e tests and mobile Lighthouse on every push and pull request. Lighthouse CI fails the build if the median of 3 runs on the home page, the carta, the menú del día and the English carta drops below 90 for performance or 95 for accessibility, best practices or SEO (`lighthouserc.json`); the report is kept as a CI artifact. When everything passes on `main`, the `deploy` job builds with `SITE_URL=https://inkawasi.es` (canonical URLs, `hreflang` and `sitemap.xml`) and uploads `dist/` to Cloudflare Pages with `wrangler pages deploy` (project `inkawasi`). The build runs in GitHub Actions rather than on Cloudflare because the menú del día images will later be rendered with Playwright.
 
 GitHub settings. The secrets live in the `production` environment (Settings → Environments), limited to the `main` branch, so no other job or branch can read them:
 
@@ -122,7 +137,9 @@ GitHub settings. The secrets live in the `production` environment (Settings → 
 | `CLOUDFLARE_API_TOKEN`  | `production` environment secret | token with the Cloudflare Pages: Edit permission  |
 | `INKAWASI_PRIVATE_JSON` | `production` environment secret | the contents of `private/negocio.privado.json`    |
 
-`public/_headers` adds `X-Robots-Tag: noindex` to the `*.pages.dev` URLs, so only `inkawasi.es` gets indexed. `www.inkawasi.es` redirects to `https://inkawasi.es` through a 301 redirect rule on the Cloudflare zone.
+Every branch other than `main` is published as a preview at `<branch>.example-project.pages.dev` (the `preview` job), built without `SITE_URL` and therefore without private data: the legal pages show the template's placeholders. The GitHub `preview` environment holds only `CLOUDFLARE_API_TOKEN`; without it, the job says so and uploads nothing.
+
+`public/_headers` adds `X-Robots-Tag: noindex` to the `*.pages.dev` URLs, so only `inkawasi.es` gets indexed, and a one-year cache to `/_astro/*`, whose names carry a content hash. `www.inkawasi.es` redirects to `https://inkawasi.es` through a 301 redirect rule on the Cloudflare zone.
 
 `inkawasi.netlify.app` is a permanent 301 redirector to `https://inkawasi.es/carta/` (the old site was the carta itself, so every old address lands there in one hop): the `netlify-redirector/` folder is uploaded once by hand on Netlify (Deploys → drag and drop the folder). Never delete the Netlify project. Rollback: republish the previous deploy on Netlify.
 

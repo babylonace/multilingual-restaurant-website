@@ -65,7 +65,7 @@
 
   @keyframes header-shade {
     to {
-      box-shadow: 0 8px 24px rgb(51 26 19 / 0.12);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--brown-900) 12%, transparent);
     }
   }
 

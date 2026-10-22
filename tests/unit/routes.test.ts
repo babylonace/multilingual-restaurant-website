@@ -55,14 +55,14 @@ describe('resolveRoute', () => {
 
 describe('carta URLs', () => {
   it('keeps the QR-code URL stable', () => {
-    expect(langHref({ lang: 'es', base: '/' }, 'es')).toBe('/carta/');
+    expect(langHref({ base: '/' }, 'es')).toBe('/carta/');
   });
 });
 
 describe('home URLs', () => {
   it('puts the Spanish home at the root and the others under their language', () => {
-    expect(kindHref({ lang: 'es', base: '/' }, 'home', 'es')).toBe('/');
-    expect(kindHref({ lang: 'es', base: '/' }, 'home', 'en')).toBe('/en/');
-    expect(kindHref({ lang: 'es', base: '/site/' }, 'carta', 'gl')).toBe('/site/gl/carta/');
+    expect(kindHref({ base: '/' }, 'home', 'es')).toBe('/');
+    expect(kindHref({ base: '/' }, 'home', 'en')).toBe('/en/');
+    expect(kindHref({ base: '/site/' }, 'carta', 'gl')).toBe('/site/gl/carta/');
   });
 });

@@ -81,7 +81,7 @@ describe('menu data', () => {
     for (const fav of FAVORITES) {
       expect(DISHES[fav.dish], fav.dish).toBeDefined();
       expect(SECTIONS.find((s) => s.id === fav.section)?.dishes, fav.dish).toContain(fav.dish);
-      expect(existsSync(`public/assets/favoritos/${fav.image}.webp`), fav.image).toBe(true);
+      expect(existsSync(`src/assets/fotos/favoritos/${fav.image}.webp`), fav.image).toBe(true);
     }
   });
 });

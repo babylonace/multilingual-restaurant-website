@@ -293,9 +293,32 @@ test.describe('home page actions', () => {
     await page.goto('/');
     const photo = page.locator('.cover__img');
     await expect(photo).toBeVisible();
-    await expect(photo).toHaveAttribute('width', '1600');
+    // width/height carry the 16:9 ratio of the original, so the layout reserves the space.
+    const ratio = await photo.evaluate(
+      (img) => Number(img.getAttribute('width')) / Number(img.getAttribute('height')),
+    );
+    expect(ratio).toBeCloseTo(16 / 9, 2);
     const loaded = await photo.evaluate((img) => (img as HTMLImageElement).naturalWidth > 0);
     expect(loaded).toBe(true);
+  });
+
+  test('serves the photo as AVIF to a browser that takes it', async ({ page }) => {
+    await page.goto('/');
+    const current = await page
+      .locator('.cover__img')
+      .evaluate((img) => (img as HTMLImageElement).currentSrc);
+    expect(current).toMatch(/\.avif$/);
+  });
+
+  test('preloads the latin Montserrat file and nothing else', async ({ page }) => {
+    await page.goto('/carta/');
+    const preloads = page.locator('link[rel="preload"][as="font"]');
+    await expect(preloads).toHaveCount(1);
+    const href = await preloads.getAttribute('href');
+    const css = await page.locator('style').allTextContents();
+    const face = css.join('').match(new RegExp(`@font-face\\{[^}]*${href}[^}]*\\}`))?.[0] ?? '';
+    expect(face).toContain('unicode-range:U+0000-00FF');
+    expect(face).toContain('font-style:normal');
   });
 });
 

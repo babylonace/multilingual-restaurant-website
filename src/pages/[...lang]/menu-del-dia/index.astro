@@ -1,0 +1,14 @@
+---
+/** The menú del día in every language. */
+import type { LangCode } from '../../../data/types';
+import Page from '../../../layouts/Page.astro';
+import { langPaths, renderContext } from '../../../lib/build';
+import { renderMenuDelDiaPage } from '../../../render/page';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: LangCode };
+const page = renderMenuDelDiaPage(await renderContext(lang));
+---
+
+<Page page={page} />

@@ -4,13 +4,13 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    background: rgb(245 244 240 / 0.94);
+    background: color-mix(in srgb, var(--cream-100) 94%, transparent);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border-default);
   }
 
   .tabs-scroll {
-    max-width: var(--container);
+    max-width: var(--column);
     margin-inline: auto;
     padding-block: 14px;
     overflow-x: auto;
@@ -179,7 +179,7 @@
   .row__name {
     font-family: var(--font-serif);
     font-size: 1.0625rem;
-    color: var(--brown-800);
+    color: var(--text-body);
   }
 
   .row .leader {
@@ -218,6 +218,6 @@
     font-family: var(--font-serif);
     font-size: 1rem;
     font-style: var(--italic);
-    color: var(--brown-800);
+    color: var(--text-body);
   }
 }

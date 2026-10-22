@@ -1,0 +1,14 @@
+---
+/** The home page in every language. */
+import type { LangCode } from '../../data/types';
+import Page from '../../layouts/Page.astro';
+import { langPaths, renderContext } from '../../lib/build';
+import { renderHomePage } from '../../render/page';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: LangCode };
+const page = renderHomePage(await renderContext(lang));
+---
+
+<Page page={page} />

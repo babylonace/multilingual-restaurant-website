@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { renderNotFoundPage } from '../../src/render/not-found';
+import { TEST_PICTURES } from './fixtures';
 
 describe('404 page', () => {
-  const page = renderNotFoundPage({ lang: 'es', base: '/', siteUrl: 'https://example.test' });
+  const page = renderNotFoundPage({
+    lang: 'es',
+    base: '/',
+    pictures: TEST_PICTURES,
+    siteUrl: 'https://example.test',
+  });
 
   it('is never indexed and has no canonical', () => {
     expect(page.head).toContain('<meta name="robots" content="noindex" />');
@@ -15,7 +21,12 @@ describe('404 page', () => {
   });
 
   it('respects a base path', () => {
-    const sub = renderNotFoundPage({ lang: 'es', base: '/repo/', siteUrl: undefined });
+    const sub = renderNotFoundPage({
+      lang: 'es',
+      base: '/repo/',
+      pictures: TEST_PICTURES,
+      siteUrl: undefined,
+    });
     expect(sub.body).toContain('href="/repo/carta/"');
     expect(sub.body).toContain('src="/repo/assets/logo.webp"');
   });
