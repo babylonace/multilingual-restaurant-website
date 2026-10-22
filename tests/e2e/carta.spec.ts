@@ -377,18 +377,24 @@ test.describe('isotype sunrise in the brown band', () => {
       .toBeCloseTo(0, 3);
   });
 
-  test('keeps the rays breathing after the sunrise, and pauses them off screen', async ({
-    page,
-  }) => {
+  test('lets the rays breathe, flare once and then rest', async ({ page }) => {
     test.skip(test.info().project.name === 'mobile', 'desktop only');
+    test.setTimeout(30_000);
     await page.goto('/');
     await page.locator('#pedir').scrollIntoViewIfNeeded();
     const ray = page.locator('.sun-mark__ray').first();
-    await expect
-      .poll(() => ray.evaluate((r) => getComputedStyle(r).transform), {
-        timeout: 8000,
-      })
-      .not.toBe('none');
+    const transform = () => ray.evaluate((r) => getComputedStyle(r).transform);
+    await expect.poll(transform, { timeout: 8000 }).not.toBe('none');
+    // Breathing (about 5 s) and the flare are over by about 10.5 s: the sun is still.
+    await expect.poll(transform, { timeout: 15_000, intervals: [500] }).toBe('none');
+    await expect(ray).toHaveCSS('opacity', '1');
+  });
+
+  test('pauses the sunrise while the band is off screen', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    await page.goto('/');
+    await page.locator('#pedir').scrollIntoViewIfNeeded();
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', 'in');
     await page.locator('.footer').scrollIntoViewIfNeeded();
     await expect(page.locator('.sun-mark')).toHaveAttribute('data-offscreen', '');
   });

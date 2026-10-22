@@ -89,8 +89,9 @@
    *   2. the arc of the sun draws itself from its lower-left end, over the top, to the right
    *      (a mask whose stroke runs along it, so the official drawing is never altered);
    *   3. the nine rays light up one by one, each growing out from the sun;
-   *   4. then the rays keep breathing, lengthening and shortening in a slow wave, so the sun
-   *      seems to shine. Paused while the band is off screen.
+   *   4. the rays breathe for about five seconds, lengthening and shortening in a slow wave;
+   *   5. a last flare runs across them from left to right, each ray stretching out and back
+   *      once, and the sun stays still. Everything is paused while the band is off screen.
    * Each ray grows along its own direction (--a) from the point next to the arc (its
    * transform-origin), both measured from the path data in src/render/isotype.ts.
    */
@@ -124,10 +125,16 @@
     animation: arc-draw 1.5s 0.5s cubic-bezier(0.65, 0, 0.35, 1) both;
   }
 
+  /*
+   * Timeline: rays light from 1.7 s; breathing from 3.5 s, two 2.2 s cycles with a light stagger
+   * (it ends at about 8.5 s); the flare from 8.7 s, ray by ray. Each step starts and ends at the
+   * ray's natural length, so one hands over to the next without a jump.
+   */
   .sun-mark[data-reveal='in'] .sun-mark__ray {
     animation:
       ray-light 0.7s calc(1.7s + var(--i) * 0.13s) var(--ease-out) both,
-      ray-breathe 3.2s calc(3.6s + var(--i) * 0.35s) ease-in-out infinite;
+      ray-breathe 2.2s calc(3.5s + var(--i) * 0.08s) ease-in-out 2,
+      ray-flare 0.8s calc(8.7s + var(--i) * 0.12s) ease-in-out;
   }
 
   .sun-mark[data-offscreen] .sun-mark__ray {
@@ -167,6 +174,18 @@
 
     70% {
       transform: rotate(var(--a)) scaleX(0.86) rotate(calc(-1 * var(--a)));
+    }
+  }
+
+  /* One brighter moment: the ray reaches out a little further, then settles. */
+  @keyframes ray-flare {
+    0%,
+    100% {
+      transform: rotate(var(--a)) scaleX(1) rotate(calc(-1 * var(--a)));
+    }
+
+    45% {
+      transform: rotate(var(--a)) scaleX(1.32) rotate(calc(-1 * var(--a)));
     }
   }
 
