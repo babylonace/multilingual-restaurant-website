@@ -129,7 +129,7 @@
   .footer {
     margin-top: var(--space-4);
     padding: 34px var(--gutter) 30px;
-    background: var(--brown-800);
+    background: var(--surface-brand-deep);
     color: var(--cream-100);
   }
 

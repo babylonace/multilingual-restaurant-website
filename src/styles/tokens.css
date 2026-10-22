@@ -17,6 +17,15 @@
     /* Buttons: the header's sunken cream with a touch of gold, barely warmer than the header. */
     --surface-button: color-mix(in srgb, var(--cream-200) 80%, var(--gold-200));
 
+    /*
+     * Brown surfaces (bands, menú del día, badges): the deep brown of the house, DS brown-800,
+     * which the DS allows as a dark surface; Adriana prefers it to the lighter ink brown
+     * (brown-700) for large areas. Text on cream stays in the ink brown (--text-strong).
+     * The footer and the outlined tiles sit one step deeper, so they read apart from the band.
+     */
+    --surface-brand: var(--brown-800);
+    --surface-brand-deep: color-mix(in srgb, var(--brown-800) 75%, var(--brown-900));
+
     /* Motion, from the DS tokens/motion.css (not part of tokens.json) */
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);

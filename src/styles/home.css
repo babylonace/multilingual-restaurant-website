@@ -91,7 +91,7 @@
 
   .chip--brand {
     border: 1px solid color-mix(in srgb, var(--cream-100) 30%, transparent);
-    background: var(--brown-700);
+    background: var(--surface-brand);
     color: var(--cream-100);
   }
 
@@ -247,7 +247,7 @@
   .brand-bar {
     position: relative;
     height: 10px;
-    background: var(--brown-700);
+    background: var(--surface-brand);
   }
 
   .brand-bar::before {
@@ -278,7 +278,7 @@
   }
 
   .band--brown {
-    background: var(--brown-700);
+    background: var(--surface-brand);
     /* clears the sticky header when "Escríbenos por WhatsApp" jumps here */
     scroll-margin-top: 64px;
   }

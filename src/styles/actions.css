@@ -197,7 +197,7 @@
   .tile--outline {
     border-color: color-mix(in srgb, var(--cream-100) 55%, transparent);
     /* a darker brown than the band: reads as a button and hides the watermark behind it */
-    background: var(--brown-800);
+    background: var(--surface-brand-deep);
     color: var(--cream-100);
   }
 
