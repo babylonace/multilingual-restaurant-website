@@ -269,7 +269,8 @@ test.describe('home page actions', () => {
     await page.getByRole('link', { name: 'Menú del día' }).first().click();
     await expect(page).toHaveURL(/\/menu-del-dia\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Menú del día');
-    await expect(page.getByRole('link', { name: /¿Qué hay hoy de menú\?/ })).toHaveAttribute(
+    // The main button (the floating one is "WhatsApp: ¿Qué hay hoy de menú?").
+    await expect(page.getByRole('link', { name: /^¿Qué hay hoy de menú\?/ })).toHaveAttribute(
       'href',
       /^https:\/\/wa\.me\/34614922183\?text=/,
     );
@@ -347,6 +348,49 @@ test.describe('carta extras', () => {
   test('asks for a review on Google Maps and on TripAdvisor', async ({ page }) => {
     await page.goto('/carta/');
     await expect(page.locator('.review__link')).toHaveCount(2);
+  });
+});
+
+test.describe('floating WhatsApp button', () => {
+  test('sits in the bottom-right corner on phones and is hidden on desktop', async ({ page }) => {
+    await page.goto('/carta/');
+    const fab = page.locator('.wa-fab');
+    if (test.info().project.name === 'desktop') {
+      await expect(fab).toBeHidden();
+      return;
+    }
+    await expect(fab).toBeVisible();
+    const box = (await fab.boundingBox())!;
+    const viewport = page.viewportSize()!;
+    expect(viewport.width - (box.x + box.width)).toBeLessThanOrEqual(24);
+    expect(viewport.height - (box.y + box.height)).toBeLessThanOrEqual(24);
+    await expect(fab).toHaveAccessibleName(/WhatsApp/);
+  });
+
+  test('opens the right message for the page', async ({ page }) => {
+    await page.goto('/en/carta/');
+    await expect(page.locator('.wa-fab')).toHaveAttribute('data-prop-intent', 'consulta');
+    expect(await page.locator('.wa-fab').getAttribute('href')).toContain(
+      encodeURIComponent('Hola, tengo una consulta'),
+    );
+    await page.goto('/menu-del-dia/');
+    await expect(page.locator('.wa-fab')).toHaveAttribute('data-prop-intent', 'menu');
+  });
+
+  test('never covers the last links of the footer', async ({ page }) => {
+    test.skip(test.info().project.name === 'desktop', 'phone only');
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const fab = (await page.locator('.wa-fab').boundingBox())!;
+    for (const link of await page.locator('.footer__legal a').all()) {
+      const box = (await link.boundingBox())!;
+      const overlaps =
+        box.x < fab.x + fab.width &&
+        box.x + box.width > fab.x &&
+        box.y < fab.y + fab.height &&
+        box.y + box.height > fab.y;
+      expect(overlaps).toBe(false);
+    }
   });
 });
 

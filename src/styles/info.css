@@ -133,6 +133,13 @@
     color: var(--cream-100);
   }
 
+  /* Room for the floating WhatsApp button (actions.css), so it never hides the last links. */
+  @media (max-width: 899px) {
+    .footer {
+      padding-bottom: 96px;
+    }
+  }
+
   .footer__inner {
     display: flex;
     flex-direction: column;
