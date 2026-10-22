@@ -1,0 +1,10 @@
+---
+/** Served by Cloudflare Pages with a 404 status for any unknown path. */
+import Page from '../layouts/Page.astro';
+import { renderContext } from '../lib/build';
+import { renderNotFoundPage } from '../render/not-found';
+
+const page = renderNotFoundPage(await renderContext('es'));
+---
+
+<Page page={page} />

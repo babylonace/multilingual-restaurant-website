@@ -1,0 +1,42 @@
+---
+/**
+ * The document shell of every page. The page content itself comes from the renderers in
+ * src/render (pure functions, unit-tested): Astro supplies routing, the bundled CSS and JS, the
+ * self-hosted fonts and the image pipeline.
+ */
+import { Font, fontData } from 'astro:assets';
+import type { RenderedPage } from '../render/page';
+import '../styles/main.css';
+
+interface Props {
+  page: RenderedPage;
+}
+
+const { page } = Astro.props;
+
+// Preload only the title font, latin subset: the first upright Montserrat face in astro.config.ts.
+// (Local fonts carry no subset name, so <Font preload> cannot tell latin from cyrillic.)
+// An e2e test checks this file is the one with the latin unicode-range.
+const titleFont = fontData['--font-montserrat']?.find((f) => f.style === 'normal')?.src[0]?.url;
+---
+
+<!doctype html>
+<html lang={page.lang} dir={page.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#6e3f31" />
+    <Fragment set:html={page.head} />
+    <Font cssVariable="--font-montserrat" />
+    {titleFont && <link rel="preload" href={titleFont} as="font" type="font/woff2" crossorigin />}
+    <Font cssVariable="--font-lora" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
+  </head>
+  <body>
+    <Fragment set:html={page.body} />
+    <script>
+      import '../client/main';
+    </script>
+  </body>
+</html>

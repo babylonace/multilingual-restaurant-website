@@ -34,7 +34,7 @@
 
   /* On the photo: cream outline over the brown veil. */
   .pill--ghost {
-    border-color: rgb(245 244 240 / 0.85);
+    border-color: color-mix(in srgb, var(--cream-100) 85%, transparent);
     color: var(--cream-100);
   }
 
@@ -195,9 +195,9 @@
   }
 
   .tile--outline {
-    border-color: rgb(245 244 240 / 0.55);
+    border-color: color-mix(in srgb, var(--cream-100) 55%, transparent);
     /* a darker brown than the band: reads as a button and hides the watermark behind it */
-    background: var(--brown-800);
+    background: var(--surface-brand-deep);
     color: var(--cream-100);
   }
 
@@ -212,5 +212,49 @@
 
   .band--brown :focus-visible {
     outline-color: var(--gold-400);
+  }
+  /* Floating WhatsApp button (phones): bottom-right corner, above the content, olive like every
+     WhatsApp action of the DS. The footer leaves room for it (info.css). */
+  .wa-fab {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    inline-size: 56px;
+    block-size: 56px;
+    border: 2px solid color-mix(in srgb, var(--cream-100) 85%, transparent);
+    border-radius: var(--radius-pill);
+    background: var(--olive-500);
+    color: var(--cream-100);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-colors);
+  }
+
+  .wa-fab:hover {
+    background: var(--olive-700);
+  }
+
+  .wa-fab:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .wa-fab__icon {
+    inline-size: 28px;
+    block-size: 28px;
+  }
+
+  @media (min-width: 900px) {
+    .wa-fab {
+      display: none;
+    }
+  }
+
+  @media print {
+    .wa-fab {
+      display: none;
+    }
   }
 }

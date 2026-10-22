@@ -3,17 +3,20 @@
   "version": "1.0.0",
   "description": "Carta web multilingüe de Inkawasi (cocina peruana, Ferrol): sitio estático pre-renderizado en 10 idiomas.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build && tsx scripts/prerender.ts",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "tokens": "tsx scripts/tokens.ts",
+    "dev": "npm run tokens && astro dev",
+    "build": "npm run tokens && astro build",
+    "preview": "astro preview",
+    "typecheck": "npm run tokens && astro sync && tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "optimize:images": "tsx scripts/optimize-images.ts",
-    "build:og": "tsx scripts/og-image.ts"
+    "build:og": "tsx scripts/og-image.ts",
+    "lighthouse": "npx --yes @lhci/cli@0.15.1 autorun",
+    "build:favicon": "tsx scripts/favicon.ts"
   },
   "type": "module",
   "devDependencies": {
@@ -23,6 +26,7 @@
     "@fontsource-variable/montserrat": "^5.3.0",
     "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
+    "astro": "7.3.8",
     "country-flag-icons": "^1.6.20",
     "eslint": "^10.13.0",
     "prettier": "^3.9.10",

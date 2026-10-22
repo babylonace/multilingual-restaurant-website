@@ -9,7 +9,11 @@
     top: 0;
     z-index: 40;
     border-bottom: 0;
-    background: rgb(237 235 228 / 0.94); /* --surface-sunken, slightly see-through */
+    background: color-mix(
+      in srgb,
+      var(--cream-200) 94%,
+      transparent
+    ); /* --surface-sunken, slightly see-through */
     backdrop-filter: blur(10px);
   }
 
@@ -48,16 +52,16 @@
     z-index: -1;
     background: linear-gradient(
       to bottom,
-      rgb(51 26 19 / 0.35) 0%,
-      rgb(51 26 19 / 0.1) 30%,
-      rgb(51 26 19 / 0.78) 62%,
-      rgb(51 26 19 / 0.94) 100%
+      color-mix(in srgb, var(--brown-900) 35%, transparent) 0%,
+      color-mix(in srgb, var(--brown-900) 10%, transparent) 30%,
+      color-mix(in srgb, var(--brown-900) 78%, transparent) 62%,
+      color-mix(in srgb, var(--brown-900) 94%, transparent) 100%
     );
   }
 
   .hero__content {
     width: 100%;
-    max-width: var(--container-wide);
+    max-width: var(--column-wide);
     margin-inline: auto;
     padding: var(--space-6) var(--gutter) 40px;
     color: var(--cream-100);
@@ -86,8 +90,8 @@
   }
 
   .chip--brand {
-    border: 1px solid rgb(245 244 240 / 0.3);
-    background: var(--brown-700);
+    border: 1px solid color-mix(in srgb, var(--cream-100) 30%, transparent);
+    background: var(--surface-brand);
     color: var(--cream-100);
   }
 
@@ -108,9 +112,9 @@
     background: linear-gradient(
       105deg,
       transparent 25%,
-      rgb(255 255 255 / 0.25) 40%,
-      rgb(255 255 255 / 0.75) 50%,
-      rgb(255 255 255 / 0.25) 60%,
+      color-mix(in srgb, var(--cream-50) 25%, transparent) 40%,
+      color-mix(in srgb, var(--cream-50) 75%, transparent) 50%,
+      color-mix(in srgb, var(--cream-50) 25%, transparent) 60%,
       transparent 75%
     );
     translate: -130% 0;
@@ -144,8 +148,8 @@
   }
 
   .chip--glass {
-    border: 1px solid rgb(245 244 240 / 0.45);
-    background: rgb(51 26 19 / 0.55);
+    border: 1px solid color-mix(in srgb, var(--cream-100) 45%, transparent);
+    background: color-mix(in srgb, var(--brown-900) 55%, transparent);
     color: var(--cream-100);
     backdrop-filter: blur(6px);
   }
@@ -243,7 +247,7 @@
   .brand-bar {
     position: relative;
     height: 10px;
-    background: var(--brown-700);
+    background: var(--surface-brand);
   }
 
   .brand-bar::before {
@@ -268,37 +272,43 @@
   .band__inner {
     position: relative;
     z-index: 1;
-    max-width: var(--container-wide);
+    max-width: var(--column-wide);
     margin-inline: auto;
     padding-inline: var(--gutter);
   }
 
   .band--brown {
-    background: var(--brown-700);
+    background: var(--surface-brand);
     /* clears the sticky header when "Escríbenos por WhatsApp" jumps here */
     scroll-margin-top: 64px;
   }
 
   /*
-   * The isotype for brown backgrounds (cream fork, gold sun) gets its own column to the right of
-   * the tiles on wide screens, vertically centred on them, so no tile covers it and it never sits
-   * under text. On narrower screens there is no room beside the tiles, so it is left out.
+   * The isotype for brown backgrounds (cream fork, gold sun), in full colour, gets its own column
+   * to the right of the tiles on wide screens, vertically centred on them, so no tile covers it
+   * and it never sits under text. Its rays light up one by one (scroll.css). On narrower screens
+   * there is no room beside the tiles, so it is left out.
    */
+  .sun-mark {
+    display: none;
+  }
+
   @media (min-width: 900px) {
     .band--brown .band__inner {
       padding-inline-end: calc(var(--gutter) + 240px);
     }
 
-    .band--brown .band__inner::after {
-      content: '';
+    .sun-mark {
+      display: block;
       position: absolute;
       inset-block: 0;
       inset-inline-end: var(--gutter);
       margin-block: auto;
       width: 200px;
+      height: auto;
       aspect-ratio: 1144 / 1471;
-      background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
-      opacity: 0.35;
+      /* The outer rays touch the drawing's edge; when they stretch they must not be cut off. */
+      overflow: visible;
       pointer-events: none;
     }
   }
@@ -370,7 +380,7 @@
 
   .band--olive .review__link {
     min-height: 48px;
-    border-color: rgb(245 244 240 / 0.7);
+    border-color: color-mix(in srgb, var(--cream-100) 70%, transparent);
     color: var(--cream-100);
   }
 
@@ -390,7 +400,7 @@
   }
 
   .favs__inner {
-    max-width: var(--container-wide);
+    max-width: var(--column-wide);
     margin-inline: auto;
   }
 

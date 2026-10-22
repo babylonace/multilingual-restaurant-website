@@ -1,6 +1,7 @@
 import { LANGS } from '../data/langs';
 import type { LangCode, LangDef } from '../data/types';
 import { DEFAULT_LANG, LOCALES, type Locale } from '../i18n';
+import type { Pictures } from './picture';
 
 export interface RenderContext {
   lang: LangCode;
@@ -8,7 +9,12 @@ export interface RenderContext {
   base: string;
   /** Absolute origin (no trailing slash). Without it, canonical/hreflang/sitemap tags are skipped. */
   siteUrl?: string;
+  /** Photos from the image pipeline (src/lib/pictures.ts in the build, a fixture in the tests). */
+  pictures: Pictures;
 }
+
+/** What links and absolute URLs need from a context. */
+export type SiteRef = Pick<RenderContext, 'base' | 'siteUrl'>;
 
 /** The kinds of page that exist in every language. */
 export type PageKind = 'home' | 'carta' | 'menu';
@@ -43,11 +49,11 @@ export function cartaPath(lang: LangCode): string {
 }
 
 /** Link to the carta of a language. */
-export function langHref(ctx: RenderContext, lang: LangCode): string {
+export function langHref(ctx: Pick<RenderContext, 'base'>, lang: LangCode): string {
   return `${ctx.base}${cartaPath(lang)}`;
 }
 
-export function langUrl(ctx: RenderContext, lang: LangCode): string | undefined {
+export function langUrl(ctx: SiteRef, lang: LangCode): string | undefined {
   return ctx.siteUrl ? `${ctx.siteUrl}${langHref(ctx, lang)}` : undefined;
 }
 
@@ -61,10 +67,10 @@ export function kindPath(kind: PageKind, lang: LangCode): string {
 }
 
 /** Link to the same kind of page in another language, so the language switcher stays on the page. */
-export function kindHref(ctx: RenderContext, kind: PageKind, lang: LangCode): string {
+export function kindHref(ctx: Pick<RenderContext, 'base'>, kind: PageKind, lang: LangCode): string {
   return `${ctx.base}${kindPath(kind, lang)}`;
 }
 
-export function kindUrl(ctx: RenderContext, kind: PageKind, lang: LangCode): string | undefined {
+export function kindUrl(ctx: SiteRef, kind: PageKind, lang: LangCode): string | undefined {
   return ctx.siteUrl ? `${ctx.siteUrl}${kindHref(ctx, kind, lang)}` : undefined;
 }

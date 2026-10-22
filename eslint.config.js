@@ -2,7 +2,18 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'assets-src', 'public', 'coverage', 'playwright-report', 'test-results'] },
+  {
+    ignores: [
+      'dist',
+      '.astro',
+      'assets-src',
+      'public',
+      'coverage',
+      'playwright-report',
+      'test-results',
+      'src/styles/tokens.generated.css',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

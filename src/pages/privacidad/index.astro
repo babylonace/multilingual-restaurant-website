@@ -1,0 +1,12 @@
+---
+/** Spanish only, required by law. The holder's details come from the private data file. */
+import { loadPrivate } from '../../../scripts/private-data';
+import Page from '../../layouts/Page.astro';
+import { renderContext, siteUrl } from '../../lib/build';
+import { renderLegalPage } from '../../render/legal';
+
+const { titular } = loadPrivate({ strict: Boolean(siteUrl) });
+const page = renderLegalPage(await renderContext('es'), 'privacidad', titular);
+---
+
+<Page page={page} />

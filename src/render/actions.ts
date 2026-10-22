@@ -19,6 +19,29 @@ const ICON = {
 } as const satisfies Record<HomeIntent, string>;
 
 /**
+ * Floating WhatsApp button, phone only (CSS hides it from 900 px): one tap from anywhere on the
+ * page to the chat. It reuses a ready-made message rather than adding a new one: the menú del día
+ * asks what today's menu is, every other page opens a question.
+ */
+export function whatsappFab(page: Page): SafeHtml {
+  const { ctx, t, kind } = page;
+  const intent = kind === 'menu' ? 'menu' : 'consulta';
+  // Says what the tap does ("WhatsApp: Hacer una consulta"), not just where it goes.
+  const label = kind === 'menu' ? t.waMenu : t.waConsulta;
+  return html`<a
+    class="wa-fab"
+    href="${whatsappIntentLink(intent, ctx.lang)}"
+    target="_blank"
+    rel="noopener"
+    aria-label="WhatsApp: ${label} ${t.newTab}"
+    data-event="whatsapp_clic"
+    data-prop-intent="${intent}"
+    data-prop-origin="flotante"
+    >${brandIcon('whatsapp', 'wa-fab__icon')}</a
+  >`;
+}
+
+/**
  * The main call to action: write to the restaurant on WhatsApp with the message for what the
  * visitor wants already written. Plain links, so it works without JavaScript; the `data-event`
  * attributes are read by `client/track.ts` once an analytics script is present.

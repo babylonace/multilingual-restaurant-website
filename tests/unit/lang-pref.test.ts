@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { preferredLang } from '../../src/client/lang-pref';
 import { renderPage } from '../../src/render/page';
+import { TEST_PICTURES } from './fixtures';
 
 const SUPPORTED = ['es', 'en', 'fr', 'gl'];
 const CHROME = 'Mozilla/5.0 Chrome/130';
@@ -36,7 +37,7 @@ describe('preferredLang', () => {
 });
 
 describe('inline redirect script', () => {
-  const head = renderPage({ lang: 'es', base: '/' }).head;
+  const head = renderPage({ lang: 'es', base: '/', pictures: TEST_PICTURES }).head;
 
   it('embeds plain JavaScript (no build-tool helpers that would be undefined in the page)', () => {
     expect(head).not.toContain('__name');

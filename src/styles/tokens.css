@@ -1,95 +1,47 @@
 /*
- * Inkawasi design tokens — a trimmed port of the brand design system
- * (colors, typography, spacing, radius, motion). Only tokens the carta uses.
+ * Site tokens on top of the design system. Colours, spacing, radius, shadows and the type scale
+ * come from `tokens.generated.css` (built from design-system/tokens.json); this file only adds
+ * what the DS does not define: layout columns, motion and per-script adjustments. No colour
+ * literals here: derived colours are mixed from DS tokens.
  *
- * Deviation from the source system, for WCAG AA text contrast on cream:
- *   --gold-800 and --terra-700 are darker shades used for small text,
- *   where --gold-700 (3.4:1) and --terra-500 (2.6:1) fall short of 4.5:1.
+ * The font families (--font-display, --font-serif) are set by Astro's font API (astro.config.ts),
+ * which also self-hosts the files and adds metric-matched fallbacks.
  */
 @layer tokens {
   :root {
-    /* Brown ramp */
-    --brown-900: #331a13;
-    --brown-800: #4a2a20;
-    --brown-700: #512e24;
-    --brown-600: #6b4034;
-    --brown-300: #c9a99c;
-
-    /* Gold ramp */
-    --gold-800: #8a6410;
-    --gold-700: #a97c18;
-    --gold-600: #bf8d22;
-    --gold-500: #d19e2b;
-    --gold-400: #ddb459;
-    --gold-300: #e8cb8a;
-
-    /* Terracotta & olive */
-    --terra-500: #e27d56; /* fill only: text on it is brown-900 (5.6:1) */
-    --terra-700: #a54a2b;
-    --olive-500: #3d5245;
-    --olive-100: #e4e9e4;
-
-    /* Warm neutrals */
-    --cream-50: #fbfaf7;
-    --cream-100: #f5f4f0;
-    --cream-200: #edebe4;
-    --cream-300: #e1ded4;
-    --cream-400: #cfcbbd;
-    --neutral-600: #736e62;
-    --neutral-700: #4c473e;
-
-    /* Semantic aliases */
-    --surface-page: var(--cream-100);
-    /* DS "surface-sunken": the muted cream of the header, the cream buttons and the favourites. */
-    --surface-sunken: var(--cream-200);
-    /* Buttons: cream-200 with a touch of gold-200 (#f2e1bc), barely warmer than the header. */
-    --surface-button: #eee9de;
-    --surface-card: #fff;
-    --text-strong: var(--brown-700);
-    --text-body: var(--brown-800);
-    --text-muted: var(--neutral-600);
-    --text-gold: var(--gold-800);
-    --border-subtle: var(--cream-300);
-    --border-default: var(--cream-400);
-    --border-strong: var(--brown-300);
-    --focus-ring: var(--gold-600);
-
-    /* Typography */
-    --font-display: 'Montserrat Variable', 'Century Gothic', system-ui, sans-serif;
-    --font-serif: 'Lora Variable', Georgia, 'Times New Roman', serif;
-    --fw-medium: 500;
-    --fw-semibold: 600;
-    --fw-bold: 700;
-    --tracking-wide: 0.08em;
-    --italic: italic;
-
-    /* Spacing (4px grid) */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
+    /* Layout */
     --gutter: 1.75rem;
-    --container: 820px;
-    --container-wide: 1100px;
+    --column: 820px;
+    --column-wide: 1100px;
 
-    /* Radius & shadow (warm, brown-tinted) */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 18px;
-    --radius-pill: 999px;
-    --shadow-card: 0 4px 14px rgb(58 31 24 / 0.1);
-    --shadow-pop: 0 12px 28px rgb(58 31 24 / 0.18);
+    /* Buttons: the header's sunken cream with a touch of gold, barely warmer than the header. */
+    --surface-button: color-mix(in srgb, var(--cream-200) 80%, var(--gold-200));
 
-    /* Motion */
+    /*
+     * Brown surfaces (bands, menú del día, badges): the deep brown of the house, DS brown-800,
+     * which the DS allows as a dark surface; Adriana prefers it to the lighter ink brown
+     * (brown-700) for large areas. Text on cream stays in the ink brown (--text-strong).
+     * The footer and the outlined tiles sit one step deeper, so they read apart from the band.
+     */
+    --surface-brand: var(--brown-800);
+    --surface-brand-deep: color-mix(in srgb, var(--brown-800) 75%, var(--brown-900));
+
+    /* Motion, from the DS tokens/motion.css (not part of tokens.json) */
     --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     --dur-fast: 140ms;
     --dur-base: 220ms;
+    --dur-slow: 360ms;
     --transition-colors:
       color var(--dur-fast) var(--ease-standard),
       background-color var(--dur-fast) var(--ease-standard),
       border-color var(--dur-fast) var(--ease-standard);
+
+    --italic: italic;
+
+    /* Astro's font API defines --font-montserrat and --font-lora (family plus metric fallback). */
+    --font-display: var(--font-montserrat);
+    --font-serif: var(--font-lora);
   }
 
   /* Scripts without a real italic, or where italics break letterforms, stay upright. */
@@ -98,16 +50,36 @@
     --italic: normal;
   }
 
+  /*
+   * Montserrat and Lora have no Arabic or Chinese glyphs. Chinese falls through to the system's
+   * CJK font. Arabic would land in the metric-adjusted Arial fallback (which has Arabic glyphs on
+   * Windows, enlarged to match Montserrat), so Arabic pages put the system Arabic fonts first,
+   * limited to the Arabic block: Latin text (prices, the name) still uses Montserrat and Lora.
+   */
   :lang(ar) {
-    --font-display:
-      'Montserrat Variable', 'Segoe UI', 'Noto Sans Arabic', Tahoma, system-ui, sans-serif;
-    --font-serif: 'Lora Variable', 'Noto Naskh Arabic', 'Traditional Arabic', 'Segoe UI', serif;
+    --font-display: 'Inkawasi Arabic Sans', var(--font-montserrat);
+    --font-serif: 'Inkawasi Arabic Serif', var(--font-lora);
   }
+}
 
-  :lang(zh) {
-    --font-display:
-      'Montserrat Variable', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui,
-      sans-serif;
-    --font-serif: 'Lora Variable', 'Songti SC', 'Noto Serif CJK SC', 'Microsoft YaHei', serif;
-  }
+@font-face {
+  font-family: 'Inkawasi Arabic Sans';
+  src: local('Segoe UI'), local('Noto Sans Arabic'), local('Geeza Pro'), local('Tahoma');
+  font-weight: 100 500;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: 'Inkawasi Arabic Sans';
+  src:
+    local('Segoe UI Bold'), local('Noto Sans Arabic Bold'), local('Geeza Pro Bold'),
+    local('Tahoma Bold');
+  font-weight: 600 900;
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+
+@font-face {
+  font-family: 'Inkawasi Arabic Serif';
+  src: local('Noto Naskh Arabic'), local('Traditional Arabic'), local('Segoe UI');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-08FF, U+FB50-FDFF, U+FE70-FEFF;
 }

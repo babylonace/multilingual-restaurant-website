@@ -15,7 +15,7 @@
     position: relative;
     flex: 1;
     overflow: hidden;
-    background: var(--brown-700);
+    background: var(--surface-brand);
     color: var(--cream-100);
   }
 
@@ -42,7 +42,7 @@
   .mdd__inner {
     position: relative;
     z-index: 1;
-    max-width: var(--container-wide);
+    max-width: var(--column-wide);
     margin-inline: auto;
     padding: 20px var(--gutter) 48px;
   }
@@ -84,7 +84,7 @@
             105deg,
             var(--cream-100) 0 42%,
             var(--gold-300) 46.5%,
-            #fff 50%,
+            var(--cream-50) 50%,
             var(--gold-300) 53.5%,
             var(--cream-100) 58% 100%
           )

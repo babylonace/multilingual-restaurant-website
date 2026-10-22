@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 test.describe('carta', () => {
   test('loads the Spanish carta with the first tab open', async ({ page }) => {
@@ -269,7 +269,8 @@ test.describe('home page actions', () => {
     await page.getByRole('link', { name: 'Menú del día' }).first().click();
     await expect(page).toHaveURL(/\/menu-del-dia\/$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Menú del día');
-    await expect(page.getByRole('link', { name: /¿Qué hay hoy de menú\?/ })).toHaveAttribute(
+    // The main button (the floating one is "WhatsApp: ¿Qué hay hoy de menú?").
+    await expect(page.getByRole('link', { name: /^¿Qué hay hoy de menú\?/ })).toHaveAttribute(
       'href',
       /^https:\/\/wa\.me\/34614922183\?text=/,
     );
@@ -293,9 +294,32 @@ test.describe('home page actions', () => {
     await page.goto('/');
     const photo = page.locator('.cover__img');
     await expect(photo).toBeVisible();
-    await expect(photo).toHaveAttribute('width', '1600');
+    // width/height carry the 16:9 ratio of the original, so the layout reserves the space.
+    const ratio = await photo.evaluate(
+      (img) => Number(img.getAttribute('width')) / Number(img.getAttribute('height')),
+    );
+    expect(ratio).toBeCloseTo(16 / 9, 2);
     const loaded = await photo.evaluate((img) => (img as HTMLImageElement).naturalWidth > 0);
     expect(loaded).toBe(true);
+  });
+
+  test('serves the photo as AVIF to a browser that takes it', async ({ page }) => {
+    await page.goto('/');
+    const current = await page
+      .locator('.cover__img')
+      .evaluate((img) => (img as HTMLImageElement).currentSrc);
+    expect(current).toMatch(/\.avif$/);
+  });
+
+  test('preloads the latin Montserrat file and nothing else', async ({ page }) => {
+    await page.goto('/carta/');
+    const preloads = page.locator('link[rel="preload"][as="font"]');
+    await expect(preloads).toHaveCount(1);
+    const href = await preloads.getAttribute('href');
+    const css = await page.locator('style').allTextContents();
+    const face = css.join('').match(new RegExp(`@font-face\\{[^}]*${href}[^}]*\\}`))?.[0] ?? '';
+    expect(face).toContain('unicode-range:U+0000-00FF');
+    expect(face).toContain('font-style:normal');
   });
 });
 
@@ -324,6 +348,154 @@ test.describe('carta extras', () => {
   test('asks for a review on Google Maps and on TripAdvisor', async ({ page }) => {
     await page.goto('/carta/');
     await expect(page.locator('.review__link')).toHaveCount(2);
+  });
+});
+
+/** Scrolls an element to the middle of the window, as when someone reads that part of the page. */
+const toCentre = (page: Page, selector: string) =>
+  page.locator(selector).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+
+test.describe('isotype sunrise in the brown band', () => {
+  const rayOpacities = (page: Page) =>
+    page
+      .locator('.sun-mark__ray')
+      .evaluateAll((rays) => rays.map((r) => Number(getComputedStyle(r).opacity)));
+
+  test('waits at the top of the page, even if the sun peeks in at the bottom', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    // A window just tall enough for the top of the brown band to show under the photo.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+    const sun = page.locator('.sun-mark');
+    expect((await sun.boundingBox())!.y).toBeLessThan(900);
+    await page.waitForTimeout(600);
+    await expect(sun).toHaveAttribute('data-reveal', 'waiting');
+    await toCentre(page, '.sun-mark');
+    await expect(sun).toHaveAttribute('data-reveal', 'in');
+  });
+
+  test('lights all nine rays once the band is on screen (desktop only)', async ({ page }) => {
+    await page.goto('/');
+    if (test.info().project.name === 'mobile') {
+      await expect(page.locator('.sun-mark')).toBeHidden();
+      return;
+    }
+    await toCentre(page, '.sun-mark');
+    await expect(page.locator('.sun-mark')).toBeVisible();
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', 'in');
+    await expect.poll(() => rayOpacities(page), { timeout: 8000 }).toEqual(Array(9).fill(1));
+    // The arc is fully drawn once its mask stroke has run its length.
+    await expect
+      .poll(() =>
+        page
+          .locator('.sun-mark__arc-reveal')
+          .evaluate((p) => parseFloat(getComputedStyle(p).strokeDashoffset)),
+      )
+      .toBeCloseTo(0, 3);
+  });
+
+  test('rests five seconds after the rays, then flares every five seconds', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    test.setTimeout(45_000);
+    await page.goto('/');
+    await toCentre(page, '.sun-mark');
+    const ray = page.locator('.sun-mark__ray').first();
+    // Is the ray stretched (flaring) right now? At rest its transform is none or the identity.
+    const flaring = () =>
+      ray.evaluate((r) => {
+        const t = getComputedStyle(r).transform;
+        return t !== 'none' && !new DOMMatrix(t).isIdentity;
+      });
+    await expect.poll(() => rayOpacities(page), { timeout: 8000 }).toEqual(Array(9).fill(1));
+    // Stillness after the rays: no flare for the next few seconds.
+    for (let k = 0; k < 6; k++) {
+      expect(await flaring()).toBe(false);
+      await page.waitForTimeout(500);
+    }
+    const poll = { timeout: 9000, intervals: [100] };
+    await expect.poll(flaring, poll).toBe(true); // first flare
+    await expect.poll(flaring, poll).toBe(false); // rest
+    await expect.poll(flaring, poll).toBe(true); // and again, five seconds later
+  });
+
+  test('pauses the sunrise while the band is off screen', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    await page.goto('/');
+    await toCentre(page, '.sun-mark');
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', 'in');
+    await page.locator('.footer').scrollIntoViewIfNeeded();
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-offscreen', '');
+  });
+
+  test('stays still and fully drawn for anyone who asks for reduced motion', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', '');
+    expect(await rayOpacities(page)).toEqual(Array(9).fill(1));
+    expect(
+      await page
+        .locator('.sun-mark__arc-reveal')
+        .evaluate((p) => parseFloat(getComputedStyle(p).strokeDashoffset)),
+    ).toBe(0);
+  });
+});
+
+test.describe('Andean borders of the olive band', () => {
+  test('draw themselves from the centre outwards when the band comes into view', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const band = page.locator('.band--olive');
+    await expect(band).toHaveAttribute('data-reveal', 'waiting');
+    await toCentre(page, '.band--olive');
+    await expect(band).toHaveAttribute('data-reveal', 'in');
+    await expect
+      .poll(() => band.evaluate((b) => getComputedStyle(b, '::before').clipPath), { timeout: 4000 })
+      .toMatch(/^(none|inset\(0px( 0%)?\))$/);
+  });
+});
+
+test.describe('floating WhatsApp button', () => {
+  test('sits in the bottom-right corner on phones and is hidden on desktop', async ({ page }) => {
+    await page.goto('/carta/');
+    const fab = page.locator('.wa-fab');
+    if (test.info().project.name === 'desktop') {
+      await expect(fab).toBeHidden();
+      return;
+    }
+    await expect(fab).toBeVisible();
+    const box = (await fab.boundingBox())!;
+    const viewport = page.viewportSize()!;
+    expect(viewport.width - (box.x + box.width)).toBeLessThanOrEqual(24);
+    expect(viewport.height - (box.y + box.height)).toBeLessThanOrEqual(24);
+    await expect(fab).toHaveAccessibleName(/WhatsApp/);
+  });
+
+  test('opens the right message for the page', async ({ page }) => {
+    await page.goto('/en/carta/');
+    await expect(page.locator('.wa-fab')).toHaveAttribute('data-prop-intent', 'consulta');
+    expect(await page.locator('.wa-fab').getAttribute('href')).toContain(
+      encodeURIComponent('Hola, tengo una consulta'),
+    );
+    await page.goto('/menu-del-dia/');
+    await expect(page.locator('.wa-fab')).toHaveAttribute('data-prop-intent', 'menu');
+  });
+
+  test('never covers the last links of the footer', async ({ page }) => {
+    test.skip(test.info().project.name === 'desktop', 'phone only');
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const fab = (await page.locator('.wa-fab').boundingBox())!;
+    for (const link of await page.locator('.footer__legal a').all()) {
+      const box = (await link.boundingBox())!;
+      const overlaps =
+        box.x < fab.x + fab.width &&
+        box.x + box.width > fab.x &&
+        box.y < fab.y + fab.height &&
+        box.y + box.height > fab.y;
+      expect(overlaps).toBe(false);
+    }
   });
 });
 

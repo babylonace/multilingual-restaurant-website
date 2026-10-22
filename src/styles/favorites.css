@@ -37,7 +37,7 @@
     scroll-snap-align: start;
     border-radius: var(--radius-lg);
     background: var(--surface-card);
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--shadow-md);
   }
 
   .fav__img {
@@ -58,7 +58,7 @@
     font-family: var(--font-serif);
     font-size: 1.125rem;
     font-weight: var(--fw-semibold);
-    color: var(--brown-800);
+    color: var(--text-body);
   }
 
   .fav__desc {
