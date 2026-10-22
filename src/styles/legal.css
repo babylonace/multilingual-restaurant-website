@@ -27,21 +27,21 @@
 
   .legal__title {
     font-family: var(--font-serif);
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: var(--fw-semibold);
     line-height: 1.2;
     color: var(--text-strong);
   }
 
   .legal__updated {
-    margin-top: var(--space-2);
-    font-size: 0.8125rem;
+    margin-top: var(--space-1);
+    font-size: 0.75rem;
     color: var(--text-muted);
   }
 
   .legal h2 {
     margin-top: var(--space-5);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: var(--fw-bold);
     color: var(--text-strong);
   }
@@ -51,7 +51,7 @@
   .legal dl {
     margin-top: var(--space-2);
     font-family: var(--font-serif);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     line-height: 1.6;
   }
 
@@ -66,33 +66,23 @@
     text-underline-offset: 3px;
   }
 
+  /* The holder's details: a compact label-value list on every width, never a headline. */
   .legal dl {
-    margin: var(--space-3) 0 0;
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 2px var(--space-4);
-    font-family: var(--font-serif);
-  }
-
-  @media (min-width: 640px) {
-    .legal dl {
-      grid-template-columns: max-content minmax(0, 1fr);
-    }
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 2px var(--space-3);
   }
 
   .legal dt {
-    font-family: var(--font-display);
     font-weight: var(--fw-semibold);
   }
 
-  .legal dd {
-    margin: 0 0 var(--space-2);
-    overflow-wrap: anywhere;
+  .legal dt::after {
+    content: ':';
   }
 
-  @media (min-width: 640px) {
-    .legal dd {
-      margin-bottom: 0;
-    }
+  .legal dd {
+    margin: 0;
+    overflow-wrap: anywhere;
   }
 }

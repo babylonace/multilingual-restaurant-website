@@ -15,17 +15,17 @@ describe.each(LEGAL_PAGES)('legal page "%s"', (id) => {
     expect(draft.body).toContain('Calle Falsa 1, Ferrol');
   });
 
-  it('says it is a draft and asks search engines to stay away while it is one', () => {
+  it('says it is a draft while it is one', () => {
     expect(draft.body).toContain('Borrador pendiente de revisión');
-    expect(draft.head).toContain('<meta name="robots" content="noindex" />');
-    expect(draft.head).not.toContain('rel="canonical"');
   });
 
-  it('drops the draft marks once approved and becomes indexable', () => {
+  it('drops the draft marks once approved but stays out of search engines', () => {
     const final = renderLegalPage(CTX, id, TITULAR, false);
     expect(final.body).not.toContain('Borrador');
-    expect(final.head).not.toContain('noindex');
-    expect(final.head).toContain(`<link rel="canonical" href="https://example.test/${id}/"`);
+    for (const page of [draft, final]) {
+      expect(page.head).toContain('<meta name="robots" content="noindex" />');
+      expect(page.head).not.toContain('rel="canonical"');
+    }
   });
 
   it('escapes the holder data', () => {

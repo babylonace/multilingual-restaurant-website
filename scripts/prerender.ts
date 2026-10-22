@@ -62,7 +62,7 @@ for (const id of LEGAL_PAGES) {
   await write(join(id, 'index.html'), applyTemplate(template, legal));
 }
 console.log(
-  `Pre-rendered ${LEGAL_PAGES.length} legal pages${LEGAL_DRAFT ? ' (draft, noindex)' : ''}`,
+  `Pre-rendered ${LEGAL_PAGES.length} legal pages (noindex${LEGAL_DRAFT ? ', draft' : ''})`,
 );
 
 await write('404.html', applyTemplate(template, renderNotFoundPage({ lang: 'es', base, siteUrl })));
@@ -78,13 +78,8 @@ if (siteUrl) {
       ).join('\n');
       return `  <url>\n    <loc>${kindUrl(ctx, kind, code)}</loc>\n${alternates}\n  </url>`;
     });
+  // The legal pages are noindex (they carry the holder's NIE), so they never enter the sitemap.
   const urls = [...entries('home'), ...entries('carta'), ...entries('menu')];
-  // Draft legal pages are noindex, so they stay out of the sitemap until they are approved.
-  if (!LEGAL_DRAFT) {
-    for (const id of LEGAL_PAGES) {
-      urls.push(`  <url>\n    <loc>${siteUrl}${base}${id}/</loc>\n  </url>`);
-    }
-  }
   await write(
     'sitemap.xml',
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`,

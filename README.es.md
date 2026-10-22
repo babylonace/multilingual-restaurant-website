@@ -108,7 +108,7 @@ npm run build:og       # regenera public/og-image.jpg (1200×630) con Playwright
 
 Los datos del titular para las páginas legales (nombre, NIE, domicilio) **no están en git**. Viven en `private/negocio.privado.json`, ignorado por git; solo se versiona la plantilla `private/negocio.privado.example.json`. El build lo lee y nunca lo escribe (el archivo es de solo lectura). En CI, el mismo JSON se pasa como secreto `INKAWASI_PRIVATE_JSON`. Un build con `SITE_URL` se niega a publicar datos de ejemplo, y un test unitario falla si el NIE real aparece en algún archivo versionado. Los secretos técnicos (Cloudflare, Resend, Turnstile) van en variables de entorno, nunca en ese archivo.
 
-Las páginas legales siguen en `noindex` y marcadas como borrador hasta que `LEGAL_DRAFT` en `src/data/legal.ts` pase a `false`.
+Las páginas legales llevan siempre `noindex` y no entran en el sitemap: la ley obliga a publicar el NIE y el domicilio del titular en la web, no a que salgan en los buscadores. `LEGAL_DRAFT` en `src/data/legal.ts` solo añade el aviso de borrador (aprobadas y apagado desde el 22 de octubre de 2026).
 
 ## Despliegue
 
@@ -134,6 +134,5 @@ SITE_URL=https://inkawasi.es npm run build
 
 ## Pendiente
 
-- Revisar los textos legales y poner `LEGAL_DRAFT` en `false`.
 - Sustituir la imagen Open Graph por una con foto del local.
 - Logo, fotos y marca pertenecen a Inkawasi.

@@ -108,7 +108,7 @@ Every change is checked by `npm test`; a dish without a price or description in 
 
 The holder's details for the legal pages (name, NIE, address) are **not in git**. They live in `private/negocio.privado.json`, which is git-ignored; only the template `private/negocio.privado.example.json` is tracked. The build reads it and never writes it (the file is read-only). In CI, provide the same JSON as the `INKAWASI_PRIVATE_JSON` secret. A build with `SITE_URL` set refuses to publish placeholders, and a unit test fails if the real NIE ever shows up in a tracked file. Technical secrets (Cloudflare, Resend, Turnstile) go in environment variables, never in that file.
 
-The legal pages stay `noindex` and marked as a draft until `LEGAL_DRAFT` in `src/data/legal.ts` is set to `false`.
+The legal pages are always `noindex` and out of the sitemap: the law requires the holder's NIE and address on the site, not in search results. `LEGAL_DRAFT` in `src/data/legal.ts` only adds a draft banner (approved and off since 22 October 2026).
 
 ## Deployment
 
@@ -134,6 +134,5 @@ SITE_URL=https://inkawasi.es npm run build
 
 ## To do
 
-- Review the legal texts and set `LEGAL_DRAFT` to `false`.
 - Replace the Open Graph image with one that uses a photo of the restaurant.
 - Logo, photos and brand belong to Inkawasi.

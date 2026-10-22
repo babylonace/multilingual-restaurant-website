@@ -332,10 +332,10 @@ test.describe('legal pages', () => {
     ['/aviso-legal/', 'Aviso legal'],
     ['/privacidad/', 'Política de privacidad'],
   ] as const) {
-    test(`${path} loads as a noindex draft`, async ({ page }) => {
+    test(`${path} loads approved and noindex`, async ({ page }) => {
       await page.goto(path);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
-      await expect(page.getByRole('note')).toContainText('Borrador');
+      await expect(page.getByText('Borrador')).toHaveCount(0);
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

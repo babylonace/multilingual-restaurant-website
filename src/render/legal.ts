@@ -196,8 +196,9 @@ const BODY: Record<LegalId, (input: LegalInput) => SafeHtml> = {
 
 /**
  * Aviso legal and privacy policy. Spanish only: they are required by Spanish law, and the
- * holder's details come from the private data file. While `LEGAL_DRAFT` is true the page says
- * so and asks search engines to stay away.
+ * holder's details come from the private data file, so the pages are always noindex: the NIE
+ * and address belong on the site, not in search results. While `LEGAL_DRAFT` is true the page
+ * also says it is a draft.
  */
 export function renderLegalPage(
   ctx: RenderContext,
@@ -207,12 +208,10 @@ export function renderLegalPage(
 ): RenderedPage {
   const page = createPage({ ...ctx, lang: 'es' });
   const title = `${TITLES[id]} · ${CONTACT.name}`;
-  const canonical = ctx.siteUrl && !draft ? `${ctx.siteUrl}${ctx.base}${id}/` : undefined;
 
   const head = html`<title>${title}</title>
     <meta name="description" content="${TITLES[id]} de ${CONTACT.name}, Ferrol." />
-    ${draft && raw('<meta name="robots" content="noindex" />')}
-    ${canonical && html`<link rel="canonical" href="${canonical}" />`}`;
+    ${raw('<meta name="robots" content="noindex" />')}`;
 
   const body = html`${spriteSheet()}
     <a class="skip-link" href="#content">${page.t.skipLink}</a>
