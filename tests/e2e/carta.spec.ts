@@ -255,6 +255,15 @@ test.describe('home page actions', () => {
     }
   });
 
+  test('fits the menú del día, down to its buttons, in the first screen', async ({ page }) => {
+    // A phone with the browser bars showing leaves about 664 px of a 844 px screen.
+    const { width } = page.viewportSize() ?? { width: 1280 };
+    await page.setViewportSize({ width, height: width < 600 ? 664 : 657 });
+    await page.goto('/menu-del-dia/');
+    const ctas = await page.locator('.mdd__ctas').boundingBox();
+    expect((ctas?.y ?? 0) + (ctas?.height ?? 0)).toBeLessThanOrEqual(width < 600 ? 664 : 657);
+  });
+
   test('opens the menú del día from the hero, and the carta from there', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('link', { name: 'Menú del día' }).first().click();

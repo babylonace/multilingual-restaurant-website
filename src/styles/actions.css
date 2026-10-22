@@ -39,13 +39,13 @@
   }
 
   .pill--ghost:hover {
-    background: var(--surface-sunken);
+    background: var(--surface-button);
     color: var(--brown-900);
   }
 
   /* Muted cream (the header's tone): plain cream read as stark white on the photo and the brown. */
   .pill--cream {
-    background: var(--surface-sunken);
+    background: var(--surface-button);
     color: var(--brown-900);
   }
 
@@ -151,7 +151,7 @@
     padding: var(--space-4);
     border: 2px solid transparent;
     border-radius: var(--radius-lg);
-    background: var(--surface-sunken);
+    background: var(--surface-button);
     color: var(--brown-900);
     transition:
       var(--transition-colors),

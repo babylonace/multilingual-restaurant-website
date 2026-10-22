@@ -10,7 +10,7 @@
 @layer components {
   @media (prefers-reduced-motion: no-preference) {
     /* The brand bar opens from the centre as one piece once the page has loaded. */
-    .brand-bar {
+    .brand-bar::before {
       animation: bar-draw 0.9s 0.4s var(--ease-standard) both;
     }
   }

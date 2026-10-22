@@ -42,6 +42,8 @@
     --surface-page: var(--cream-100);
     /* DS "surface-sunken": the muted cream of the header, the cream buttons and the favourites. */
     --surface-sunken: var(--cream-200);
+    /* Buttons: cream-200 with a touch of gold-200 (#f2e1bc), barely warmer than the header. */
+    --surface-button: #eee9de;
     --surface-card: #fff;
     --text-strong: var(--brown-700);
     --text-body: var(--brown-800);
