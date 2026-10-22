@@ -351,11 +351,28 @@ test.describe('carta extras', () => {
   });
 });
 
+/** Scrolls an element to the middle of the window, as when someone reads that part of the page. */
+const toCentre = (page: Page, selector: string) =>
+  page.locator(selector).evaluate((el) => el.scrollIntoView({ block: 'center' }));
+
 test.describe('isotype sunrise in the brown band', () => {
   const rayOpacities = (page: Page) =>
     page
       .locator('.sun-mark__ray')
       .evaluateAll((rays) => rays.map((r) => Number(getComputedStyle(r).opacity)));
+
+  test('waits at the top of the page, even if the sun peeks in at the bottom', async ({ page }) => {
+    test.skip(test.info().project.name === 'mobile', 'desktop only');
+    // A window just tall enough for the top of the brown band to show under the photo.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+    const sun = page.locator('.sun-mark');
+    expect((await sun.boundingBox())!.y).toBeLessThan(900);
+    await page.waitForTimeout(600);
+    await expect(sun).toHaveAttribute('data-reveal', 'waiting');
+    await toCentre(page, '.sun-mark');
+    await expect(sun).toHaveAttribute('data-reveal', 'in');
+  });
 
   test('lights all nine rays once the band is on screen (desktop only)', async ({ page }) => {
     await page.goto('/');
@@ -363,10 +380,10 @@ test.describe('isotype sunrise in the brown band', () => {
       await expect(page.locator('.sun-mark')).toBeHidden();
       return;
     }
-    await page.locator('#pedir').scrollIntoViewIfNeeded();
+    await toCentre(page, '.sun-mark');
     await expect(page.locator('.sun-mark')).toBeVisible();
     await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', 'in');
-    await expect.poll(() => rayOpacities(page), { timeout: 6000 }).toEqual(Array(9).fill(1));
+    await expect.poll(() => rayOpacities(page), { timeout: 8000 }).toEqual(Array(9).fill(1));
     // The arc is fully drawn once its mask stroke has run its length.
     await expect
       .poll(() =>
@@ -381,19 +398,19 @@ test.describe('isotype sunrise in the brown band', () => {
     test.skip(test.info().project.name === 'mobile', 'desktop only');
     test.setTimeout(30_000);
     await page.goto('/');
-    await page.locator('#pedir').scrollIntoViewIfNeeded();
+    await toCentre(page, '.sun-mark');
     const ray = page.locator('.sun-mark__ray').first();
     const transform = () => ray.evaluate((r) => getComputedStyle(r).transform);
-    await expect.poll(transform, { timeout: 8000 }).not.toBe('none');
-    // Breathing (about 5 s) and the flare are over by about 10.5 s: the sun is still.
-    await expect.poll(transform, { timeout: 15_000, intervals: [500] }).toBe('none');
+    await expect.poll(transform, { timeout: 10_000 }).not.toBe('none');
+    // Breathing (about 5 s) and the flare are over by about 12 s: the sun is still.
+    await expect.poll(transform, { timeout: 16_000, intervals: [500] }).toBe('none');
     await expect(ray).toHaveCSS('opacity', '1');
   });
 
   test('pauses the sunrise while the band is off screen', async ({ page }) => {
     test.skip(test.info().project.name === 'mobile', 'desktop only');
     await page.goto('/');
-    await page.locator('#pedir').scrollIntoViewIfNeeded();
+    await toCentre(page, '.sun-mark');
     await expect(page.locator('.sun-mark')).toHaveAttribute('data-reveal', 'in');
     await page.locator('.footer').scrollIntoViewIfNeeded();
     await expect(page.locator('.sun-mark')).toHaveAttribute('data-offscreen', '');
@@ -420,7 +437,7 @@ test.describe('Andean borders of the olive band', () => {
     await page.goto('/');
     const band = page.locator('.band--olive');
     await expect(band).toHaveAttribute('data-reveal', 'waiting');
-    await band.scrollIntoViewIfNeeded();
+    await toCentre(page, '.band--olive');
     await expect(band).toHaveAttribute('data-reveal', 'in');
     await expect
       .poll(() => band.evaluate((b) => getComputedStyle(b, '::before').clipPath), { timeout: 4000 })

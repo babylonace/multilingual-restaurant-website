@@ -1,30 +1,30 @@
 /**
- * Plays an element's entrance (scroll.css) the first time it comes into view: the isotype's
- * sunrise in the brown band and the Andean borders of the olive band. Elements opt in with
- * `data-reveal`; this sets it to "waiting" while they are still off screen, then "in".
+ * Plays an element's entrance (scroll.css) once it is properly in view: the isotype's sunrise in
+ * the brown band and the Andean borders of the olive band. Elements opt in with `data-reveal`;
+ * this sets it to "waiting" until they are in view, then "in".
  *
- * An element is only hidden once we know it will animate: not without IntersectionObserver and
- * not with reduced motion. One already on screen at load plays straight away. After it is in,
- * `data-offscreen` pauses any looping animation while it is out of view.
+ * "In view" means almost all of the element is on screen, above the bottom sixth of the window:
+ * a sun peeking in at the bottom while the visitor is still looking at the photo does not count,
+ * or the sunrise would be over before they get there. An element that is already properly in view
+ * at load plays straight away.
+ *
+ * Nothing is hidden unless it will animate: not without IntersectionObserver and not with reduced
+ * motion. Once in, `data-offscreen` pauses the animation while the element is out of view.
  */
+const VISIBLE = 0.9;
+
 export function initReveal(): void {
   const elements = document.querySelectorAll<HTMLElement | SVGElement>('[data-reveal]');
   if (!elements.length || !('IntersectionObserver' in window)) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const THRESHOLD = 0.5;
-  const seen = new WeakSet<Element>();
   const observer = new IntersectionObserver(
     (entries) => {
       for (const { target, isIntersecting, intersectionRatio } of entries) {
         const el = target as HTMLElement | SVGElement;
-        if (!seen.has(el)) {
-          seen.add(el);
-          el.dataset.reveal = isIntersecting ? 'in' : 'waiting';
-          continue;
-        }
-        if (el.dataset.reveal === 'waiting' && intersectionRatio >= THRESHOLD) {
-          el.dataset.reveal = 'in';
+        const inView = intersectionRatio >= VISIBLE;
+        if (el.dataset.reveal === '' || el.dataset.reveal === 'waiting') {
+          el.dataset.reveal = inView ? 'in' : 'waiting';
         }
         if (el.dataset.reveal === 'in') {
           if (isIntersecting) delete el.dataset.offscreen;
@@ -32,7 +32,7 @@ export function initReveal(): void {
         }
       }
     },
-    { threshold: [0, THRESHOLD] },
+    { threshold: [0, VISIBLE], rootMargin: '0px 0px -16% 0px' },
   );
   elements.forEach((el) => observer.observe(el));
 }
