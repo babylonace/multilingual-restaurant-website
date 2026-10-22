@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
 
 permissions:
@@ -27,9 +26,19 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npx playwright install --with-deps chromium
+      # Builds dist/ (no SITE_URL) and runs the e2e and axe tests against it.
       - run: npm run test:e2e
         env:
           CI: true
+      # Mobile Lighthouse on that build: performance ≥ 90, accessibility, best practices and
+      # SEO ≥ 95 (median of 3 runs per page), or the build fails. See lighthouserc.json.
+      - run: npm run lighthouse
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lighthouse-report
+          path: lighthouse-report
+          retention-days: 14
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
@@ -70,3 +79,33 @@ jobs:
           npx --yes wrangler@4.152.0 pages project list | grep -q 'example-project.pages.dev' ||
             npx --yes wrangler@4.152.0 pages project create example-project --production-branch=main
       - run: npx --yes wrangler@4.152.0 pages deploy dist --project-name=example-project --branch=main
+
+  # Preview: every other branch gets its own URL, <branch>.example-project.pages.dev (noindex, see
+  # public/_headers). Built without SITE_URL, so it needs no private data: the legal pages show
+  # the template's placeholders. The `preview` environment holds only CLOUDFLARE_API_TOKEN;
+  # until it does, the job says so and skips the upload.
+  preview:
+    needs: verify
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
+    runs-on: ubuntu-latest
+    environment: preview
+    concurrency:
+      group: preview-${{ github.ref }}
+      cancel-in-progress: true
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Upload the preview
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        run: npx --yes wrangler@4.152.0 pages deploy dist --project-name=example-project --branch="${GITHUB_REF_NAME}"
+      - name: Explain a skipped preview
+        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: echo "::notice::No CLOUDFLARE_API_TOKEN in the preview environment, so no preview was uploaded."

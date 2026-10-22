@@ -5,3 +5,8 @@ https://:project.pages.dev/*
 
 https://:version.:project.pages.dev/*
   X-Robots-Tag: noindex
+
+# Built assets (CSS, JS, fonts, processed photos) carry a content hash in their name:
+# they never change, so browsers may keep them for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
