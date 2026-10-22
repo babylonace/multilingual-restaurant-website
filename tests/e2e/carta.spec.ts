@@ -394,17 +394,28 @@ test.describe('isotype sunrise in the brown band', () => {
       .toBeCloseTo(0, 3);
   });
 
-  test('lets the rays breathe, flare once and then rest', async ({ page }) => {
+  test('rests five seconds after the rays, then flares every five seconds', async ({ page }) => {
     test.skip(test.info().project.name === 'mobile', 'desktop only');
-    test.setTimeout(30_000);
+    test.setTimeout(45_000);
     await page.goto('/');
     await toCentre(page, '.sun-mark');
     const ray = page.locator('.sun-mark__ray').first();
-    const transform = () => ray.evaluate((r) => getComputedStyle(r).transform);
-    await expect.poll(transform, { timeout: 10_000 }).not.toBe('none');
-    // Breathing (about 5 s) and the flare are over by about 12 s: the sun is still.
-    await expect.poll(transform, { timeout: 16_000, intervals: [500] }).toBe('none');
-    await expect(ray).toHaveCSS('opacity', '1');
+    // Is the ray stretched (flaring) right now? At rest its transform is none or the identity.
+    const flaring = () =>
+      ray.evaluate((r) => {
+        const t = getComputedStyle(r).transform;
+        return t !== 'none' && !new DOMMatrix(t).isIdentity;
+      });
+    await expect.poll(() => rayOpacities(page), { timeout: 8000 }).toEqual(Array(9).fill(1));
+    // Stillness after the rays: no flare for the next few seconds.
+    for (let k = 0; k < 6; k++) {
+      expect(await flaring()).toBe(false);
+      await page.waitForTimeout(500);
+    }
+    const poll = { timeout: 9000, intervals: [100] };
+    await expect.poll(flaring, poll).toBe(true); // first flare
+    await expect.poll(flaring, poll).toBe(false); // rest
+    await expect.poll(flaring, poll).toBe(true); // and again, five seconds later
   });
 
   test('pauses the sunrise while the band is off screen', async ({ page }) => {

@@ -3,15 +3,16 @@
  * the brown band and the Andean borders of the olive band. Elements opt in with `data-reveal`;
  * this sets it to "waiting" until they are in view, then "in".
  *
- * "In view" means almost all of the element is on screen, above the bottom sixth of the window:
- * a sun peeking in at the bottom while the visitor is still looking at the photo does not count,
- * or the sunrise would be over before they get there. An element that is already properly in view
- * at load plays straight away.
+ * "In view" means the whole element is on screen, its bottom edge above the bottom tenth of the
+ * window: a sun peeking in at the bottom while the visitor is still looking at the photo does not
+ * count, or the sunrise would be over before they get there. An element that is already wholly in
+ * view at load plays straight away.
  *
  * Nothing is hidden unless it will animate: not without IntersectionObserver and not with reduced
  * motion. Once in, `data-offscreen` pauses the animation while the element is out of view.
  */
-const VISIBLE = 0.9;
+/** Practically all of it: 1 exactly can be missed by sub-pixel rounding. */
+const VISIBLE = 0.99;
 
 export function initReveal(): void {
   const elements = document.querySelectorAll<HTMLElement | SVGElement>('[data-reveal]');
@@ -32,7 +33,7 @@ export function initReveal(): void {
         }
       }
     },
-    { threshold: [0, VISIBLE], rootMargin: '0px 0px -16% 0px' },
+    { threshold: [0, VISIBLE], rootMargin: '0px 0px -10% 0px' },
   );
   elements.forEach((el) => observer.observe(el));
 }
