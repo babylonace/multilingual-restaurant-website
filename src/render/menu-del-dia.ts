@@ -52,6 +52,6 @@ export function menuDelDiaBody(page: Page): SafeHtml {
         </div>
       </div>
     </main>
-    <div class="brand-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="brand-bar" aria-hidden="true"></div>
     ${footer(page)}`;
 }

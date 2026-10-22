@@ -39,12 +39,13 @@
   }
 
   .pill--ghost:hover {
-    background: var(--cream-100);
+    background: var(--gold-200);
     color: var(--brown-900);
   }
 
+  /* Warm cream (gold-200): on the photo and the brown band, plain cream read as stark white. */
   .pill--cream {
-    background: var(--cream-100);
+    background: var(--gold-200);
     color: var(--brown-900);
   }
 
@@ -150,7 +151,7 @@
     padding: var(--space-4);
     border: 2px solid transparent;
     border-radius: var(--radius-lg);
-    background: var(--cream-100);
+    background: var(--gold-200);
     color: var(--brown-900);
     transition:
       var(--transition-colors),

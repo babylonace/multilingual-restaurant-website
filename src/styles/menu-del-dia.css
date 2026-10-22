@@ -19,16 +19,16 @@
     color: var(--cream-100);
   }
 
-  /* The sun of the logo, whole, low on the right, as in the brown band of the home page. */
+  /* The isotype for brown backgrounds, whole, low on the right, as in the brown band of the home. */
   .mdd::after {
     content: '';
     position: absolute;
     inset-inline-end: 3%;
     bottom: 32px;
-    width: min(42vw, 420px);
-    aspect-ratio: 1144 / 965;
-    background: url('/assets/brand/sol.svg') center / contain no-repeat;
-    opacity: 0.18;
+    height: min(80%, 440px);
+    aspect-ratio: 1144 / 1471;
+    background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
+    opacity: 0.3;
     pointer-events: none;
   }
 
@@ -55,7 +55,6 @@
   }
 
   .mdd__lead {
-    max-width: 34ch;
     margin-top: var(--space-4);
     font-family: var(--font-serif);
     font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
@@ -87,7 +86,7 @@
 
   .mdd__price dd {
     margin: 0;
-    font-size: clamp(3.25rem, 1.6rem + 8vw, 8rem);
+    font-size: clamp(3.25rem, 2rem + 4.5vw, 5.5rem);
     font-weight: 800;
     letter-spacing: -0.04em;
     line-height: 0.9;
@@ -101,7 +100,6 @@
   }
 
   .mdd__today {
-    max-width: 40ch;
     margin-top: 48px;
     font-family: var(--font-serif);
     font-size: 1.0625rem;

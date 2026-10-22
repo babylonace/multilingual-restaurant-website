@@ -36,7 +36,7 @@
     height: 100%;
     object-fit: cover;
     /* keep the Peruvian flag (upper middle of the photo) in frame */
-    object-position: 42% 38%;
+    object-position: 42% 45%;
     animation: hero-settle 1.6s var(--ease-standard) both;
   }
 
@@ -119,7 +119,7 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .hero__tags .chip::after {
-      animation: chip-shine 3.4s 1.1s var(--ease-standard) 2 both;
+      animation: chip-shine 5s 1.1s var(--ease-standard) 2 both;
     }
 
     .hero__tags .chip:nth-child(2)::after {
@@ -132,7 +132,7 @@
       translate: -130% 0;
     }
 
-    26%,
+    32%,
     100% {
       translate: 130% 0;
     }
@@ -208,7 +208,7 @@
     }
 
     .hero__img {
-      object-position: 50% 26%;
+      object-position: 50% 40%;
     }
 
     .hero__content {
@@ -238,25 +238,15 @@
     }
   }
 
+  /* One line in three colours, drawn as a single piece (hard stops, no seams between blocks). */
   .brand-bar {
-    display: flex;
     height: 10px;
-  }
-
-  .brand-bar i {
-    flex: 1;
-  }
-
-  .brand-bar i:nth-child(1) {
-    background: var(--gold-500);
-  }
-
-  .brand-bar i:nth-child(2) {
-    background: var(--terra-500);
-  }
-
-  .brand-bar i:nth-child(3) {
-    background: var(--olive-500);
+    background: linear-gradient(
+      90deg,
+      var(--gold-500) 0 33.34%,
+      var(--terra-500) 33.34% 66.67%,
+      var(--olive-500) 66.67% 100%
+    );
   }
 
   /* ---- Colour bands ---- */
@@ -284,13 +274,16 @@
   .band--brown::after {
     content: '';
     position: absolute;
-    /* The sun of the logo (the DS keeps it for ornament), whole, low on the right of the band. */
+    /*
+     * The isotype in its version for brown (cream fork, gold sun), whole inside the band, low on
+     * the right; tiles are opaque, so it passes behind them and never under text.
+     */
     inset-inline-end: 3%;
-    bottom: 24px;
-    width: min(38vw, 360px);
-    aspect-ratio: 1144 / 965;
-    background: url('/assets/brand/sol.svg') center / contain no-repeat;
-    opacity: 0.22;
+    bottom: 20px;
+    height: min(78%, 330px);
+    aspect-ratio: 1144 / 1471;
+    background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
+    opacity: 0.3;
     pointer-events: none;
   }
 
@@ -302,6 +295,31 @@
 
   .band--olive {
     background: var(--olive-500);
+  }
+
+  /*
+   * Andean stepped fret (escalonado with a square spiral) as a woven border at the top and the
+   * foot of the band, like the edge of a faja. Thin cream lines only: a full-field pattern was
+   * tried and competed with the text (docs/diseno.md). Purely decorative, so it is CSS, not markup.
+   */
+  .band--olive::before,
+  .band--olive::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    height: 24px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cpath d='M0 21H48M9 21V15H15V9H21V3H45V18H30V9H38' fill='none' stroke='%23F5F4F0' stroke-opacity='.32' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E")
+      repeat-x;
+    pointer-events: none;
+  }
+
+  .band--olive::before {
+    top: 14px;
+  }
+
+  .band--olive::after {
+    bottom: 14px;
+    scale: 1 -1;
   }
 
   /* The last band meets the footer directly, without a strip of cream between them. */
