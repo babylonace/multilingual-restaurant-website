@@ -54,7 +54,7 @@
 
       /* Phone row of dishes: the dish in the middle of the row is full size, the edges recede. */
       @media (max-width: 899px) {
-        .dishes__list > li {
+        .favs__list > li {
           animation: plate-focus linear both;
           animation-timeline: view(inline);
         }

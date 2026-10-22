@@ -4,7 +4,7 @@ import { whatsappIntentLink } from './contact';
 import { kindHref, type Page } from './context';
 import { footer } from './footer';
 import { mastheadBar } from './header';
-import { brandIcon, spriteSheet } from './icons';
+import { brandIcon, spriteSheet, uiIcon } from './icons';
 
 /** Confirmed by the restaurant: 13,00€ the full menu, 8,00€ the half menu. */
 const PRICES = { full: 1300, half: 800 } as const;
@@ -21,6 +21,9 @@ export function menuDelDiaBody(page: Page): SafeHtml {
     <header class="masthead masthead--home">${mastheadBar(page)}</header>
     <main id="content" class="mdd">
       <div class="mdd__inner">
+        <a class="mdd__back" href="${kindHref(ctx, 'home', ctx.lang)}"
+          >${uiIcon('arrow-left', 'mdd__back-icon')}${t.home}</a
+        >
         <h1 class="mdd__title">${t.menuDelDia}</h1>
         <p class="mdd__lead">${t.mddLead}</p>
         <dl class="mdd__prices">

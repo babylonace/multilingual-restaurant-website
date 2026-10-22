@@ -224,6 +224,12 @@ describe.each(LANGS)('menú del día "$code"', ({ code }) => {
     expect(body).toMatch(/8(,00)?\s?€|€\s?8(\.00)?|8(\.00)?\s?€/);
   });
 
+  it('offers a visible way back to the home page of the same language', () => {
+    const home = code === 'es' ? '/' : `/${code}/`;
+    expect(body).toMatch(new RegExp(`class="mdd__back" href="${home}"`));
+    expect(body).toContain(ui.home);
+  });
+
   it('asks on WhatsApp what is on today, since the dishes change every day', () => {
     expect(body).toContain(ui.waMenu);
     expect(body).toMatch(

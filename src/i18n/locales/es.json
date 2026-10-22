@@ -52,7 +52,8 @@
     "mddHalf": "Medio menú",
     "mddToday": "El menú cambia cada día. Escríbenos y te contamos qué hay hoy.",
     "waMenu": "¿Qué hay hoy de menú?",
-    "mddMetaDescription": "Menú del día de Inkawasi en Ferrol: de 13:00 a 16:00, dos primeros y dos segundos para elegir, con bebida y postre. Menú completo y medio menú."
+    "mddMetaDescription": "Menú del día de Inkawasi en Ferrol: de 13:00 a 16:00, dos primeros y dos segundos para elegir, con bebida y postre. Menú completo y medio menú.",
+    "home": "Inicio"
   },
   "allergens": {
     "gluten": "Gluten",

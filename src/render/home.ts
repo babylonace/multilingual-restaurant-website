@@ -115,10 +115,10 @@ function orderBand(page: Page): SafeHtml {
 function dishes(page: Page): SafeHtml {
   const { ctx, t } = page;
   const carta = kindHref(ctx, 'carta', ctx.lang);
-  return html`<section class="dishes" aria-labelledby="dishes-title">
-    <div class="dishes__inner">
+  return html`<section class="favs" aria-labelledby="dishes-title">
+    <div class="favs__inner">
       <h2 class="section-heading" id="dishes-title">${t.favorites}</h2>
-      <ul class="dishes__list">
+      <ul class="favs__list">
         ${FAVORITES.map(({ dish, section, image }) => {
           const { name, priceCents } = DISHES[dish];
           return html`<li>

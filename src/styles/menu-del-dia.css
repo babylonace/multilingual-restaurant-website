@@ -24,7 +24,7 @@
     content: '';
     position: absolute;
     inset-inline-end: 3%;
-    bottom: 32px;
+    top: 40px;
     height: min(80%, 440px);
     aspect-ratio: 1144 / 1471;
     background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
@@ -45,6 +45,68 @@
     max-width: var(--container-wide);
     margin-inline: auto;
     padding: 56px var(--gutter) 64px;
+  }
+
+  /* Way back to the home page, above the title. */
+  .mdd__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    margin-bottom: var(--space-3);
+    font-size: 0.9375rem;
+    font-weight: var(--fw-semibold);
+    color: var(--gold-300);
+  }
+
+  .mdd__back:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .mdd__back-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  [dir='rtl'] .mdd__back-icon {
+    transform: scaleX(-1);
+  }
+
+  /*
+   * The same diagonal shine as the chips of the home page, here across the letters of the title:
+   * twice after load, then still. The text keeps its cream colour for anyone without the effect.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (background-clip: text) {
+      .mdd__title {
+        background: linear-gradient(
+            105deg,
+            var(--cream-100) 0 42%,
+            var(--gold-300) 46.5%,
+            #fff 50%,
+            var(--gold-300) 53.5%,
+            var(--cream-100) 58% 100%
+          )
+          100% 0 / 260% 100% no-repeat;
+        /* the sweep spans the letters, not the whole column */
+        width: fit-content;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: title-shine 5s 0.8s var(--ease-standard) 2 both;
+      }
+    }
+  }
+
+  @keyframes title-shine {
+    0% {
+      background-position: 100% 0;
+    }
+
+    32%,
+    100% {
+      background-position: 0% 0;
+    }
   }
 
   .mdd__title {

@@ -196,8 +196,8 @@
 
   .tile--outline {
     border-color: rgb(245 244 240 / 0.55);
-    /* opaque, so the sun in the band passes behind the tile and never under its text */
-    background: var(--brown-700);
+    /* a darker brown than the band: reads as a button and hides the watermark behind it */
+    background: var(--brown-800);
     color: var(--cream-100);
   }
 
@@ -207,7 +207,7 @@
 
   .tile--outline:hover {
     border-color: var(--gold-400);
-    background: var(--brown-800);
+    background: var(--brown-900);
   }
 
   .band--brown :focus-visible {

@@ -279,7 +279,7 @@
      * the right; tiles are opaque, so it passes behind them and never under text.
      */
     inset-inline-end: 3%;
-    bottom: 20px;
+    top: 24px;
     height: min(78%, 330px);
     aspect-ratio: 1144 / 1471;
     background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
@@ -298,9 +298,9 @@
   }
 
   /*
-   * Andean stepped fret (escalonado with a square spiral) as a woven border at the top and the
-   * foot of the band, like the edge of a faja. Thin cream lines only: a full-field pattern was
-   * tried and competed with the text (docs/diseno.md). Purely decorative, so it is CSS, not markup.
+   * Andean square spirals as a woven border at the top and the foot of the band, like the edge of
+   * a faja: loose spirals, no steps and no baseline. Thin cream lines only: a full-field pattern
+   * competed with the text (docs/diseno.md). Purely decorative, so it is CSS, not markup.
    */
   .band--olive::before,
   .band--olive::after {
@@ -308,7 +308,7 @@
     position: absolute;
     inset-inline: 0;
     height: 24px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Cpath d='M0 21H48M9 21V15H15V9H21V3H45V18H30V9H38' fill='none' stroke='%23F5F4F0' stroke-opacity='.32' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E")
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='24' viewBox='0 0 32 24'%3E%3Cpath d='M6 21V3H26V17H12V9H20V13' fill='none' stroke='%23F5F4F0' stroke-opacity='.32' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E")
       repeat-x;
     pointer-events: none;
   }
@@ -367,12 +367,12 @@
   }
 
   /* ---- Favourite dishes ---- */
-  .dishes {
+  .favs {
     padding-block: 48px;
     background: var(--surface-sunken);
   }
 
-  .dishes__inner {
+  .favs__inner {
     max-width: var(--container-wide);
     margin-inline: auto;
   }
@@ -386,7 +386,7 @@
   }
 
   /* Phone: a row to swipe through, snapping to each card. Desktop: a 3 × 2 grid. */
-  .dishes__list {
+  .favs__list {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min(72%, 280px);
@@ -399,16 +399,16 @@
     overscroll-behavior-x: contain;
   }
 
-  .dishes__list > li {
+  .favs__list > li {
     scroll-snap-align: start;
   }
 
   @media (min-width: 900px) {
-    .dishes {
+    .favs {
       padding-block: 72px;
     }
 
-    .dishes__list {
+    .favs__list {
       grid-auto-flow: row;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 40px 32px;
