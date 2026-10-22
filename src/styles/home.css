@@ -279,22 +279,28 @@
     scroll-margin-top: 64px;
   }
 
-  /* Isotype watermark at 6%, always whole inside the band, never over the photo. */
-  .band--brown::after {
-    content: '';
-    position: absolute;
-    /*
-     * The isotype in its version for brown (cream fork, gold sun), whole inside the band, low on
-     * the right; tiles are opaque, so it passes behind them and never under text.
-     */
-    inset-block: 0;
-    inset-inline-end: 3%;
-    margin-block: auto;
-    height: min(78%, 330px);
-    aspect-ratio: 1144 / 1471;
-    background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
-    opacity: 0.3;
-    pointer-events: none;
+  /*
+   * The isotype for brown backgrounds (cream fork, gold sun) gets its own column to the right of
+   * the tiles on wide screens, vertically centred on them, so no tile covers it and it never sits
+   * under text. On narrower screens there is no room beside the tiles, so it is left out.
+   */
+  @media (min-width: 900px) {
+    .band--brown .band__inner {
+      padding-inline-end: calc(var(--gutter) + 240px);
+    }
+
+    .band--brown .band__inner::after {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: var(--gutter);
+      margin-block: auto;
+      width: 200px;
+      aspect-ratio: 1144 / 1471;
+      background: url('/assets/brand/isotipo-light.svg') center / contain no-repeat;
+      opacity: 0.35;
+      pointer-events: none;
+    }
   }
 
   @media (min-width: 900px) {
@@ -309,7 +315,8 @@
 
   /*
    * Andean square spirals as a woven border at the top and the foot of the band, like the edge of
-   * a faja: square spirals joined one to the next, as the motif runs on woven borders; no steps. Thin cream lines only: a full-field pattern
+   * a faja: square spirals side by side, not joined, no steps. Thin cream lines only: a
+   * full-field pattern
    * competed with the text (docs/diseno.md). Purely decorative, so it is CSS, not markup.
    */
   .band--olive::before,
@@ -317,18 +324,18 @@
     content: '';
     position: absolute;
     inset-inline: 0;
-    height: 24px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 18H2V4H20V16H7V9H15V12M20 16V18H24' fill='none' stroke='%23F5F4F0' stroke-opacity='.32' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E")
-      repeat-x;
+    height: 30px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M2 18V4H20V16H7V9H15V12' fill='none' stroke='%23F5F4F0' stroke-opacity='.32' stroke-width='2' stroke-linecap='square'/%3E%3C/svg%3E")
+      0 0 / 30px 30px repeat-x;
     pointer-events: none;
   }
 
   .band--olive::before {
-    top: 14px;
+    top: 6px;
   }
 
   .band--olive::after {
-    bottom: 14px;
+    bottom: 6px;
     scale: 1 -1;
   }
 

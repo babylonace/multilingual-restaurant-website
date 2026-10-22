@@ -46,10 +46,11 @@
       }
 
       /* Amanecer: the isotype (sun and fork) climbs into the brown band as it comes into view. */
-      .band--brown::after {
+      /* It finishes as soon as the band is fully on screen, so it is never seen off-centre. */
+      .band--brown .band__inner::after {
         animation: sunrise linear both;
         animation-timeline: view();
-        animation-range: entry 10% cover 55%;
+        animation-range: entry 0% entry 100%;
       }
 
       /* Phone row of dishes: the dish in the middle of the row is full size, the edges recede. */
