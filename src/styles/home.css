@@ -9,7 +9,7 @@
     top: 0;
     z-index: 40;
     border-bottom: 0;
-    background: rgb(237 235 228 / 0.94);
+    background: rgb(237 235 228 / 0.94); /* --surface-sunken, slightly see-through */
     backdrop-filter: blur(10px);
   }
 
@@ -369,6 +369,7 @@
   /* ---- Favourite dishes ---- */
   .dishes {
     padding-block: 48px;
+    background: var(--surface-sunken);
   }
 
   .dishes__inner {
