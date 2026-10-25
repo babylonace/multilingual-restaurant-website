@@ -16,7 +16,8 @@
     "optimize:images": "tsx scripts/optimize-images.ts",
     "build:og": "tsx scripts/og-image.ts",
     "lighthouse": "npx --yes @lhci/cli@0.15.1 autorun",
-    "build:favicon": "tsx scripts/favicon.ts"
+    "build:favicon": "tsx scripts/favicon.ts",
+    "instagram": "tsx scripts/instagram.ts"
   },
   "type": "module",
   "devDependencies": {

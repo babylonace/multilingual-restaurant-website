@@ -53,7 +53,13 @@
     "mddToday": "Le menu change chaque jour. Écrivez-nous et nous vous dirons ce qu’il y a aujourd’hui.",
     "waMenu": "Quel est le menu du jour ?",
     "mddMetaDescription": "Menu du jour d’Inkawasi à Ferrol : de 13 h à 16 h, deux entrées et deux plats au choix, avec boisson et dessert. Menu complet ou demi-menu.",
-    "home": "Accueil"
+    "home": "Accueil",
+    "igTitle": "Sur Instagram",
+    "igFollow": "Suivez-nous sur Instagram",
+    "igPost": "Publication Instagram",
+    "igReel": "Reel",
+    "igCarousel": "Plusieurs photos",
+    "igProfile": "notre profil Instagram"
   },
   "allergens": {
     "gluten": "Gluten",

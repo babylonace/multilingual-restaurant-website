@@ -138,16 +138,25 @@ function privacidad({ titular, siteUrl }: LegalInput): SafeHtml {
     <h2>4. Cookies y almacenamiento en tu dispositivo</h2>
     <p>
       Esta web <strong>no usa cookies</strong> ni herramientas de seguimiento, y no carga recursos
-      de terceros (fuentes, iconos o mapas incrustados). Lo único que guarda en tu navegador es el
-      idioma que eliges en la carta, para mostrártela en él la próxima vez; no sale de tu
-      dispositivo ni te identifica.
+      de terceros (fuentes, iconos, mapas o publicaciones incrustadas). Lo único que guarda en tu
+      navegador es el idioma que eliges en la carta, para mostrártela en él la próxima vez; no sale
+      de tu dispositivo ni te identifica.
     </p>
     <p>
       Hoy no usamos analítica. Si más adelante añadimos una medición de visitas sin cookies y sin
       identificar personas, lo indicaremos aquí.
     </p>
 
-    <h2>5. Quién más puede recibir datos</h2>
+    <h2>5. Publicaciones de Instagram</h2>
+    <p>
+      La página de inicio muestra nuestras últimas publicaciones de Instagram (@inkawasi.ferrol).
+      Son publicaciones propias. La web las copia en su propio servidor cuando se actualiza, una vez
+      al día, y guarda solo las seis últimas: al ver la página, tu navegador no contacta con
+      Instagram ni con Meta. Si pulsas una publicación, se abre Instagram, que trata tus datos según
+      su propia política de privacidad.
+    </p>
+
+    <h2>6. Quién más puede recibir datos</h2>
     <ul>
       <li>
         <strong>Alojamiento web y correo:</strong> Cloudflare, que aloja esta web, gestiona su
@@ -170,14 +179,14 @@ function privacidad({ titular, siteUrl }: LegalInput): SafeHtml {
       UE-EE. UU.).
     </p>
 
-    <h2>6. Cuánto tiempo conservamos los datos</h2>
+    <h2>7. Cuánto tiempo conservamos los datos</h2>
     <p>
       Las conversaciones y los datos de una reserva o pedido se conservan el tiempo necesario para
       atenderlos y, después, durante los plazos legales en los que pudieran derivarse
       responsabilidades. Los registros del servidor los gestiona el proveedor de alojamiento.
     </p>
 
-    <h2>7. Tus derechos</h2>
+    <h2>8. Tus derechos</h2>
     <p>
       Puedes pedir el acceso, la rectificación, la supresión, la oposición, la limitación y la
       portabilidad de tus datos escribiendo a

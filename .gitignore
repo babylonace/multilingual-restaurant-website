@@ -13,3 +13,6 @@ lighthouse-report
 .lighthouseci
 lighthouse-report
 .lighthouseci
+# Instagram posts, written by scripts/instagram.ts at build time; never versioned
+/public/instagram
+/public/instagram.tmp

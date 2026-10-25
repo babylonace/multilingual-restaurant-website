@@ -1,0 +1,179 @@
+name: Contenido
+
+# Keeps the Instagram section of the home page up to date (docs/propuesta-resenas-instagram.md,
+# section 1.8). Every morning it reads the latest posts and deploys only if they changed; on
+# Mondays it also renews the Instagram token. When something fails nothing is deployed, so the
+# site keeps the last good posts, and an issue explains what to do:
+#   - token refused: at once, and the run fails;
+#   - Meta not answering: only after 3 days in a row (a bad day is normal);
+#   - renewal or deploy failed: at once, and the run fails.
+#
+# Scheduled runs only happen on the default branch (main). Secrets, in the `production`
+# environment: INSTAGRAM_TOKEN, SECRETS_WRITE_TOKEN (a fine-grained token that may write this
+# repository's environment secrets, to store the renewed token), CLOUDFLARE_API_TOKEN and
+# INKAWASI_PRIVATE_JSON; variable CLOUDFLARE_ACCOUNT_ID.
+on:
+  schedule:
+    - cron: '0 6 * * *'
+      timezone: 'Europe/Madrid'
+  workflow_dispatch:
+    inputs:
+      renovar:
+        description: Renovar ahora el token de Instagram
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  instagram:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://inkawasi.es
+    # Shared with the deploy job of ci.yml: never two production uploads at once.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      SITE_URL: https://inkawasi.es
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Days in a row that Meta did not answer, carried from one run to the next.
+      - uses: actions/cache/restore@v6
+        with:
+          path: .instagram-fallos
+          key: instagram-fallos-${{ github.run_id }}
+          restore-keys: instagram-fallos-
+
+      # Exit codes of scripts/instagram.ts: 0 done, 2 Meta did not answer, 3 token refused,
+      # 4 anything else. It also writes `changed=true|false`.
+      - name: Read the latest posts
+        id: fetch
+        env:
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+        run: |
+          set +e
+          npm run --silent instagram
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        id: build
+        if: steps.fetch.outputs.code == '0' && steps.fetch.outputs.changed == 'true'
+        run: npm run build
+        env:
+          INKAWASI_PRIVATE_JSON: ${{ secrets.INKAWASI_PRIVATE_JSON }}
+
+      - name: Deploy
+        id: deploy
+        if: steps.build.outcome == 'success'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4.152.0 pages deploy dist --project-name=example-project --branch=main
+
+      # A token must be at least a day old to renew, and lasts 60 days from then: once a week
+      # leaves room for a few failed Mondays.
+      - name: Renew the token (Mondays)
+        id: renew
+        if: always() && steps.fetch.outputs.code != '3'
+        env:
+          RENOVAR: ${{ inputs.renovar }}
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          GH_TOKEN: ${{ secrets.SECRETS_WRITE_TOKEN }}
+        run: |
+          if [ "$RENOVAR" != true ] && { [ "$GITHUB_EVENT_NAME" != schedule ] || [ "$(TZ=Europe/Madrid date +%u)" != 1 ]; }; then
+            echo "Not Monday: nothing to renew."
+            exit 0
+          fi
+          file="$RUNNER_TEMP/instagram-token"
+          trap 'rm -f "$file"' EXIT
+          npm run --silent instagram -- --renovar --salida "$file"
+          gh secret set INSTAGRAM_TOKEN --env production < "$file"
+          echo "INSTAGRAM_TOKEN updated in the production environment."
+
+      - name: Decide
+        id: verdict
+        if: always()
+        run: |
+          code="${{ steps.fetch.outputs.code }}"
+          days=$(cat .instagram-fallos 2>/dev/null || echo 0)
+          if [ "$code" = 2 ]; then days=$((days + 1)); else days=0; fi
+          echo "$days" > .instagram-fallos
+          problem=""
+          case "$code" in
+            0) ;;
+            2) if [ "$days" -ge 3 ]; then problem=meta; else
+                 echo "::warning::Instagram did not answer today (day $days of 3). The site keeps the last posts."
+               fi ;;
+            3) problem=token ;;
+            *) problem=other ;;
+          esac
+          if [ -z "$problem" ] && { [ "${{ steps.build.outcome }}" = failure ] || [ "${{ steps.deploy.outcome }}" = failure ]; }; then
+            problem=deploy
+          fi
+          if [ -z "$problem" ] && [ "${{ steps.renew.outcome }}" = failure ]; then problem=renew; fi
+          echo "problem=$problem" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache/save@v6
+        if: always()
+        with:
+          path: .instagram-fallos
+          key: instagram-fallos-${{ github.run_id }}
+
+      - name: Open or update the issue
+        if: always() && steps.verdict.outputs.problem != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROBLEM: ${{ steps.verdict.outputs.problem }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="La sección de Instagram no se actualiza"
+          case "$PROBLEM" in
+            token) what="Instagram no acepta el token: ha caducado o se ha revocado.
+
+          Qué hacer (unos 2 minutos):
+          1. En https://developers.facebook.com/apps abre la app de Inkawasi → Instagram → «Configuración de la API con inicio de sesión de Instagram» → «Generar token», e inicia sesión con @inkawasi.ferrol.
+          2. Copia el token.
+          3. En GitHub: Settings → Environments → production → INSTAGRAM_TOKEN → Update secret, y pégalo.
+          4. En Actions → Contenido → Run workflow, lánzalo a mano." ;;
+            meta) what="La API de Instagram lleva 3 días seguidos sin responder. Puede ser una caída de Meta o un cambio en su API. Si mañana sigue igual, hay que revisarlo." ;;
+            renew) what="No se pudo renovar el token. El actual sigue valiendo hasta que se cumplan 60 días de la última renovación. Revisa que el secreto SECRETS_WRITE_TOKEN no haya caducado." ;;
+            deploy) what="Los posts se leyeron, pero el build o la subida a Cloudflare falló." ;;
+            *) what="Falló la lectura de Instagram por un motivo inesperado." ;;
+          esac
+          body="$what
+
+          La web sigue mostrando las últimas publicaciones buenas. Detalle de la ejecución: $RUN_URL"
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
+
+      - name: Close the issue once it works again
+        if: steps.verdict.outputs.problem == '' && steps.fetch.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="La sección de Instagram no se actualiza"
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then gh issue close "$number" --comment "Vuelve a funcionar."; fi
+
+      - name: Fail the run if a person has to act
+        if: always() && steps.verdict.outputs.problem != ''
+        run: |
+          echo "::error::Instagram: ${{ steps.verdict.outputs.problem }} (see the issue)."
+          exit 1

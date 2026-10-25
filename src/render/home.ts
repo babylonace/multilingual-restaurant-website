@@ -9,10 +9,8 @@ import { mastheadBar } from './header';
 import { brandIcon, spriteSheet, uiIcon } from './icons';
 import { reviewCallout } from './info';
 import { isotype } from './isotype';
-import { picture, pictureOf } from './picture';
-
-/** A plate is 280 px wide in the phone's swipe row and a third of the 1100 px column on desktop. */
-const PLATE_SIZES = '(min-width: 900px) 340px, 280px';
+import { instagramSection } from './instagram';
+import { PLATE_SIZES, picture, pictureOf } from './picture';
 
 /**
  * First screen, in the style of the Instagram pieces: the dining room full bleed under a brown
@@ -157,6 +155,7 @@ export function homeBody(page: Page): SafeHtml {
       <div class="band band--olive" data-reveal>
         <div class="band__inner">${reviewCallout(page)}</div>
       </div>
+      ${instagramSection(page)}
     </main>
     ${footer(page)}`;
 }

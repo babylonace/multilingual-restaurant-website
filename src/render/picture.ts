@@ -24,6 +24,12 @@ export interface Pictures {
   favorites: Record<string, Picture>;
 }
 
+/**
+ * How wide a favourite is shown: 280 px in the phone's swipe row, a third of the 1100 px column on
+ * desktop. The Instagram fallback uses the same value, so the browser reuses the file it already has.
+ */
+export const PLATE_SIZES = '(min-width: 900px) 340px, 280px';
+
 /** The photo of a favourite; a missing one is a build error, never a broken image. */
 export function pictureOf(pictures: Pictures, image: string): Picture {
   const found = pictures.favorites[image];

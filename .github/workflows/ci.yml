@@ -70,6 +70,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # The Instagram posts of the last good daily run (contenido.yml), copied from the live site,
+      # so a push does not swap them for the fallback photos. No call to Meta here.
+      - run: npm run instagram -- --publicado
+        env:
+          SITE_URL: https://inkawasi.es
       - run: npm run build
         env:
           SITE_URL: https://inkawasi.es

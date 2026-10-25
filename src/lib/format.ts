@@ -37,3 +37,11 @@ export function formatPrice(cents: number, lang: LangCode): string {
     .format(cents / 100)
     .replace(/[‎‏]/g, '');
 }
+
+/** `"2026-10-20T12:00:00Z" → "20 de octubre de 2026"` (es), the day as it was in Ferrol. */
+export function formatDate(iso: string, lang: LangCode): string {
+  return new Intl.DateTimeFormat(NUMBER_LOCALE[lang], {
+    dateStyle: 'long',
+    timeZone: 'Europe/Madrid',
+  }).format(new Date(iso));
+}

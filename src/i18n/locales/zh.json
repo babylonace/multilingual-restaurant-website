@@ -53,7 +53,13 @@
     "mddToday": "套餐每天更换。给我们发消息，告诉您今天有什么。",
     "waMenu": "今天的套餐是什么？",
     "mddMetaDescription": "Inkawasi 费罗尔每日套餐：13:00–16:00，两道头盘和两道主菜任选，含饮料和甜点。全套或半套。",
-    "home": "首页"
+    "home": "首页",
+    "igTitle": "Instagram 动态",
+    "igFollow": "在 Instagram 上关注我们",
+    "igPost": "Instagram 帖子",
+    "igReel": "Reels 短视频",
+    "igCarousel": "多张照片",
+    "igProfile": "我们的 Instagram 主页"
   },
   "allergens": {
     "gluten": "麸质",

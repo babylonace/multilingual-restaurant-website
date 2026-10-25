@@ -10,3 +10,12 @@ https://:version.:project.pages.dev/*
 # they never change, so browsers may keep them for a year.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Instagram section (scripts/instagram.ts). The images carry a content hash in their name.
+# The feed is what the next daily build compares against: always revalidated, never indexed.
+/instagram/img/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/instagram/feed.json
+  Cache-Control: no-cache
+  X-Robots-Tag: noindex

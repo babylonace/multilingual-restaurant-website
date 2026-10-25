@@ -53,7 +53,13 @@
     "mddToday": "Il menù cambia ogni giorno. Scrivici e ti diciamo cosa c’è oggi.",
     "waMenu": "Cosa c’è oggi nel menù?",
     "mddMetaDescription": "Menù del giorno di Inkawasi a Ferrol: dalle 13:00 alle 16:00, due primi e due secondi a scelta, con bevanda e dessert. Menù completo o mezzo menù.",
-    "home": "Home"
+    "home": "Home",
+    "igTitle": "Su Instagram",
+    "igFollow": "Seguici su Instagram",
+    "igPost": "Post di Instagram",
+    "igReel": "Reel",
+    "igCarousel": "Più foto",
+    "igProfile": "il nostro profilo Instagram"
   },
   "allergens": {
     "gluten": "Glutine",

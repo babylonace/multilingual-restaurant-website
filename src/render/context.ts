@@ -1,6 +1,7 @@
 import { LANGS } from '../data/langs';
 import type { LangCode, LangDef } from '../data/types';
 import { DEFAULT_LANG, LOCALES, type Locale } from '../i18n';
+import type { InstagramFeed } from '../data/instagram';
 import type { Pictures } from './picture';
 
 export interface RenderContext {
@@ -11,6 +12,8 @@ export interface RenderContext {
   siteUrl?: string;
   /** Photos from the image pipeline (src/lib/pictures.ts in the build, a fixture in the tests). */
   pictures: Pictures;
+  /** Latest Instagram posts (src/lib/instagram.ts). Without them the section shows the favourites. */
+  instagram?: InstagramFeed;
 }
 
 /** What links and absolute URLs need from a context. */

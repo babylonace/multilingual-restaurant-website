@@ -4,13 +4,14 @@ import type { LangCode } from '../data/types';
 import { DEFAULT_LANG } from '../i18n';
 import type { RenderContext } from '../render/context';
 import { getBuildConfig } from '../../scripts/config';
+import { loadInstagram } from './instagram';
 import { loadPictures } from './pictures';
 
 export const { base, siteUrl } = getBuildConfig();
 
-/** The render context of one language: base path, public origin and the processed photos. */
+/** The render context of one language: base path, public origin, the processed photos and the Instagram posts. */
 export async function renderContext(lang: LangCode): Promise<RenderContext> {
-  return { lang, base, siteUrl, pictures: await loadPictures() };
+  return { lang, base, siteUrl, pictures: await loadPictures(), instagram: loadInstagram() };
 }
 
 /**
