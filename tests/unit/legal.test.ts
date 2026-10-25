@@ -46,7 +46,7 @@ describe('contents', () => {
     expect(body).toMatch(/Titular/);
     expect(body).toMatch(/NIE/);
     expect(body).toMatch(/Domicilio/);
-    expect(body).toContain('owner@example.com');
+    expect(body).toContain('contacto@inkawasi.es');
   });
 
   it('states there are no cookies and names the processors', () => {
@@ -54,6 +54,7 @@ describe('contents', () => {
     expect(body).toContain('no usa cookies');
     expect(body).toContain('Cloudflare');
     expect(body).toContain('Netlify');
+    expect(body).toContain('Gmail');
     expect(body).toContain('aepd.es');
   });
 });

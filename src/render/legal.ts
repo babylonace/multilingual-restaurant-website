@@ -150,8 +150,10 @@ function privacidad({ titular, siteUrl }: LegalInput): SafeHtml {
     <h2>5. Quién más puede recibir datos</h2>
     <ul>
       <li>
-        <strong>Alojamiento web:</strong> Cloudflare, que sirve esta web y su dominio, y Netlify,
-        que redirige la dirección antigua inkawasi.netlify.app, como encargados del tratamiento.
+        <strong>Alojamiento web y correo:</strong> Cloudflare, que aloja esta web, gestiona su
+        dominio y reenvía el correo de @inkawasi.es; Netlify, que entrega la web a los visitantes y
+        redirige la dirección antigua inkawasi.netlify.app; y Google (Gmail), donde recibimos ese
+        correo. Los tres actúan como encargados del tratamiento.
       </li>
       <li>
         <strong>WhatsApp (Meta):</strong> si nos escribes por WhatsApp, esa plataforma trata tus
