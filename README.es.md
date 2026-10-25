@@ -6,6 +6,12 @@ Carta digital multilingüe de **Inkawasi**, cocina tradicional peruana en Ferrol
 
 Este proyecto es el resultado de auditar y refactorizar una primera versión generada con una herramienta de diseño. Resumen de la auditoría y las decisiones más abajo.
 
+**En vivo:** [inkawasi.es](https://inkawasi.es) · [carta en español](https://inkawasi.es/carta/)
+
+| Inicio, móvil                                                                                                                                                 | Carta, móvil                                                                                                                                        | Inicio, escritorio                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| <img src="docs/images/home-mobile.webp" alt="Inicio en el móvil: foto del restaurante, título y botones de la carta, el menú del día y WhatsApp" width="220"> | <img src="docs/images/carta-mobile.webp" alt="Carta en inglés en el móvil: platos favoritos con foto y precio, y pestañas por sección" width="220"> | <img src="docs/images/home-desktop.webp" alt="Inicio en una pantalla de escritorio" width="420"> |
+
 ## Resultados
 
 Lighthouse en móvil (throttling simulado, mediana de 3 ejecuciones), versión original frente a la actual:
@@ -96,7 +102,7 @@ npm run build          # tokens + build de Astro  → dist/
 npm run preview        # sirve dist/
 npm test               # unitarios (471)
 npm run test:e2e       # e2e + accesibilidad (112), construye antes
-npm run lighthouse     # Lighthouse móvil sobre dist/ con los umbrales del plan
+npm run lighthouse     # Lighthouse móvil sobre dist/ con los umbrales de lighthouserc.json
 npm run lint && npm run format:check && npm run typecheck
 npm run build:favicon  # regenera el icono de pestaña desde el isotipo oficial
 npm run optimize:images  # regenera el logo
@@ -111,7 +117,7 @@ npm run build:og       # regenera public/og-image.jpg (1200×630) con Playwright
 | El horario o el día cerrado        | No está en esta web: se gestiona en Google Business Profile y «Ver horario» abre la ficha de Google Maps                     |
 | Un mensaje de WhatsApp             | `src/data/whatsapp.ts` (en español, lo lee el personal). Etiquetas de los botones por idioma: `ui.wa*` en los JSON de idioma |
 | Teléfono, dirección, enlaces       | `src/render/contact.ts`                                                                                                      |
-| El menú del día                    | Aún no es editable: llega con el CMS en la etapa 4 de `docs/plan-web.md`                                                     |
+| El menú del día                    | Aún no es editable: llega con el CMS previsto en «Pendiente»                                                                 |
 | Un cierre puntual (vacaciones)     | Aún no es editable: también en la etapa 4 (CMS)                                                                              |
 | Colores, espacios o tipografía     | Copia el `tokens.json` nuevo del design system en `design-system/` y haz build. Nunca a mano en el CSS                       |
 | Una foto (portada o favorito)      | Sustituye el original en `src/assets/fotos/` con el mismo nombre (máximo 2400 px); el build genera AVIF y WebP               |
@@ -151,5 +157,11 @@ SITE_URL=https://inkawasi.es npm run build
 
 ## Pendiente
 
+- Un CMS pequeño para el menú del día y los cierres puntuales.
 - Sustituir la imagen Open Graph por una con foto del local.
-- Logo, fotos y marca pertenecen a Inkawasi.
+
+## Licencia
+
+El código tiene [licencia MIT](LICENSE). El nombre, el logotipo, las fotografías y los textos de la carta de Inkawasi pertenecen al restaurante y no están cubiertos por ella: ver [NOTICE](NOTICE).
+
+Hecho por [babylonace](https://github.com/babylonace). AI-assisted.

@@ -6,6 +6,12 @@ Multilingual digital menu for **Inkawasi**, a traditional Peruvian restaurant in
 
 This project is the result of auditing and refactoring a first version that was generated with a design tool. The audit findings and design decisions are summarised below.
 
+**Live:** [inkawasi.es](https://inkawasi.es) · [English menu](https://inkawasi.es/en/carta/)
+
+| Home, phone                                                                                                                                                                     | Menu, phone                                                                                                                                         | Home, desktop                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| <img src="docs/images/home-mobile.webp" alt="Home page on a phone: cover photo of the restaurant, title and buttons for the menu, the daily set menu and WhatsApp" width="220"> | <img src="docs/images/carta-mobile.webp" alt="English menu on a phone: favourite dishes with photos and prices, then tabs per section" width="220"> | <img src="docs/images/home-desktop.webp" alt="Home page on a desktop screen" width="420"> |
+
 ## Results
 
 Lighthouse on mobile (simulated throttling, median of 3 runs), original version vs. current:
@@ -96,7 +102,7 @@ npm run build          # tokens + Astro build  → dist/
 npm run preview        # serves dist/
 npm test               # unit tests (471)
 npm run test:e2e       # e2e + accessibility (112), builds first
-npm run lighthouse     # mobile Lighthouse on dist/ with the plan's thresholds
+npm run lighthouse     # mobile Lighthouse on dist/ with the thresholds in lighthouserc.json
 npm run lint && npm run format:check && npm run typecheck
 npm run build:favicon  # rebuilds the tab icon from the official isotype
 npm run optimize:images  # rebuilds the logo
@@ -111,7 +117,7 @@ npm run build:og       # rebuilds public/og-image.jpg (1200×630) with Playwrigh
 | Opening hours, the closed day  | Not on this site: they are kept in Google Business Profile, and "See opening hours" opens the Google Maps card      |
 | A WhatsApp message             | `src/data/whatsapp.ts` (Spanish, read by the staff). Button labels per language: `ui.wa*` in the locale files       |
 | Phone, address, links          | `src/render/contact.ts`                                                                                             |
-| The daily menu                 | Not editable yet: it arrives with the CMS in stage 4 of `docs/plan-web.md`                                          |
+| The daily menu                 | Not editable yet: it arrives with the CMS planned in "To do"                                                        |
 | A one-off closure (holiday)    | Not editable yet: same stage 4 (CMS)                                                                                |
 | Colours, spacing or type       | Copy the design system's new `tokens.json` into `design-system/` and build. Never by hand in the CSS                |
 | A photo (cover or favourite)   | Replace the original in `src/assets/fotos/` under the same name (at most 2400 px); the build makes AVIF and WebP    |
@@ -151,5 +157,11 @@ SITE_URL=https://inkawasi.es npm run build
 
 ## To do
 
+- A small CMS for the daily set menu and one-off closures.
 - Replace the Open Graph image with one that uses a photo of the restaurant.
-- Logo, photos and brand belong to Inkawasi.
+
+## License
+
+The code is under the [MIT license](LICENSE). The Inkawasi name, logo, photographs and menu texts belong to the restaurant and are not covered by it: see [NOTICE](NOTICE).
+
+Built by [babylonace](https://github.com/babylonace). AI-assisted.

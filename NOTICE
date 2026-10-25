@@ -1,0 +1,17 @@
+Inkawasi · Digital menu
+
+The source code in this repository is licensed under the MIT License (see LICENSE).
+
+The following are NOT covered by that license and remain the property of Inkawasi, all rights reserved:
+
+- The Inkawasi name, logos, isotype and other brand assets (assets-src/brand/, public/assets/,
+  public/favicon.svg, public/apple-touch-icon.png, public/og-image.jpg).
+- The photographs (src/assets/fotos/) and the screenshots of the live site (docs/images/).
+- The menu content: dish names, descriptions, prices and translations (src/data/, src/i18n/locales/).
+
+They are published with the restaurant's permission so the project can be studied and run locally.
+Do not reuse them for another business.
+
+Third-party components keep their own licenses: Montserrat and Lora (SIL Open Font License 1.1, via
+Fontsource), simple-icons (CC0 1.0; the brand icons remain trademarks of their owners) and
+country-flag-icons (MIT).
