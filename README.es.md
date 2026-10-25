@@ -100,7 +100,7 @@ npm install
 npm run dev            # servidor de desarrollo con todas las páginas
 npm run build          # tokens + build de Astro  → dist/
 npm run preview        # sirve dist/
-npm test               # unitarios (471)
+npm test               # unitarios (481)
 npm run test:e2e       # e2e + accesibilidad (112), construye antes
 npm run lighthouse     # Lighthouse móvil sobre dist/ con los umbrales de lighthouserc.json
 npm run lint && npm run format:check && npm run typecheck

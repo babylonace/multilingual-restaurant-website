@@ -100,7 +100,7 @@ npm install
 npm run dev            # dev server with every page
 npm run build          # tokens + Astro build  → dist/
 npm run preview        # serves dist/
-npm test               # unit tests (471)
+npm test               # unit tests (481)
 npm run test:e2e       # e2e + accessibility (112), builds first
 npm run lighthouse     # mobile Lighthouse on dist/ with the thresholds in lighthouserc.json
 npm run lint && npm run format:check && npm run typecheck
