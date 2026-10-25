@@ -1,0 +1,25 @@
+# Watchman for the Netlify gateway (docs/plan-bloqueos-laliga.md, src/index.ts).
+# Deploy: npx --yes wrangler@4.152.0 deploy --config workers/vigia/wrangler.toml
+# Secret: npx --yes wrangler@4.152.0 secret put CF_DNS_TOKEN --config workers/vigia/wrangler.toml
+name = "gateway-watchman"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+# No public URL: it only runs on its schedule.
+workers_dev = false
+preview_urls = false
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+ZONE_NAME = "inkawasi.es"
+NAMES = "inkawasi.es,www.inkawasi.es"
+PROBE_URL = "https://example-gateway.netlify.app/"
+CLOUDFLARE_TARGET = "example-project.pages.dev"
+ALERT_FROM = "watchman@example.com"
+ALERT_TO = "owner@example.com"
+
+# Email Routing can only send to a verified destination address of the zone.
+[[send_email]]
+name = "ALERT"
+destination_address = "owner@example.com"

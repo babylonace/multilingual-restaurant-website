@@ -1,0 +1,13 @@
+# inkawasi.es goes through this Netlify project (example-gateway) so that visitors on Spanish ISPs
+# can still reach it while the court-ordered LaLiga blocks cut Cloudflare's shared IPs during
+# football matches (docs/plan-bloqueos-laliga.md). Netlify fetches every request from Cloudflare
+# Pages behind the scenes; its servers are not behind a Spanish ISP, so the block does not reach them.
+#
+# The origin is origin.example.com, a second custom domain of the same Pages project, and not
+# example-project.pages.dev: public/_headers marks *.pages.dev with X-Robots-Tag: noindex, and Netlify
+# cannot drop an upstream header (its custom headers never apply to proxied content).
+#
+# Deploy this folder by hand (Netlify → example-gateway → Deploys → drag and drop the folder).
+# Each production deploy costs 15 of the team's 300 monthly credits, so change it rarely.
+
+/*  https://origin.example.com/:splat  200!
