@@ -102,12 +102,13 @@ export function cleanLabel(text: string): string {
 }
 
 /**
- * A post of the menú del día: `#menudeldia` or the words "menú del día" in its caption or alt
- * text, with or without accents.
+ * A post of the menú del día: `#menudeldia` in its caption or alt text, with or without accents
+ * or capitals. Only the hashtag: a post that just mentions the menu ("pregunta por el menú del
+ * día") is not one.
  */
 export function isMenuText(text: string): boolean {
   const plain = text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
-  return /#menudeldia|\bmenu\s+del\s+dia\b/.test(plain);
+  return /#menudeldia(?![\p{L}\p{N}_])/u.test(plain);
 }
 
 function str(value: unknown): string | undefined {

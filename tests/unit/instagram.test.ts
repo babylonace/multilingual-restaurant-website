@@ -106,14 +106,17 @@ describe('cleanLabel', () => {
 });
 
 describe('isMenuText', () => {
-  it.each(['#menudeldia', '#MenúDelDía de hoy', 'Nuestro menú del día', 'MENU DEL DIA'])(
+  it.each(['#menudeldia', '#MenúDelDía de hoy', 'Hoy: ceviche. #menudeldia #ferrol'])(
     'spots "%s"',
     (text) => expect(isMenuText(text)).toBe(true),
   );
 
-  it('ignores other posts', () => {
-    expect(isMenuText('Ceviche del día, en la carta')).toBe(false);
-  });
+  it.each([
+    'Ceviche del día, en la carta',
+    // A real post of the account: it mentions the menu but is not one.
+    '¡Pide tu sello con nosotros! Y no olvides preguntar por el menú del día',
+    '#menudeldiasiguiente',
+  ])('ignores "%s"', (text) => expect(isMenuText(text)).toBe(false));
 });
 
 describe('toCandidates', () => {
