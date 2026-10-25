@@ -1,7 +1,7 @@
 {
   "name": "inkawasi-web",
   "version": "1.0.0",
-  "description": "Carta web multilingüe de Inkawasi (cocina peruana, Ferrol): sitio estático pre-renderizado en 10 idiomas.",
+  "description": "Multilingual digital menu for Inkawasi, a Peruvian restaurant in Ferrol: a static site pre-rendered in 10 languages.",
   "scripts": {
     "tokens": "tsx scripts/tokens.ts",
     "dev": "npm run tokens && astro dev",

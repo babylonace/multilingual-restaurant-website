@@ -24,7 +24,7 @@ function text(value: unknown, field: string): string {
   return value.trim();
 }
 
-/** Validates the shape of the private JSON. Extra keys (such as `_aviso`) are ignored. */
+/** Validates the shape of the private JSON. Extra keys (such as `_note`) are ignored. */
 export function parsePrivate(json: unknown): PrivateData {
   const titular = (json as { titular?: Record<string, unknown> } | null)?.titular;
   if (!titular || typeof titular !== 'object') {

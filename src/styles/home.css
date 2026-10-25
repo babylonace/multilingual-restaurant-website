@@ -327,7 +327,7 @@
    * Andean square spirals as a woven border at the top and the foot of the band, like the edge of
    * a faja: square spirals side by side, not joined, no steps. Thin cream lines only: a
    * full-field pattern
-   * competed with the text (docs/diseno.md). Purely decorative, so it is CSS, not markup.
+   * competed with the text. Purely decorative, so it is CSS, not markup.
    */
   .band--olive::before,
   .band--olive::after {

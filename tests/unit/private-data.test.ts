@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { loadPrivate, parsePrivate } from '../../scripts/private-data';
 
 const VALID = {
-  _aviso: 'ignored',
+  _note: 'ignored',
   titular: { nombre: ' Ana Pérez ', nie: 'X1234567L', domicilio: 'Calle Falsa 1, Ferrol' },
 };
 
