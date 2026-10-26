@@ -21,15 +21,17 @@ La primera versión salió de una herramienta de diseño: funcionaba, pero era l
 los buscadores y llena de texto fijo. Rehacerla resolvió problemas que tienen casi todas las webs de
 negocios pequeños, sean restaurantes o no:
 
-| Problema                          | Cómo se resuelve aquí                                                                                                                                             |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lenta en el móvil                 | Páginas generadas de antemano, 2,2 KB de JavaScript y ninguna petición a otras webs. Rendimiento en Lighthouse de 44 a **95**                                     |
-| Muchos idiomas que no se desfasen | Un archivo por idioma, tipado contra el español: una traducción que falta **detiene el build** en vez de dejar un hueco en la web                                 |
-| Idiomas de derecha a izquierda    | Árabe de verdad: `dir="rtl"`, propiedades lógicas de CSS y precios aislados para que los números no se den la vuelta                                              |
-| Accesibilidad                     | Contraste, regiones, uso con teclado y revisión con axe-core en cada tipo de página. Accesibilidad de 86 a **100**                                                |
-| Que la encuentren los buscadores  | Una URL real por idioma con `hreflang`, sitemap y datos estructurados. SEO de 82 a **100**                                                                        |
-| Datos erróneos ante el cliente    | Precios en céntimos y los 14 alérgenos oficiales como tipo, comprobados por tests. La auditoría encontró además "cacahuete" traducido como "almendras" en gallego |
-| Datos privados que exige la ley   | Fuera de Git; solo los inyecta el build de producción, y un test falla si se filtran                                                                              |
+| Problema                          | Cómo se resuelve aquí                                                                                                                                              |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Lenta en el móvil                 | Páginas generadas de antemano, 2,2 KB de JavaScript y ninguna petición a otras webs. Rendimiento en Lighthouse de 44 a **95**                                      |
+| Muchos idiomas que no se desfasen | Un archivo por idioma, tipado contra el español: una traducción que falta **detiene el build** en vez de dejar un hueco en la web                                  |
+| Idiomas de derecha a izquierda    | Árabe de verdad: `dir="rtl"`, propiedades lógicas de CSS y precios aislados para que los números no se den la vuelta                                               |
+| Accesibilidad                     | Contraste, regiones, uso con teclado y revisión con axe-core en cada tipo de página. Accesibilidad de 86 a **100**                                                 |
+| Que la encuentren los buscadores  | Una URL real por idioma con `hreflang`, sitemap y datos estructurados. SEO de 82 a **100**                                                                         |
+| Datos erróneos ante el cliente    | Precios en céntimos y los 14 alérgenos oficiales como tipo, comprobados por tests. La auditoría encontró además "cacahuete" traducido como "almendras" en gallego  |
+| Datos privados que exige la ley   | Fuera de Git; solo los inyecta el build de producción, y un test falla si se filtran                                                                               |
+| Redes sociales sin widgets        | Los 6 últimos posts de Instagram, que un build programado lee una vez al día y sirve desde la propia web: sin scripts de Meta, sin cookies y nunca vacía           |
+| Bloqueada durante el fútbol       | Los operadores bloquean IP de Cloudflare durante los partidos de LaLiga; una puerta en Netlify mantiene la web y un Worker pequeño vuelve atrás si la puerta falla |
 
 Lighthouse en móvil (throttling simulado, mediana de 3 ejecuciones), primera versión frente a la actual:
 
@@ -53,7 +55,7 @@ git clone https://github.com/babylonace/inkawasi-web.git
 cd inkawasi-web
 npm ci
 npm run dev        # todas las páginas e idiomas en http://localhost:4321
-npm test           # 481 tests unitarios
+npm test           # 649 tests unitarios
 npm run build      # la web estática en dist/
 ```
 
@@ -67,6 +69,9 @@ Funciona sin ningún archivo privado: las páginas legales usan los textos de ej
   solo hace las rutas, empaqueta y optimiza fuentes e imágenes; no envía ningún framework al navegador.
 - **JavaScript es opcional.** El contenido y el selector de idioma son HTML y enlaces normales; el script de
   2,2 KB añade las pestañas y recuerda el idioma elegido.
+- **Contenido al día sin servidor.** Una ejecución diaria de GitHub Actions lee los últimos posts de Instagram,
+  recorta y convierte las fotos y solo vuelve a publicar si algo cambió. Si Instagram no responde, la web
+  conserva los últimos posts buenos; si el token deja de valer, abre un issue con lo que hay que hacer.
 
 El recorrido completo, las decisiones y lo que corrigió la auditoría están en
 **[docs/how-it-works.md](docs/how-it-works.md)**; el despliegue, los secretos y las redirecciones, en
@@ -98,9 +103,10 @@ los idiomas, las funciones testeadas, las fuentes, las imágenes y el CI funcion
 
 ## Tests y CI
 
-- **481 tests unitarios** (Vitest): funciones de render, formatos por idioma, alérgenos, rutas, sitemap,
-  escapado, las reglas del sistema de diseño y un test contra filtraciones de datos privados.
-- **112 tests end-to-end y de accesibilidad** (Playwright + axe-core): cada tipo de página, varios idiomas,
+- **649 tests unitarios** (Vitest): funciones de render, formatos por idioma, alérgenos, rutas, sitemap,
+  escapado, las reglas del sistema de diseño, un test contra filtraciones de datos privados, el feed de
+  Instagram (con una API falsa, nunca la real) y las comprobaciones de la puerta.
+- **160 tests end-to-end y de accesibilidad** (Playwright + axe-core): cada tipo de página, varios idiomas,
   uso con teclado, diseño de derecha a izquierda y WCAG A/AA.
 - **Lighthouse CI:** el build falla si el rendimiento en móvil baja de 90, o accesibilidad, buenas prácticas
   o SEO bajan de 95.
@@ -110,7 +116,7 @@ GitHub Actions lo ejecuta todo, más formato, lint y tipos, en cada push.
 ## Stack
 
 Astro · TypeScript estricto · CSS con cascade layers y design tokens · Vitest · Playwright + axe-core ·
-Lighthouse CI · ESLint · Prettier · GitHub Actions · Cloudflare Pages.
+Lighthouse CI · ESLint · Prettier · GitHub Actions · Cloudflare Pages y Workers · Netlify · sharp.
 
 ## Licencia
 

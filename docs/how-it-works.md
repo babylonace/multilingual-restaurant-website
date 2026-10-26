@@ -17,7 +17,10 @@ src/layouts/      the shared document: CSS, JS, self-hosted fonts and icons
 src/lib/          build helpers: per-language context and the image pipeline
 src/assets/fotos/ photo originals (at most 2400 px)
 src/client/       progressive enhancement: tabs, language menu, saved preference
-scripts/          tokens, favicon, logo, Open Graph image, private data
+scripts/          tokens, favicon, logo, Open Graph image, private data, Instagram posts,
+                  gateway check
+workers/vigia/    Cloudflare Worker that watches the Netlify gateway and fails back
+netlify-puerta/   the Netlify gateway: one rewrite to the origin
 tests/            unit (Vitest) and e2e + accessibility (Playwright)
 ```
 
@@ -39,6 +42,7 @@ flowchart LR
 2. `astro build` emits a home, a carta and a menú del día per language, the two legal pages, `404.html`, `sitemap.xml` and `robots.txt`. The `.astro` pages are thin: the HTML comes from the renderers in `src/render`, the same ones the unit tests exercise, with metadata, `hreflang` and JSON-LD (`Restaurant`, plus `Menu` on the carta).
 3. Photos go through `astro:assets`: AVIF and WebP at several widths, with hashed names cached for a year (`public/_headers`).
 4. Astro's font API self-hosts Montserrat and Lora (Latin and Cyrillic only), generates metric-matched fallbacks so text does not jump when the fonts arrive, and only the Latin Montserrat file is preloaded. Arabic and Chinese use the system fonts.
+5. The home page ends with "Novedades", the six latest Instagram posts. `npm run instagram` reads them from the Instagram API with Instagram login (token in the `INSTAGRAM_TOKEN` environment variable, never in a file), keeps six with at most one tagged `#menudeldia`, crops every photo to 4:5 and writes AVIF and WebP copies plus `feed.json` to `public/instagram/` (not tracked). Under each photo go its date and the start of its text, cleaned of emoji and hashtags. Without that folder (tests, CI, previews) the section shows the six favourite dishes linked to the profile, so it is never empty.
 
 When moving from Vite to Astro the HTML of all 33 pages was compared before and after: same URLs, same text, links, metadata, classes and structured data.
 
@@ -79,6 +83,6 @@ The home page lives at `/` and the menu is one button on it; the menu stays at `
 
 ## Tests
 
-- **Unit (Vitest, 481):** every renderer, prices and formats per language, allergens, routes, sitemap, language preference, escaping, the design-system rules and a guard that fails if the real private data ever appears in a tracked file.
-- **End to end + accessibility (Playwright + axe-core, 112):** every page type in several languages, keyboard use, right-to-left layout, and WCAG checks.
+- **Unit (Vitest, 649):** every renderer, prices and formats per language, allergens, routes, sitemap, language preference, escaping, the design-system rules, a guard that fails if the real private data ever appears in a tracked file, the Instagram script against a fake API (refused token, Meta down, a tampered published feed) and the gateway and watchman logic.
+- **End to end + accessibility (Playwright + axe-core, 160):** every page type in several languages, keyboard use, right-to-left layout, and WCAG checks.
 - **Lighthouse CI:** the build fails if the median of 3 mobile runs drops below 90 for performance or 95 for accessibility, best practices or SEO (`lighthouserc.json`).

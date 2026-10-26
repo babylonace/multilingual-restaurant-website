@@ -21,15 +21,17 @@ The first version was generated with a design tool: it worked, but it was slow, 
 search engines and full of hard-coded text. Rebuilding it solved problems that most small-business
 sites have, menu or not:
 
-| Problem                       | How it is solved here                                                                                                                          |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| Slow on a phone               | Pages are built in advance, ship 2.2 KB of JavaScript and make no requests to other sites. Lighthouse performance 44 → **95**                  |
-| Many languages, kept in step  | One file per language, typed against Spanish: a missing translation **stops the build** instead of leaving a blank on the page                 |
-| Right-to-left languages       | Real Arabic layout: `dir="rtl"`, CSS logical properties, prices isolated so numbers do not flip                                                |
-| Accessibility                 | Contrast, landmarks, keyboard use and axe-core checks on every page type. Lighthouse accessibility 86 → **100**                                |
-| Found by search engines       | One real URL per language with `hreflang`, a sitemap and structured data. SEO 82 → **100**                                                     |
-| Wrong data reaching customers | Prices in cents and the 14 official allergens as a type, checked by tests. The audit also caught "peanuts" translated as "almonds" in Galician |
-| Private data required by law  | Kept out of Git and injected only by the production build, with a test that fails if it leaks                                                  |
+| Problem                       | How it is solved here                                                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Slow on a phone               | Pages are built in advance, ship 2.2 KB of JavaScript and make no requests to other sites. Lighthouse performance 44 → **95**                    |
+| Many languages, kept in step  | One file per language, typed against Spanish: a missing translation **stops the build** instead of leaving a blank on the page                   |
+| Right-to-left languages       | Real Arabic layout: `dir="rtl"`, CSS logical properties, prices isolated so numbers do not flip                                                  |
+| Accessibility                 | Contrast, landmarks, keyboard use and axe-core checks on every page type. Lighthouse accessibility 86 → **100**                                  |
+| Found by search engines       | One real URL per language with `hreflang`, a sitemap and structured data. SEO 82 → **100**                                                       |
+| Wrong data reaching customers | Prices in cents and the 14 official allergens as a type, checked by tests. The audit also caught "peanuts" translated as "almonds" in Galician   |
+| Private data required by law  | Kept out of Git and injected only by the production build, with a test that fails if it leaks                                                    |
+| Social feed without embeds    | The latest six Instagram posts, fetched once a day by a scheduled build and served from the site itself: no Meta script, no cookies, never empty |
+| Blocked during football       | Spanish ISPs block Cloudflare IPs during LaLiga matches; a Netlify gateway keeps the site up and a small Worker fails back if the gateway breaks |
 
 Lighthouse on mobile (simulated throttling, median of 3 runs), first version vs. now:
 
@@ -53,7 +55,7 @@ git clone https://github.com/babylonace/inkawasi-web.git
 cd inkawasi-web
 npm ci
 npm run dev        # every page, every language, at http://localhost:4321
-npm test           # 481 unit tests
+npm test           # 649 unit tests
 npm run build      # the static site in dist/
 ```
 
@@ -78,6 +80,9 @@ flowchart LR
   bundles, and optimises fonts and images; it ships no framework to the browser.
 - **JavaScript is optional.** The content and the language switcher are plain HTML and links; the 2.2 KB script
   adds the tabs and remembers the chosen language.
+- **Fresh content without a backend.** A daily GitHub Actions run reads the latest Instagram posts, crops and
+  converts the photos and redeploys only if something changed. If Instagram is down, the site keeps the last
+  good posts; if the token stops working, it opens an issue with what to do.
 
 The full walkthrough, the design decisions and what the audit fixed are in
 **[docs/how-it-works.md](docs/how-it-works.md)**. Deployment, secrets and redirects are in
@@ -109,9 +114,10 @@ the language setup, the tested renderers, the fonts and image pipeline and the C
 
 ## Tests and CI
 
-- **481 unit tests** (Vitest): renderers, formats per language, allergens, routes, sitemap, escaping, the
-  design-system rules and a guard against leaking private data.
-- **112 end-to-end and accessibility tests** (Playwright + axe-core): every page type, several languages,
+- **649 unit tests** (Vitest): renderers, formats per language, allergens, routes, sitemap, escaping, the
+  design-system rules, a guard against leaking private data, the Instagram feed (with a fake API, never the
+  real one) and the gateway checks.
+- **160 end-to-end and accessibility tests** (Playwright + axe-core): every page type, several languages,
   keyboard use, right-to-left layout and WCAG A/AA.
 - **Lighthouse CI:** the build fails if mobile performance drops below 90, or accessibility, best practices
   or SEO below 95.
@@ -121,7 +127,7 @@ GitHub Actions runs all of it, plus formatting, lint and types, on every push.
 ## Stack
 
 Astro · strict TypeScript · CSS cascade layers with design tokens · Vitest · Playwright + axe-core ·
-Lighthouse CI · ESLint · Prettier · GitHub Actions · Cloudflare Pages.
+Lighthouse CI · ESLint · Prettier · GitHub Actions · Cloudflare Pages and Workers · Netlify · sharp.
 
 ## License
 
