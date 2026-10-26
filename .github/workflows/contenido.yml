@@ -22,6 +22,10 @@ on:
         description: Renovar ahora el token de Instagram
         type: boolean
         default: false
+      probar_token_invalido:
+        description: 'Prueba: leer Instagram con un token inválido (no despliega, abre el issue)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -59,10 +63,12 @@ jobs:
 
       # Exit codes of scripts/instagram.ts: 0 done, 2 Meta did not answer, 3 token refused,
       # 4 anything else. It also writes `changed=true|false`.
+      # The test option sends Meta a made-up token, so the refused-token path runs for real
+      # without touching the secret.
       - name: Read the latest posts
         id: fetch
         env:
-          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          INSTAGRAM_TOKEN: ${{ inputs.probar_token_invalido && 'IGAAtoken-de-prueba-invalido' || secrets.INSTAGRAM_TOKEN }}
         run: |
           set +e
           npm run --silent instagram
@@ -83,11 +89,17 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: npx --yes wrangler@4.152.0 pages deploy dist --project-name=example-project --branch=main
 
+      # Same check as the deploy job of ci.yml: what visitors get through the Netlify gateway.
+      - name: Check the gateway
+        id: gateway
+        if: steps.deploy.outcome == 'success'
+        run: npx tsx scripts/check-gateway.ts https://inkawasi.es
+
       # A token must be at least a day old to renew, and lasts 60 days from then: once a week
       # leaves room for a few failed Mondays.
       - name: Renew the token (Mondays)
         id: renew
-        if: always() && steps.fetch.outputs.code != '3'
+        if: always() && steps.fetch.outputs.code != '3' && !inputs.probar_token_invalido
         env:
           RENOVAR: ${{ inputs.renovar }}
           INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
@@ -120,7 +132,7 @@ jobs:
             3) problem=token ;;
             *) problem=other ;;
           esac
-          if [ -z "$problem" ] && { [ "${{ steps.build.outcome }}" = failure ] || [ "${{ steps.deploy.outcome }}" = failure ]; }; then
+          if [ -z "$problem" ] && { [ "${{ steps.build.outcome }}" = failure ] || [ "${{ steps.deploy.outcome }}" = failure ] || [ "${{ steps.gateway.outcome }}" = failure ]; }; then
             problem=deploy
           fi
           if [ -z "$problem" ] && [ "${{ steps.renew.outcome }}" = failure ]; then problem=renew; fi

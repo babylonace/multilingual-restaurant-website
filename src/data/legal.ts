@@ -10,7 +10,7 @@ export type LegalId = (typeof LEGAL_PAGES)[number];
 export const LEGAL_DRAFT = false;
 
 /** Date of the last revision of the legal texts, shown on both pages. */
-export const LEGAL_UPDATED = '2026-10-24';
+export const LEGAL_UPDATED = '2026-10-26';
 
 /** Who is legally behind the site. Comes from the private data file, never from the repository. */
 export interface Titular {
