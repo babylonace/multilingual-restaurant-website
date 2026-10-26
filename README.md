@@ -46,6 +46,21 @@ Lighthouse on mobile (simulated throttling, median of 3 runs), first version vs.
 | Transferred size         | 847 KB | **297 KB** |
 | Requests                 | 36     | **14**     |
 
+## Where to look
+
+You do not need to read everything. Each part lives in a few places and has its own tests:
+
+| If you care about…              | Look at                                                                                                          | Tested in                                                     |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Languages and right-to-left     | `src/i18n/locales/`, `src/data/langs.ts`, `src/data/types.ts`                                                    | `tests/unit/render.test.ts`, `tests/unit/routes.test.ts`      |
+| The menu data and the allergens | `src/data/menu.ts`, `src/render/menu.ts`, `src/render/dish.ts`                                                   | `tests/unit/data.test.ts`, `tests/e2e/carta.spec.ts`          |
+| Accessibility                   | `src/layouts/Page.astro`, `src/styles/`                                                                          | `tests/e2e/a11y.spec.ts` (axe-core on every page type)        |
+| Search engines                  | `src/render/sitemap.ts`, `src/render/routes.ts`, `src/pages/[sitemap].xml.ts`                                    | `tests/unit/sitemap.test.ts`, `tests/unit/routes.test.ts`     |
+| Private data kept out of Git    | `scripts/private-data.ts`, `private/`, `src/data/legal.ts`                                                       | `tests/unit/private-data.test.ts`, `tests/unit/legal.test.ts` |
+| The Instagram feed, no embeds   | `scripts/instagram.ts`, `src/render/instagram.ts`, `src/styles/instagram.css`, `.github/workflows/contenido.yml` | `tests/unit/instagram.test.ts`, `tests/e2e/instagram.spec.ts` |
+| The football-match gateway      | `netlify-puerta/`, `workers/vigia/`, `scripts/check-gateway.ts`, [docs/deployment.md](docs/deployment.md)        | `tests/unit/gateway.test.ts`, `tests/unit/vigia.test.ts`      |
+| Design tokens                   | `design-system/tokens.json`, `scripts/tokens.ts`, `src/styles/`                                                  | `tests/unit/design-system.test.ts`                            |
+
 ## Quick start
 
 You need Node 20 or newer.

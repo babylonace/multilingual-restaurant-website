@@ -1,7 +1,7 @@
 /**
  * Checks what a visitor gets from the public site, whichever way it is served: Cloudflare Pages
  * directly, or through the Netlify gateway that dodges the LaLiga blocks
- * (docs/plan-bloqueos-laliga.md). Indexable pages carry no X-Robots-Tag, hashed assets keep their
+ * (docs/deployment.md). Indexable pages carry no X-Robots-Tag, hashed assets keep their
  * one-year cache, no redirect or page leaks the origin host, www goes to the apex and the old
  * Netlify address goes to the carta, each in one hop.
  *

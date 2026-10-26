@@ -14,7 +14,7 @@ export const CONTACT = {
   country: 'ES',
   latitude: 43.4878407,
   longitude: -8.2178932,
-  /** Cloudflare Email Routing forwards it to owner@example.com (docs/plan-bloqueos-laliga.md). */
+  /** Cloudflare Email Routing forwards it to owner@example.com (docs/deployment.md). */
   email: 'contacto@inkawasi.es',
   phoneDisplay: '+34 614 92 21 83',
   phoneE164: '+34614922183',

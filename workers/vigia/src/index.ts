@@ -1,5 +1,5 @@
 /**
- * Watchman for the Netlify gateway (docs/plan-bloqueos-laliga.md). Every 5 minutes it asks the
+ * Watchman for the Netlify gateway (docs/deployment.md). Every 5 minutes it asks the
  * gateway for the home page; if it fails twice, 30 seconds apart, it points inkawasi.es and www
  * back at Cloudflare Pages, proxied, as before the gateway, and e-mails Adriana. Going back to the
  * gateway is a manual step, once Netlify is healthy again.
@@ -91,7 +91,7 @@ async function watch(env: Env) {
       '',
       `Ha devuelto ${names.join(' y ')} a Cloudflare Pages. La web funciona, salvo durante los bloqueos de LaLiga.`,
       '',
-      'Para volver a la puerta cuando Netlify esté bien: docs/plan-bloqueos-laliga.md, «Volver a la puerta».',
+      'Para volver a la puerta cuando Netlify esté bien: docs/deployment.md, «Netlify gateway».',
     ].join('\n'),
   });
   await env.ALERT.send(new EmailMessage(env.ALERT_FROM, env.ALERT_TO, raw));

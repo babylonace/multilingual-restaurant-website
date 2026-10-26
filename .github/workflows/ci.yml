@@ -86,7 +86,7 @@ jobs:
       - run: npx --yes wrangler@4.152.0 pages deploy dist --project-name=example-project --branch=main
       # What visitors get, whether Cloudflare serves the site or the Netlify gateway does: no
       # noindex on the pages, a one-year cache on assets, no origin host in redirects or HTML,
-      # www and the old Netlify address in one 301 (docs/plan-bloqueos-laliga.md).
+      # www and the old Netlify address in one 301 (docs/deployment.md).
       - run: npx tsx scripts/check-gateway.ts https://inkawasi.es
 
   # Preview: every other branch gets its own URL, <branch>.example-project.pages.dev (noindex, see

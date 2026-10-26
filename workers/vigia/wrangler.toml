@@ -1,4 +1,4 @@
-# Watchman for the Netlify gateway (docs/plan-bloqueos-laliga.md, src/index.ts).
+# Watchman for the Netlify gateway (docs/deployment.md, src/index.ts).
 # Deploy: npx --yes wrangler@4.152.0 deploy --config workers/vigia/wrangler.toml
 # Secret: npx --yes wrangler@4.152.0 secret put CF_DNS_TOKEN --config workers/vigia/wrangler.toml
 name = "gateway-watchman"

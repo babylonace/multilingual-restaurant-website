@@ -46,6 +46,21 @@ Lighthouse en móvil (throttling simulado, mediana de 3 ejecuciones), primera ve
 | Peso transferido         | 847 KB | **297 KB** |
 | Peticiones               | 36     | **14**     |
 
+## Dónde mirar
+
+No hace falta leerlo todo. Cada parte vive en pocos sitios y tiene sus propios tests:
+
+| Si te interesa…                            | Mira en                                                                                                          | Se prueba en                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Idiomas y escritura de derecha a izquierda | `src/i18n/locales/`, `src/data/langs.ts`, `src/data/types.ts`                                                    | `tests/unit/render.test.ts`, `tests/unit/routes.test.ts`      |
+| Los datos de la carta y los alérgenos      | `src/data/menu.ts`, `src/render/menu.ts`, `src/render/dish.ts`                                                   | `tests/unit/data.test.ts`, `tests/e2e/carta.spec.ts`          |
+| Accesibilidad                              | `src/layouts/Page.astro`, `src/styles/`                                                                          | `tests/e2e/a11y.spec.ts` (axe-core en cada tipo de página)    |
+| Buscadores                                 | `src/render/sitemap.ts`, `src/render/routes.ts`, `src/pages/[sitemap].xml.ts`                                    | `tests/unit/sitemap.test.ts`, `tests/unit/routes.test.ts`     |
+| Datos privados fuera de Git                | `scripts/private-data.ts`, `private/`, `src/data/legal.ts`                                                       | `tests/unit/private-data.test.ts`, `tests/unit/legal.test.ts` |
+| El feed de Instagram, sin embeds           | `scripts/instagram.ts`, `src/render/instagram.ts`, `src/styles/instagram.css`, `.github/workflows/contenido.yml` | `tests/unit/instagram.test.ts`, `tests/e2e/instagram.spec.ts` |
+| La puerta para los partidos de fútbol      | `netlify-puerta/`, `workers/vigia/`, `scripts/check-gateway.ts`, [docs/deployment.md](docs/deployment.md)        | `tests/unit/gateway.test.ts`, `tests/unit/vigia.test.ts`      |
+| Tokens de diseño                           | `design-system/tokens.json`, `scripts/tokens.ts`, `src/styles/`                                                  | `tests/unit/design-system.test.ts`                            |
+
 ## Inicio rápido
 
 Necesitas Node 20 o superior.

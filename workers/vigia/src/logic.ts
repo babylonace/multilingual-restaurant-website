@@ -1,5 +1,5 @@
 /**
- * Pure logic of the watchman Worker (docs/plan-bloqueos-laliga.md): when is the Netlify gateway
+ * Pure logic of the watchman Worker (docs/deployment.md): when is the Netlify gateway
  * healthy, which DNS changes put the site back on Cloudflare Pages, and the alert e-mail.
  * No network here, so it runs under Vitest like the rest of the repo.
  */

@@ -1,6 +1,6 @@
 # inkawasi.es goes through this Netlify project (example-gateway) so that visitors on Spanish ISPs
 # can still reach it while the court-ordered LaLiga blocks cut Cloudflare's shared IPs during
-# football matches (docs/plan-bloqueos-laliga.md). Netlify fetches every request from Cloudflare
+# football matches (docs/deployment.md). Netlify fetches every request from Cloudflare
 # Pages behind the scenes; its servers are not behind a Spanish ISP, so the block does not reach them.
 #
 # The origin is origin.example.com, a second custom domain of the same Pages project, and not
