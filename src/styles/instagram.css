@@ -1,9 +1,10 @@
 @layer components {
   /*
    * "Novedades", after the olive band: plain cream page, so it reads apart from the sunken
-   * favourites above. Each post is its photo, cropped 4:5 like the Instagram grid, and the start
-   * of its text, like a line of the carta under a favourite: two columns on phones, three on
-   * tablets, one row of six on desktop. No cards, no new motion beyond the favourites' zoom.
+   * favourites above. Each post is its photo, cropped 4:5 like the Instagram grid, then a small
+   * caps line with its date (the carta's eyebrow) and the start of its text, set like a dish
+   * description of the carta: the photo leads, the text only invites. Two columns on phones,
+   * three on tablets, one row of six on desktop. No cards, no new motion beyond the zoom.
    */
   .insta {
     padding-block: 48px;
@@ -53,7 +54,6 @@
   .insta__post {
     display: grid;
     align-content: start;
-    gap: var(--space-2);
     color: var(--text-strong);
   }
 
@@ -66,23 +66,37 @@
     background: var(--cream-200);
   }
 
-  /* The start of the post's text: three lines at most, the rest is on Instagram. */
+  /* Date and kind of post, a fixed single line, so every caption starts at the same height. */
+  .insta__meta {
+    margin-top: var(--space-3);
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.14em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--text-gold);
+  }
+
+  /* The start of the post's text, like a dish description: three lines at most. */
   .insta__caption {
     display: -webkit-box;
+    margin-top: var(--space-1);
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     font-family: var(--font-serif);
-    font-size: 0.9375rem;
-    line-height: 1.4;
+    font-size: 0.8125rem;
+    font-style: var(--italic);
+    line-height: 1.45;
+    color: var(--text-muted);
   }
 
   .insta__post:hover .insta__caption {
-    text-decoration: underline;
-    text-decoration-color: var(--gold-500);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
+    color: var(--text-strong);
   }
 
   .insta__img {
@@ -134,10 +148,6 @@
     .insta__grid {
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: var(--space-6) var(--space-4);
-    }
-
-    .insta__caption {
-      font-size: 0.875rem;
     }
   }
 

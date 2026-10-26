@@ -9,7 +9,7 @@ import {
   imageName,
   type InstagramPost,
 } from '../data/instagram';
-import { formatDate } from '../lib/format';
+import { formatShortDate } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
 import { CONTACT } from './contact';
 import type { Page } from './context';
@@ -45,17 +45,29 @@ interface Tile {
   picture: Picture;
   sizes: string;
   badge?: SafeHtml;
-  /** Shown under the photo: the start of the post's text, or the dish of a fallback tile. */
-  caption?: SafeHtml;
-  /** Read out after the caption (kind, date, where it leads); the photo itself has an empty alt. */
-  details: SafeHtml;
+  /** The small line under the photo: date and kind of post ("25 oct · Reel"). */
+  meta: SafeHtml;
+  /**
+   * Under it: the start of the post's text, or the dish of a fallback tile. Always Spanish, so the
+   * clamped box itself carries `lang` and `dir`: on the Arabic page the cut and its ellipsis
+   * then fall at the end of the Spanish line, not at its start.
+   */
+  caption?: string;
+  /** Only for screen readers, after the visible text; the photo itself has an empty alt. */
+  details?: SafeHtml;
   location: 'post' | 'reserva';
 }
 
 function postTile(page: Page, post: InstagramPost): Tile {
   const { ctx, t } = page;
   const kind = post.kind === 'video' ? t.igReel : post.kind === 'carousel' ? t.igCarousel : '';
-  const date = formatDate(post.timestamp, ctx.lang);
+  // The year only for posts from another year than the latest read, so the line stays short.
+  const fetched = ctx.instagram?.fetchedAt ?? post.timestamp;
+  const date = formatShortDate(
+    post.timestamp,
+    ctx.lang,
+    post.timestamp.slice(0, 4) !== fetched.slice(0, 4),
+  );
   return {
     href: post.permalink,
     picture: postPicture(ctx.base, post),
@@ -65,8 +77,9 @@ function postTile(page: Page, post: InstagramPost): Tile {
         ? undefined
         : uiIcon(post.kind === 'video' ? 'play' : 'copy', 'insta__icon'),
     // The text comes from the post, in Spanish, whatever the page language.
-    caption: post.label ? html`<span lang="es" dir="auto">${post.label}</span>` : undefined,
-    details: html`${!post.label && html`${t.igPost}, `}${kind && html`${kind}, `}${date}`,
+    meta: html`<time datetime="${post.timestamp}">${date}</time>${kind && html` · ${kind}`}`,
+    caption: post.label || undefined,
+    details: post.label ? undefined : html`${t.igPost}`,
     location: 'post',
   };
 }
@@ -80,7 +93,8 @@ function reserveTile(page: Page, index: number): Tile | undefined {
     picture: pictureOf(page.ctx.pictures, favourite.image),
     // Same as the favourites section above, so the browser reuses the file it already has.
     sizes: PLATE_SIZES,
-    caption: html`${DISHES[favourite.dish].name}`,
+    meta: html`Instagram`,
+    caption: DISHES[favourite.dish].name,
     details: html`${page.t.igProfile}`,
     location: 'reserva',
   };
@@ -139,9 +153,10 @@ export function instagramSection(page: Page): SafeHtml {
                   })}
                   ${tile.badge && html`<span class="insta__badge">${tile.badge}</span>`}
                 </span>
-                ${tile.caption && html`<span class="insta__caption">${tile.caption}</span>`}
+                <span class="insta__meta">${tile.meta}</span>
+                ${tile.caption && html`<span class="insta__caption" lang="es" dir="auto">${tile.caption}</span>`}
                 <span class="visually-hidden"
-                  >${tile.caption && ', '}${tile.details} ${t.newTab}</span
+                  >${tile.details && html`, ${tile.details}`} ${t.newTab}</span
                 >
               </a>
             </li>`,

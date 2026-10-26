@@ -69,6 +69,8 @@ test.describe('Instagram section', () => {
     const section = page.locator('section.insta');
     await expect(section).toHaveCSS('direction', 'rtl');
     await expect(section.locator('.insta__handle')).toHaveAttribute('dir', 'ltr');
+    // The post texts are Spanish: they run left to right, so their cut falls at the line's end.
+    await expect(section.locator('.insta__caption').first()).toHaveCSS('direction', 'ltr');
   });
 
   test('adds no motion for anyone who asks for reduced motion', async ({ page }) => {

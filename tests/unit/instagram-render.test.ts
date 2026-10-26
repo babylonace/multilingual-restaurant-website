@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { LANGS } from '../../src/data/langs';
 import { DISHES, FAVORITES } from '../../src/data/menu';
 import { LOCALES } from '../../src/i18n';
+import { formatShortDate } from '../../src/lib/format';
 import { escapeHtml } from '../../src/lib/html';
 import { renderLegalPage } from '../../src/render/legal';
 import { renderHomePage, renderMenuDelDiaPage, renderPage } from '../../src/render/page';
@@ -63,30 +64,43 @@ describe.each(LANGS)('Instagram section "$code"', ({ code }) => {
     }
   });
 
-  it('names each link by the post text (in Spanish), its kind and its date', () => {
+  it('puts the date and kind of each post in a small line above its text', () => {
     const [photo, video, carousel, unnamed] = postLinks(withPosts);
+    const post = TEST_FEED.posts[0]!;
+    const day = formatShortDate(post.timestamp, code);
     expect(photo).toContain(
-      '<span lang="es" dir="auto">Ceviche clásico con camote y choclo</span>',
+      `<span class="insta__meta"><time datetime="${post.timestamp}">${escapeHtml(day)}</time></span>`,
     );
-    expect(video).toContain(`, ${ui.igReel}, `);
-    expect(carousel).toContain(`, ${ui.igCarousel}, `);
-    expect(unnamed).toContain(ui.igPost);
-    const date = new Intl.DateTimeFormat(code === 'ar' ? 'ar-u-nu-latn' : code, {
-      dateStyle: 'long',
-      timeZone: 'Europe/Madrid',
-    }).format(new Date(TEST_FEED.posts[0]!.timestamp));
-    expect(photo).toContain(date.slice(0, 2));
+    expect(video).toMatch(new RegExp(`</time> · ${ui.igReel}</span>`));
+    expect(carousel).toMatch(new RegExp(`</time> · ${ui.igCarousel}</span>`));
+    // The meta line comes before the text, so a screen reader hears "date · kind, text".
+    expect(photo!.indexOf('insta__meta')).toBeLessThan(photo!.indexOf('insta__caption'));
+    // A post without text is still named for screen readers.
+    expect(unnamed).toContain(`, ${ui.igPost} ${escapeHtml(ui.newTab)}`);
+  });
+
+  it('adds the year only to posts from another year than the latest read', () => {
+    const old = {
+      ...TEST_FEED,
+      posts: [{ ...TEST_FEED.posts[0]!, timestamp: '2025-12-30T12:00:00.000Z' }],
+    };
+    const [link] = postLinks(section(renderHomePage({ ...ctx, instagram: old }).body));
+    expect(link).toContain(escapeHtml(formatShortDate('2025-12-30T12:00:00.000Z', code, true)));
+    // Visible text only: the datetime attribute always carries the full date.
+    const visible = postLinks(withPosts)[0]!.match(/<time[^>]*>([^<]*)<\/time>/)?.[1];
+    expect(visible).toBeTruthy();
+    expect(visible).not.toMatch(/2026/);
   });
 
   it('shows the start of each post text under its photo, inside the link', () => {
     const links = postLinks(withPosts);
     expect(links[0]).toContain(
-      '<span class="insta__caption"><span lang="es" dir="auto">Ceviche clásico con camote y choclo</span></span>',
+      '<span class="insta__caption" lang="es" dir="auto">Ceviche clásico con camote y choclo</span>',
     );
     // A post without text shows only its photo, and is still named for screen readers.
     expect(links[3]).not.toContain('insta__caption');
     expect(postLinks(reserve)[0]).toContain(
-      `<span class="insta__caption">${DISHES[FAVORITES[0]!.dish].name}</span>`,
+      `<span class="insta__caption" lang="es" dir="auto">${DISHES[FAVORITES[0]!.dish].name}</span>`,
     );
   });
 

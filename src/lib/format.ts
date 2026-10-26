@@ -38,10 +38,15 @@ export function formatPrice(cents: number, lang: LangCode): string {
     .replace(/[‎‏]/g, '');
 }
 
-/** `"2026-10-20T12:00:00Z" → "20 de octubre de 2026"` (es), the day as it was in Ferrol. */
-export function formatDate(iso: string, lang: LangCode): string {
+/**
+ * `"2026-10-20T12:00:00Z" → "20 oct"` (es), the day as it was in Ferrol, with the year only when
+ * asked (a post from another year).
+ */
+export function formatShortDate(iso: string, lang: LangCode, withYear = false): string {
   return new Intl.DateTimeFormat(NUMBER_LOCALE[lang], {
-    dateStyle: 'long',
+    day: 'numeric',
+    month: 'short',
+    ...(withYear && { year: 'numeric' }),
     timeZone: 'Europe/Madrid',
   }).format(new Date(iso));
 }
