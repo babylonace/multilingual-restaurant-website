@@ -209,13 +209,14 @@ test.describe('home page actions', () => {
 
   test('opens Google Maps for directions and for the opening hours', async ({ page }) => {
     await page.goto('/');
-    const directions = page.locator('#content').getByRole('link', { name: /Cómo llegar/ });
+    // The order band, not the whole page: an Instagram post may say "Cómo llegar" too.
+    const directions = page.locator('#pedir').getByRole('link', { name: /Cómo llegar/ });
     await expect(directions).toHaveAttribute(
       'href',
       'https://www.google.com/maps/dir/?api=1&destination=43.4878407,-8.2178932',
     );
     await expect(directions).toHaveAttribute('target', '_blank');
-    await expect(page.getByRole('link', { name: /Ver horario/ })).toHaveAttribute(
+    await expect(page.locator('#pedir').getByRole('link', { name: /Ver horario/ })).toHaveAttribute(
       'href',
       'https://maps.app.goo.gl/xJ61NGccX21LAM6b9',
     );

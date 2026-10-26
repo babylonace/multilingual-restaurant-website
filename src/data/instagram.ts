@@ -53,7 +53,7 @@ export interface InstagramPost {
   kind: PostKind;
   /** ISO 8601, UTC. */
   timestamp: string;
-  /** Cleaned text for the link's accessible name (no emoji, hashtags or line breaks); may be empty. */
+  /** Start of the post's text, cleaned (no emoji, hashtags or line breaks), shown under the photo; may be empty. */
   label: string;
   /** Marked as a post of the menú del día. */
   menu: boolean;
@@ -78,9 +78,9 @@ export interface Candidate extends Omit<InstagramPost, 'file'> {
 const LABEL_MAX = 140;
 
 /**
- * Text fit for an accessible name: emoji, hashtags, mentions, links and line breaks out (the
- * design system has no emoji, and a screen reader would spell them all out), cut at a word near
- * 140 characters.
+ * The start of a post's text, fit to show under its photo and to name its link: emoji, hashtags,
+ * mentions, links and line breaks out (the design system has no emoji, and a screen reader would
+ * spell them all out), cut at a word near 140 characters.
  */
 export function cleanLabel(text: string): string {
   const cleaned = text
@@ -92,6 +92,12 @@ export function cleanLabel(text: string): string {
     .replace(/\u200D|\uFE0E|\uFE0F|\u20E3/g, '')
     // "<3" and the like: escaped anyway, but the feed check refuses angle brackets outright.
     .replace(/[<>]/g, ' ')
+    // A line that ends without punctuation before one that starts a new sentence ("\u2026en Ferrol"
+    // then "Direcci\u00F3n: \u2026"): keep them apart with a full stop once the lines are joined.
+    .replace(
+      /([^\s.,;:!?\u2026\u00B7|\-\u2013\u2014])[ \t]*\n\s*(?=[\p{Lu}\u00A1\u00BF])/gu,
+      '$1. ',
+    )
     .replace(/\s+/g, ' ')
     .replace(/\s+([.,;:!?)»])/g, '$1')
     .replace(/^[\s.,;:·|\-–—]+|[\s,;:·|\-–—]+$/g, '');
@@ -180,7 +186,7 @@ export function toCandidates(response: unknown): Candidate[] {
       permalink,
       kind,
       timestamp,
-      label: cleanLabel(altText || caption),
+      label: cleanLabel(caption) || cleanLabel(altText),
       menu: isMenuText(caption) || isMenuText(altText),
       imageUrl,
     });

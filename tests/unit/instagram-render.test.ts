@@ -78,6 +78,18 @@ describe.each(LANGS)('Instagram section "$code"', ({ code }) => {
     expect(photo).toContain(date.slice(0, 2));
   });
 
+  it('shows the start of each post text under its photo, inside the link', () => {
+    const links = postLinks(withPosts);
+    expect(links[0]).toContain(
+      '<span class="insta__caption"><span lang="es" dir="auto">Ceviche clásico con camote y choclo</span></span>',
+    );
+    // A post without text shows only its photo, and is still named for screen readers.
+    expect(links[3]).not.toContain('insta__caption');
+    expect(postLinks(reserve)[0]).toContain(
+      `<span class="insta__caption">${DISHES[FAVORITES[0]!.dish].name}</span>`,
+    );
+  });
+
   it('marks Reels and albums with a decorative badge, photos with none', () => {
     const [photo, video, carousel] = postLinks(withPosts);
     expect(photo).not.toContain('insta__badge');

@@ -90,6 +90,16 @@ describe('cleanLabel', () => {
     ).toBe('¡Hoy ceviche! Ven a probarlo');
   });
 
+  it('keeps sentences apart when it joins the lines, but not a sentence wrapped over two', () => {
+    expect(cleanLabel('Ven a probarlo en Ferrol 🇵🇪\n📍Dirección: Rúa Nova de Caranza 88-90')).toBe(
+      'Ven a probarlo en Ferrol. Dirección: Rúa Nova de Caranza 88-90',
+    );
+    expect(cleanLabel('¡Hoy en Inkawasi!\nCómo llegar')).toBe('¡Hoy en Inkawasi! Cómo llegar');
+    expect(cleanLabel('Cada fin de semana preparamos\nalgo nuevo')).toBe(
+      'Cada fin de semana preparamos algo nuevo',
+    );
+  });
+
   it('removes skin tones, joiners and keycaps, and angle brackets', () => {
     expect(cleanLabel('Gracias 👍🏽 familia 👨‍👩‍👧 1️⃣ <3')).toBe('Gracias familia 1 3');
   });
@@ -158,15 +168,15 @@ describe('toCandidates', () => {
     expect(candidate!.timestamp).toBe('2026-10-22T12:00:00.000Z');
   });
 
-  it('names a post by its alt text first, then its caption, and flags the menú del día', () => {
-    const [byAlt, byCaption] = toCandidates({
+  it('takes the text from the caption first, then the alt text, and flags the menú del día', () => {
+    const [byCaption, byAlt] = toCandidates({
       data: [
-        media(1, { alt_text: 'Plato de ceviche', caption: '#menudeldia 🍋' }),
-        media(2, { alt_text: '' }),
+        media(1, { alt_text: 'Plato de ceviche', caption: 'Hoy, seco de res #menudeldia 🍋' }),
+        media(2, { alt_text: 'Plato de causa #menudeldia', caption: '#ferrol' }),
       ],
     });
-    expect(byAlt).toMatchObject({ label: 'Plato de ceviche', menu: true });
-    expect(byCaption).toMatchObject({ label: 'Foto 2', menu: false });
+    expect(byCaption).toMatchObject({ label: 'Hoy, seco de res', menu: true });
+    expect(byAlt).toMatchObject({ label: 'Plato de causa', menu: true });
   });
 
   it('works without captions, as the Instagram-login API may answer', () => {

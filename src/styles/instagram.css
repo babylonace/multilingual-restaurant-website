@@ -1,8 +1,9 @@
 @layer components {
   /*
-   * "On Instagram", after the olive band: plain cream page, so it reads apart from the sunken
-   * favourites above. Photos only, cropped 4:5 like the Instagram grid, three by two on phones and
-   * in one row of six on desktop. No captions, no cards, no new motion beyond the favourites' zoom.
+   * "Novedades", after the olive band: plain cream page, so it reads apart from the sunken
+   * favourites above. Each post is its photo, cropped 4:5 like the Instagram grid, and the start
+   * of its text, like a line of the carta under a favourite: two columns on phones, three on
+   * tablets, one row of six on desktop. No cards, no new motion beyond the favourites' zoom.
    */
   .insta {
     padding-block: 48px;
@@ -43,13 +44,20 @@
 
   .insta__grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-3);
     margin-top: var(--space-4);
     padding-inline: var(--gutter);
   }
 
   .insta__post {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+    color: var(--text-strong);
+  }
+
+  .insta__frame {
     position: relative;
     display: block;
     overflow: hidden;
@@ -58,9 +66,23 @@
     background: var(--cream-200);
   }
 
-  /* The focus ring keeps the tile's corners instead of the base 4 px. */
-  .insta__post:focus-visible {
-    border-radius: var(--radius-md);
+  /* The start of the post's text: three lines at most, the rest is on Instagram. */
+  .insta__caption {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .insta__post:hover .insta__caption {
+    text-decoration: underline;
+    text-decoration-color: var(--gold-500);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
   }
 
   .insta__img {
@@ -98,6 +120,12 @@
     padding-inline: var(--gutter);
   }
 
+  @media (min-width: 640px) {
+    .insta__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   @media (min-width: 900px) {
     .insta {
       padding-block: 72px;
@@ -105,7 +133,11 @@
 
     .insta__grid {
       grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: var(--space-3);
+      gap: var(--space-6) var(--space-4);
+    }
+
+    .insta__caption {
+      font-size: 0.875rem;
     }
   }
 

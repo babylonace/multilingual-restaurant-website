@@ -9,7 +9,7 @@ test.describe('Instagram section', () => {
     await page.goto('/');
     const section = page.locator('section.insta');
     await section.scrollIntoViewIfNeeded();
-    await expect(section.getByRole('heading', { name: 'En Instagram' })).toBeVisible();
+    await expect(section.getByRole('heading', { name: 'Novedades' })).toBeVisible();
     const posts = section.locator('a.insta__post');
     await expect(posts).toHaveCount(6);
     for (const post of await posts.all()) {
