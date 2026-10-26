@@ -27,7 +27,8 @@ describe('pageProblems', () => {
   });
 
   it('flags a wrong status and every origin host in the HTML', () => {
-    const body = '<a href="https://origin.example.com/carta/">x</a> https://example-project.pages.dev/';
+    const body =
+      '<a href="https://origin.example.com/carta/">x</a> https://example-project.pages.dev/';
     expect(pageProblems('/carta/', snap(503, {}, body))).toEqual([
       '/carta/: status 503, expected 200',
       '/carta/: the HTML mentions example-project.pages.dev',
