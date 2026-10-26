@@ -4,7 +4,8 @@
    * favourites above. Each post is its photo, cropped 4:5 like the Instagram grid, then a small
    * caps line with its date (the carta's eyebrow) and the start of its text, set like a dish
    * description of the carta: the photo leads, the text only invites. A swipe row on
-   * phones and tablets, one row of six on desktop. No cards, no new motion beyond the zoom.
+   * phones and tablets, one row of six on desktop. No cards at rest: the piece under the pointer is
+   * the only one that gets a brown, rounded highlight.
    */
   .insta {
     padding-block: 48px;
@@ -53,7 +54,7 @@
     grid-auto-columns: min(72%, 280px);
     gap: var(--space-4);
     margin-top: var(--space-4);
-    padding: 4px var(--gutter) var(--space-4);
+    padding: var(--space-2) var(--gutter) var(--space-4);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--gutter);
@@ -67,12 +68,24 @@
   /*
    * Positioned so the link's visually hidden text is laid out inside the swipe row: otherwise it
    * hangs off the posts still out of view and widens the whole page.
+   *
+   * The padding is paid back by the negative margin, so the photo keeps its size and the post
+   * stays where it was; it only gives the highlight (brown, cream text) room around the piece.
    */
   .insta__post {
     position: relative;
     display: grid;
     align-content: start;
+    margin: calc(-1 * var(--space-2));
+    padding: var(--space-2);
+    border-radius: var(--radius-lg);
     color: var(--text-strong);
+    transition: var(--transition-colors);
+  }
+
+  .insta__meta,
+  .insta__caption {
+    transition: var(--transition-colors);
   }
 
   .insta__frame {
@@ -113,10 +126,6 @@
     color: var(--text-muted);
   }
 
-  .insta__post:hover .insta__caption {
-    color: var(--text-strong);
-  }
-
   .insta__img {
     width: 100%;
     height: 100%;
@@ -124,8 +133,41 @@
     transition: scale 600ms var(--ease-standard);
   }
 
-  .insta__post:hover .insta__img {
-    scale: 1.05;
+  /*
+   * Highlight of the piece under the pointer (or focused by keyboard): the house brown with cream
+   * text, as in the brown bands. Hover only where there is a real pointer, so it does not stick
+   * after a tap on a phone. Gold-300 and brown-200 on brown-800 are both far above 4.5:1.
+   */
+  .insta__post:focus-visible {
+    background: var(--surface-brand);
+    color: var(--text-on-dark);
+  }
+
+  .insta__post:focus-visible .insta__meta {
+    color: var(--gold-300);
+  }
+
+  .insta__post:focus-visible .insta__caption {
+    color: var(--text-on-dark-muted);
+  }
+
+  @media (hover: hover) {
+    .insta__post:hover {
+      background: var(--surface-brand);
+      color: var(--text-on-dark);
+    }
+
+    .insta__post:hover .insta__meta {
+      color: var(--gold-300);
+    }
+
+    .insta__post:hover .insta__caption {
+      color: var(--text-on-dark-muted);
+    }
+
+    .insta__post:hover .insta__img {
+      scale: 1.05;
+    }
   }
 
   /* Reel or album: a small badge in the corner, as on Instagram. Its meaning is in the link text. */

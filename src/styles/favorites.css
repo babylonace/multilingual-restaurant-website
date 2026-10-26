@@ -38,6 +38,39 @@
     border-radius: var(--radius-lg);
     background: var(--surface-card);
     box-shadow: var(--shadow-md);
+    transition: var(--transition-colors);
+  }
+
+  .fav .eyebrow,
+  .fav__name,
+  .fav__desc,
+  .fav__price {
+    transition: var(--transition-colors);
+  }
+
+  /*
+   * Highlight of the card under the pointer: the house brown with cream text, as in the brown
+   * bands. Only where there is a real pointer, so it does not stick after a tap on a phone. The
+   * cards are not links, so the cursor stays an arrow. Gold-300 and brown-200 on brown-800 are
+   * both far above 4.5:1.
+   */
+  @media (hover: hover) {
+    .fav:hover {
+      background: var(--surface-brand);
+    }
+
+    .fav:hover .eyebrow,
+    .fav:hover .fav__price {
+      color: var(--gold-300);
+    }
+
+    .fav:hover .fav__name {
+      color: var(--text-on-dark);
+    }
+
+    .fav:hover .fav__desc {
+      color: var(--text-on-dark-muted);
+    }
   }
 
   .fav__img {
