@@ -50,27 +50,25 @@
 
   /*
    * Highlight of the card under the pointer: the house brown with cream text, as in the brown
-   * bands. Only where there is a real pointer, so it does not stick after a tap on a phone. The
-   * cards are not links, so the cursor stays an arrow. Gold-300 and brown-200 on brown-800 are
-   * both far above 4.5:1.
+   * bands. The cards are not links, so the cursor stays an arrow. Gold-300 and brown-200 on
+   * brown-800 are both far above 4.5:1. Not wrapped in `(hover: hover)`: some touch laptops report
+   * no hover although they have a mouse, and the highlight never showed.
    */
-  @media (hover: hover) {
-    .fav:hover {
-      background: var(--surface-brand);
-    }
+  .fav:hover {
+    background: var(--surface-brand);
+  }
 
-    .fav:hover .eyebrow,
-    .fav:hover .fav__price {
-      color: var(--gold-300);
-    }
+  .fav:hover .eyebrow,
+  .fav:hover .fav__price {
+    color: var(--gold-300);
+  }
 
-    .fav:hover .fav__name {
-      color: var(--text-on-dark);
-    }
+  .fav:hover .fav__name {
+    color: var(--text-on-dark);
+  }
 
-    .fav:hover .fav__desc {
-      color: var(--text-on-dark-muted);
-    }
+  .fav:hover .fav__desc {
+    color: var(--text-on-dark-muted);
   }
 
   .fav__img {

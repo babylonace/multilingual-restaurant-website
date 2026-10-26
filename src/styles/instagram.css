@@ -135,39 +135,28 @@
 
   /*
    * Highlight of the piece under the pointer (or focused by keyboard): the house brown with cream
-   * text, as in the brown bands. Hover only where there is a real pointer, so it does not stick
-   * after a tap on a phone. Gold-300 and brown-200 on brown-800 are both far above 4.5:1.
+   * text, as in the brown bands. Gold-300 and brown-200 on brown-800 are both far above 4.5:1.
+   * Not wrapped in `(hover: hover)`: some touch laptops report no hover although they have a
+   * mouse, and the highlight never showed.
    */
+  .insta__post:hover,
   .insta__post:focus-visible {
     background: var(--surface-brand);
     color: var(--text-on-dark);
   }
 
+  .insta__post:hover .insta__meta,
   .insta__post:focus-visible .insta__meta {
     color: var(--gold-300);
   }
 
+  .insta__post:hover .insta__caption,
   .insta__post:focus-visible .insta__caption {
     color: var(--text-on-dark-muted);
   }
 
-  @media (hover: hover) {
-    .insta__post:hover {
-      background: var(--surface-brand);
-      color: var(--text-on-dark);
-    }
-
-    .insta__post:hover .insta__meta {
-      color: var(--gold-300);
-    }
-
-    .insta__post:hover .insta__caption {
-      color: var(--text-on-dark-muted);
-    }
-
-    .insta__post:hover .insta__img {
-      scale: 1.05;
-    }
+  .insta__post:hover .insta__img {
+    scale: 1.05;
   }
 
   /* Reel or album: a small badge in the corner, as on Instagram. Its meaning is in the link text. */
