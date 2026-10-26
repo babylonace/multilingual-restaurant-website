@@ -32,6 +32,7 @@ export const TEST_PICTURES: Pictures = {
 export const TEST_FEED: InstagramFeed = {
   version: 1,
   fetchedAt: '2026-10-24T04:00:00.000Z',
+  widths: [240, 360, 480, 720],
   posts: [
     ['image', 'Ceviche clásico con camote y choclo', false],
     ['video', 'Así se saltea un lomo', false],

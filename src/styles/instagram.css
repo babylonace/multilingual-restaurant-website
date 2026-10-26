@@ -3,8 +3,8 @@
    * "Novedades", after the olive band: plain cream page, so it reads apart from the sunken
    * favourites above. Each post is its photo, cropped 4:5 like the Instagram grid, then a small
    * caps line with its date (the carta's eyebrow) and the start of its text, set like a dish
-   * description of the carta: the photo leads, the text only invites. Two columns on phones,
-   * three on tablets, one row of six on desktop. No cards, no new motion beyond the zoom.
+   * description of the carta: the photo leads, the text only invites. A swipe row on
+   * phones and tablets, one row of six on desktop. No cards, no new motion beyond the zoom.
    */
   .insta {
     padding-block: 48px;
@@ -43,15 +43,33 @@
     text-underline-offset: 4px;
   }
 
+  /*
+   * Phones and tablets: a row to swipe through, like the favourites, so each post can be shown
+   * large; it snaps to each post and the next one peeks in. Desktop: one row of six.
+   */
   .insta__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-5) var(--space-3);
+    grid-auto-flow: column;
+    grid-auto-columns: min(72%, 280px);
+    gap: var(--space-4);
     margin-top: var(--space-4);
-    padding-inline: var(--gutter);
+    padding: 4px var(--gutter) var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
   }
 
+  .insta__grid > li {
+    scroll-snap-align: start;
+  }
+
+  /*
+   * Positioned so the link's visually hidden text is laid out inside the swipe row: otherwise it
+   * hangs off the posts still out of view and widens the whole page.
+   */
   .insta__post {
+    position: relative;
     display: grid;
     align-content: start;
     color: var(--text-strong);
@@ -134,20 +152,17 @@
     padding-inline: var(--gutter);
   }
 
-  @media (min-width: 640px) {
-    .insta__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
   @media (min-width: 900px) {
     .insta {
       padding-block: 72px;
     }
 
     .insta__grid {
+      grid-auto-flow: row;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: var(--space-6) var(--space-4);
+      padding-block: 0;
+      overflow: visible;
     }
   }
 

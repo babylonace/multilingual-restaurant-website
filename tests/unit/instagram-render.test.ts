@@ -58,8 +58,8 @@ describe.each(LANGS)('Instagram section "$code"', ({ code }) => {
     expect(imgs).toHaveLength(6);
     for (const img of imgs) {
       expect(img).toContain('loading="lazy"');
-      expect(img).toContain('width="480"');
-      expect(img).toContain('height="600"');
+      expect(img).toContain('width="720"');
+      expect(img).toContain('height="900"');
       expect(img).toContain('alt=""');
     }
   });

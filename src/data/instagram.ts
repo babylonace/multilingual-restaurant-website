@@ -15,10 +15,14 @@ export const POST_COUNT = 6;
 /** At most this many posts of the menú del día, so the daily menu cannot fill the section. */
 export const MAX_MENU_POSTS = 1;
 
-/** Widths of every copy, in px. The grid shows a photo at about 110 to 180 px. */
-export const IMAGE_WIDTHS = [240, 360, 480] as const;
+/**
+ * Widths of the copies a new feed gets, in px. A post is about 280 px wide in the phone's swipe
+ * row (720 covers a 2.6× screen) and about 170 px in the desktop row.
+ */
+export const IMAGE_WIDTHS = [240, 360, 480, 720] as const;
 
-export type ImageWidth = (typeof IMAGE_WIDTHS)[number];
+/** Feeds written before the swipe row (26 October 2026) have no `widths`: they had these. */
+export const LEGACY_WIDTHS = [240, 360, 480] as const;
 
 /** Every copy is cropped to 4:5, the shape of a post in the Instagram feed. */
 export function imageHeight(width: number): number {
@@ -67,6 +71,11 @@ export interface InstagramFeed {
   fetchedAt: string;
   /** Newest first, between 1 and `POST_COUNT`. */
   posts: InstagramPost[];
+  /**
+   * Widths of this feed's copies, ascending. Stored with the feed, so a build can serve the posts
+   * already published even after `IMAGE_WIDTHS` changes, until the next daily run rewrites them.
+   */
+  widths: number[];
 }
 
 /** A post read from the API, before its image is downloaded. */
@@ -234,6 +243,15 @@ export function parseFeed(json: unknown): InstagramFeed {
   if (!Array.isArray(feed.posts) || feed.posts.length < 1 || feed.posts.length > POST_COUNT) {
     throw new Error(`instagram feed: needs 1 to ${POST_COUNT} posts`);
   }
+  const widths: unknown = feed.widths ?? [...LEGACY_WIDTHS];
+  const known: readonly number[] = IMAGE_WIDTHS;
+  if (
+    !Array.isArray(widths) ||
+    widths.length < 1 ||
+    !widths.every((w, i) => known.includes(w) && (i === 0 || w > widths[i - 1]))
+  ) {
+    throw new Error('instagram feed: bad "widths"');
+  }
   const seen = new Set<string>();
   const posts = feed.posts.map((raw, index): InstagramPost => {
     const p = raw as Partial<Record<keyof InstagramPost, unknown>>;
@@ -258,10 +276,10 @@ export function parseFeed(json: unknown): InstagramFeed {
   if (posts.filter((p) => p.menu).length > MAX_MENU_POSTS) {
     throw new Error('instagram feed: too many posts of the menú del día');
   }
-  return { version: 1, fetchedAt, posts };
+  return { version: 1, fetchedAt, posts, widths: widths as number[] };
 }
 
-/** Same posts and same images: nothing to deploy. */
+/** Same posts, same images and same widths: nothing to deploy. */
 export function samePosts(a: InstagramFeed, b: InstagramFeed): boolean {
   const key = (feed: InstagramFeed) =>
     JSON.stringify(
@@ -273,6 +291,6 @@ export function samePosts(a: InstagramFeed, b: InstagramFeed): boolean {
         menu,
         file,
       ]),
-    );
+    ) + feed.widths.join();
   return key(a) === key(b);
 }

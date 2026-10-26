@@ -247,7 +247,12 @@ export async function buildFromApi(options: {
     };
     const posts = await pickPosts(candidates, process);
     if (posts.length === 0) throw new InstagramError('No post with a usable image', 'fatal');
-    return { version: 1, fetchedAt: (options.now ?? new Date()).toISOString(), posts };
+    return {
+      version: 1,
+      fetchedAt: (options.now ?? new Date()).toISOString(),
+      posts,
+      widths: [...IMAGE_WIDTHS],
+    };
   });
 }
 
@@ -291,7 +296,7 @@ export async function recoverPublished(options: {
   try {
     return await replaceFolder(options.outDir, async (imageDir) => {
       for (const post of published.posts) {
-        for (const width of IMAGE_WIDTHS) {
+        for (const width of published.widths) {
           for (const ext of IMAGE_FORMATS) {
             const name = imageName(post.file, width, ext);
             const expected = COPY_TYPES[ext]!;

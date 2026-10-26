@@ -41,6 +41,31 @@ test.describe('Instagram section', () => {
     });
   }
 
+  test('is a row to swipe on phones and one row of six on desktop', async ({ page, isMobile }) => {
+    await page.goto('/');
+    const grid = page.locator('.insta__grid');
+    await grid.scrollIntoViewIfNeeded();
+    const { scrolls, rows } = await grid.evaluate((el) => {
+      const tops = [...el.children].map((li) => Math.round(li.getBoundingClientRect().top));
+      return { scrolls: el.scrollWidth > el.clientWidth, rows: new Set(tops).size };
+    });
+    // One row either way; on phones it overflows to the side, with the next post peeking in.
+    expect(rows).toBe(1);
+    expect(scrolls).toBe(isMobile);
+  });
+
+  for (const path of ['/', '/ar/']) {
+    test(`${path} never scrolls sideways as a whole, only the row does`, async ({ page }) => {
+      await page.goto(path);
+      await page.locator('.insta__grid').scrollIntoViewIfNeeded();
+      const { doc, view } = await page.evaluate(() => ({
+        doc: document.documentElement.scrollWidth,
+        view: document.documentElement.clientWidth,
+      }));
+      expect(doc).toBeLessThanOrEqual(view);
+    });
+  }
+
   test('sets no cookies and stores nothing', async ({ page, context }) => {
     await page.goto('/');
     await page.locator('section.insta').scrollIntoViewIfNeeded();

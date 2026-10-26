@@ -18,24 +18,23 @@ import { PLATE_SIZES, picture, pictureOf, type Picture } from './picture';
 
 export const INSTAGRAM_HANDLE = '@inkawasi.ferrol';
 
-/** Two columns on phones, three on tablets, six in the 1100 px column from 900 px. */
-const POST_SIZES =
-  '(min-width: 1100px) 170px, (min-width: 900px) 16vw, (min-width: 640px) 31vw, 46vw';
+/** 280 px in the swipe row of phones and tablets, a sixth of the 1100 px column from 900 px. */
+const POST_SIZES = '(min-width: 1100px) 170px, (min-width: 900px) 16vw, 280px';
 
 const TYPES = { avif: 'image/avif', webp: 'image/webp' } as const;
 
 /** The copies written by scripts/instagram.ts, served from the site under `/instagram/img/`. */
-function postPicture(base: string, post: InstagramPost): Picture {
+function postPicture(base: string, post: InstagramPost, widths: number[]): Picture {
   const url = (width: number, format: (typeof IMAGE_FORMATS)[number]) =>
     `${base}${FEED_DIR}/${IMAGE_DIR}/${imageName(post.file, width, format)}`;
-  const largest = IMAGE_WIDTHS.at(-1)!;
+  const largest = widths.at(-1)!;
   return {
     src: url(largest, 'webp'),
     width: largest,
     height: imageHeight(largest),
     sources: IMAGE_FORMATS.map((format) => ({
       type: TYPES[format],
-      srcset: IMAGE_WIDTHS.map((w) => `${url(w, format)} ${w}w`).join(', '),
+      srcset: widths.map((w) => `${url(w, format)} ${w}w`).join(', '),
     })),
   };
 }
@@ -70,7 +69,7 @@ function postTile(page: Page, post: InstagramPost): Tile {
   );
   return {
     href: post.permalink,
-    picture: postPicture(ctx.base, post),
+    picture: postPicture(ctx.base, post, ctx.instagram?.widths ?? [...IMAGE_WIDTHS]),
     sizes: POST_SIZES,
     badge:
       post.kind === 'image'

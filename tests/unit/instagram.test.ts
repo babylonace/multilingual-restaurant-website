@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
@@ -239,6 +239,19 @@ describe('parseFeed', () => {
     expect(parseFeed(structuredClone(TEST_FEED))).toEqual(TEST_FEED);
   });
 
+  it('reads a feed published before the swipe row as having the old widths', () => {
+    const old: Partial<InstagramFeed> = structuredClone(TEST_FEED);
+    delete old.widths;
+    expect(parseFeed(old).widths).toEqual([240, 360, 480]);
+  });
+
+  it.each([[[]], [[480, 240]], [[240, 999]], [['240']], ['240,360']])(
+    'refuses widths %j',
+    (widths) => {
+      expect(() => parseFeed({ ...structuredClone(TEST_FEED), widths })).toThrow(/widths/);
+    },
+  );
+
   it.each([
     ['another version', (f: InstagramFeed) => Object.assign(f, { version: 2 })],
     ['no posts', (f: InstagramFeed) => (f.posts = [])],
@@ -265,6 +278,11 @@ describe('samePosts', () => {
     expect(samePosts(TEST_FEED, later)).toBe(true);
     later.posts[0]!.file = `${later.posts[0]!.id}-fedcba9876`;
     expect(samePosts(TEST_FEED, later)).toBe(false);
+  });
+
+  it('deploys when only the widths changed, so new copies replace the old ones', () => {
+    const old = { ...structuredClone(TEST_FEED), widths: [240, 360, 480] };
+    expect(samePosts(TEST_FEED, old)).toBe(false);
   });
 });
 
@@ -426,6 +444,27 @@ describe('the script', () => {
     });
     expect(copied).toEqual(written);
     expect(readdirSync(join(site, 'img')).sort()).toEqual(readdirSync(join(live, 'img')).sort());
+  });
+
+  it('copies a feed published with the old widths without asking for the new ones', async () => {
+    const live = join(dir, 'live');
+    await buildFromApi({ token: TOKEN, outDir: live, fetchFn: fakeFetch(api([media(1)])).fn });
+    // As published before the swipe row: no `widths`, and no 720 px copies.
+    const feedFile = join(live, 'feed.json');
+    const old = JSON.parse(readFileSync(feedFile, 'utf8'));
+    delete old.widths;
+    writeFileSync(feedFile, JSON.stringify(old));
+    for (const name of readdirSync(join(live, 'img'))) {
+      if (name.includes('-720.')) rmSync(join(live, 'img', name));
+    }
+    const copied = await recoverPublished({
+      origin: 'https://inkawasi.es',
+      outDir: site,
+      fetchFn: liveSite(live),
+    });
+    expect(copied?.widths).toEqual([240, 360, 480]);
+    expect(readdirSync(join(site, 'img'))).toHaveLength(3 * IMAGE_FORMATS.length);
+    expect(loadInstagram(site)?.posts).toHaveLength(1);
   });
 
   it('falls back to nothing if a published image is not what the feed says', async () => {

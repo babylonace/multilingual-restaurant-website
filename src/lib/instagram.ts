@@ -9,7 +9,6 @@ import {
   FEED_FILE,
   IMAGE_DIR,
   IMAGE_FORMATS,
-  IMAGE_WIDTHS,
   imageName,
   parseFeed,
   type InstagramFeed,
@@ -27,7 +26,7 @@ export function loadInstagram(
   if (existsSync(file)) {
     feed = parseFeed(JSON.parse(readFileSync(file, 'utf8')));
     for (const post of feed.posts) {
-      for (const width of IMAGE_WIDTHS) {
+      for (const width of feed.widths) {
         for (const format of IMAGE_FORMATS) {
           const image = join(dir, IMAGE_DIR, imageName(post.file, width, format));
           if (!existsSync(image)) throw new Error(`Instagram image missing: ${image}`);
