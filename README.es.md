@@ -55,7 +55,7 @@ git clone https://github.com/babylonace/inkawasi-web.git
 cd inkawasi-web
 npm ci
 npm run dev        # todas las páginas e idiomas en http://localhost:4321
-npm test           # 649 tests unitarios
+npm test           # 657 tests unitarios
 npm run build      # la web estática en dist/
 ```
 
@@ -103,10 +103,10 @@ los idiomas, las funciones testeadas, las fuentes, las imágenes y el CI funcion
 
 ## Tests y CI
 
-- **649 tests unitarios** (Vitest): funciones de render, formatos por idioma, alérgenos, rutas, sitemap,
+- **657 tests unitarios** (Vitest): funciones de render, formatos por idioma, alérgenos, rutas, sitemap,
   escapado, las reglas del sistema de diseño, un test contra filtraciones de datos privados, el feed de
   Instagram (con una API falsa, nunca la real) y las comprobaciones de la puerta.
-- **160 tests end-to-end y de accesibilidad** (Playwright + axe-core): cada tipo de página, varios idiomas,
+- **161 tests end-to-end y de accesibilidad** (Playwright + axe-core): cada tipo de página, varios idiomas,
   uso con teclado, diseño de derecha a izquierda y WCAG A/AA.
 - **Lighthouse CI:** el build falla si el rendimiento en móvil baja de 90, o accesibilidad, buenas prácticas
   o SEO bajan de 95.
