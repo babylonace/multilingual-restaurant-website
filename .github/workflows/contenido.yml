@@ -33,7 +33,9 @@ permissions:
 
 jobs:
   instagram:
-    if: github.ref == 'refs/heads/main'
+    # Like the deploy job of ci.yml: only where the site is deployed from. A fork or the public copy
+    # has no CLOUDFLARE_ACCOUNT_ID, so it never runs there (no token, no daily red runs).
+    if: github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
