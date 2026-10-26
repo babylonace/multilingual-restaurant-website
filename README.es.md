@@ -1,13 +1,16 @@
-# Inkawasi · Carta web
+# Web multilingüe de restaurante
 
-[![CI](https://github.com/babylonace/inkawasi-web/actions/workflows/ci.yml/badge.svg)](https://github.com/babylonace/inkawasi-web/actions/workflows/ci.yml)
+[![CI](https://github.com/babylonace/multilingual-restaurant-website/actions/workflows/ci.yml/badge.svg)](https://github.com/babylonace/multilingual-restaurant-website/actions/workflows/ci.yml)
 [![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)](LICENSE)
 
 [English](README.md) · **Español**
 
 **Una web rápida y accesible en 10 idiomas para un negocio pequeño, hecha con páginas estáticas.**
-Esta es la carta de Inkawasi, un restaurante peruano en Ferrol. Los clientes escanean un QR en la mesa,
-así que tiene que cargar rápido en el móvil y hablar su idioma, árabe de derecha a izquierda incluido.
+Esta es la web completa de Inkawasi, un restaurante peruano en Ferrol: inicio, carta, menú del día,
+novedades de Instagram y páginas legales. Los clientes escanean un QR en la mesa, así que tiene que cargar
+rápido en el móvil y hablar su idioma, árabe de derecha a izquierda incluido. Es un caso real en producción,
+no una plantilla: los platos y los textos son de Inkawasi, y la sección «Úsala para tu propio negocio» explica
+qué cambiar si la bifurcas.
 
 **En vivo:** [inkawasi.es](https://inkawasi.es) · [carta en español](https://inkawasi.es/carta/)
 
@@ -66,8 +69,8 @@ No hace falta leerlo todo. Cada parte vive en pocos sitios y tiene sus propios t
 Necesitas Node 20 o superior.
 
 ```bash
-git clone https://github.com/babylonace/inkawasi-web.git
-cd inkawasi-web
+git clone https://github.com/babylonace/multilingual-restaurant-website.git
+cd multilingual-restaurant-website
 npm ci
 npm run dev        # todas las páginas e idiomas en http://localhost:4321
 npm test           # 657 tests unitarios

@@ -1,13 +1,15 @@
-# Inkawasi · Digital menu
+# Multilingual restaurant website
 
-[![CI](https://github.com/babylonace/inkawasi-web/actions/workflows/ci.yml/badge.svg)](https://github.com/babylonace/inkawasi-web/actions/workflows/ci.yml)
+[![CI](https://github.com/babylonace/multilingual-restaurant-website/actions/workflows/ci.yml/badge.svg)](https://github.com/babylonace/multilingual-restaurant-website/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
 **English** · [Español](README.es.md)
 
 **A fast, accessible website in 10 languages for a small business, built as plain static pages.**
-This one is the menu of Inkawasi, a Peruvian restaurant in Ferrol, Spain. Guests scan a QR code at
-the table, so it has to load fast on a phone and speak their language, including right-to-left Arabic.
+This one is the whole website of Inkawasi, a Peruvian restaurant in Ferrol, Spain: home, menu, daily set menu,
+Instagram news and legal pages. Guests scan a QR code at the table, so it has to load fast on a phone and speak
+their language, including right-to-left Arabic. It is a real case in production, not a template: the dishes and
+texts are Inkawasi's, and "Use it for your own business" below says what to change if you fork it.
 
 **Live:** [inkawasi.es](https://inkawasi.es) · [English menu](https://inkawasi.es/en/carta/)
 
@@ -66,8 +68,8 @@ You do not need to read everything. Each part lives in a few places and has its 
 You need Node 20 or newer.
 
 ```bash
-git clone https://github.com/babylonace/inkawasi-web.git
-cd inkawasi-web
+git clone https://github.com/babylonace/multilingual-restaurant-website.git
+cd multilingual-restaurant-website
 npm ci
 npm run dev        # every page, every language, at http://localhost:4321
 npm test           # 657 unit tests

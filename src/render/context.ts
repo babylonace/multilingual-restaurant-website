@@ -6,7 +6,7 @@ import type { Pictures } from './picture';
 
 export interface RenderContext {
   lang: LangCode;
-  /** Public base path, always starting and ending with `/` (e.g. `/` or `/inkawasi-web/`). */
+  /** Public base path, always starting and ending with `/` (e.g. `/` or `/multilingual-restaurant-website/`). */
   base: string;
   /** Absolute origin (no trailing slash). Without it, canonical/hreflang/sitemap tags are skipped. */
   siteUrl?: string;
