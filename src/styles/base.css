@@ -122,7 +122,8 @@
     font-weight: var(--fw-semibold);
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--text-gold);
+    /* This layer beats `components`, so a component recolours it through the variable. */
+    color: var(--eyebrow-color, var(--text-gold));
   }
 
   .eyebrow--small {
@@ -140,7 +141,7 @@
   .price {
     font-size: 1.125rem;
     font-weight: var(--fw-semibold);
-    color: var(--text-gold);
+    color: var(--price-color, var(--text-gold));
     white-space: nowrap;
     /* Keep "14,50 €" intact inside right-to-left text. */
     direction: ltr;

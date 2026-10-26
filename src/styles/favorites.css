@@ -55,12 +55,9 @@
    * no hover although they have a mouse, and the highlight never showed.
    */
   .fav:hover {
+    --eyebrow-color: var(--gold-300);
+    --price-color: var(--gold-300);
     background: var(--surface-brand);
-  }
-
-  .fav:hover .eyebrow,
-  .fav:hover .fav__price {
-    color: var(--gold-300);
   }
 
   .fav:hover .fav__name {

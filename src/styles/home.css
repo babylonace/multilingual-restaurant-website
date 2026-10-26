@@ -419,7 +419,7 @@
     grid-auto-columns: min(72%, 280px);
     gap: var(--space-4);
     margin-top: var(--space-5);
-    padding: 4px var(--gutter) var(--space-4);
+    padding: var(--space-2) var(--gutter) var(--space-4);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--gutter);
@@ -443,11 +443,25 @@
     }
   }
 
-  /* A favourite: the photo, then a line of the printed carta (name, dotted leader, price). */
+  /*
+   * A favourite: the photo, then a line of the printed carta (name, dotted leader, price). The
+   * padding is paid back by the negative margin, so the photo keeps its size and the card stays
+   * where it was; it only gives the highlight (brown, cream text) room around the piece. Its
+   * radius is the photo's plus that padding.
+   */
   .plate {
     display: grid;
     gap: var(--space-3);
+    margin: calc(-1 * var(--space-2));
+    padding: var(--space-2);
+    border-radius: var(--radius-xl);
     color: var(--text-strong);
+    transition: var(--transition-colors);
+  }
+
+  .plate__name,
+  .plate .price {
+    transition: var(--transition-colors);
   }
 
   .plate__frame {
@@ -480,6 +494,19 @@
     font-size: 1.1875rem;
     font-weight: var(--fw-semibold);
     line-height: 1.25;
+  }
+
+  /*
+   * Highlight of the favourite under the pointer (or focused by keyboard): the house brown with
+   * cream text, as in the brown bands, like Novedades. The price in gold-300 and the name in cream
+   * are both far above 4.5:1 on brown-800. Not wrapped in `(hover: hover)`: some touch laptops
+   * report no hover although they have a mouse, and the highlight never showed.
+   */
+  .plate:hover,
+  .plate:focus-visible {
+    --price-color: var(--gold-300);
+    background: var(--surface-brand);
+    color: var(--text-on-dark);
   }
 
   .plate:hover .plate__name {
