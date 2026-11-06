@@ -129,7 +129,7 @@ los idiomas, las funciones testeadas, las fuentes, las imágenes y el CI funcion
 - **Lighthouse CI:** el build falla si el rendimiento en móvil baja de 90, o accesibilidad, buenas prácticas
   o SEO bajan de 95.
 
-GitHub Actions lo ejecuta todo, más formato, lint y tipos, en cada push.
+GitHub Actions lo ejecuta todo, más formato, lint y tipos, en cada push. Cómo llega un cambio a `main`: [docs/how-this-repo-is-developed.md](docs/how-this-repo-is-developed.md) (en inglés).
 
 ## Stack
 
