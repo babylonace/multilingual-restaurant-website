@@ -516,12 +516,12 @@ describe('the script', () => {
           json({ access_token: `${TOKEN}-new`, expires_in: 5_184_000 }),
       });
       const log = vi.mocked(console.log);
-      expect(await main(['--renovar', '--salida', target], { INSTAGRAM_TOKEN: TOKEN }, fn)).toBe(0);
+      expect(await main(['--renew', '--output', target], { INSTAGRAM_TOKEN: TOKEN }, fn)).toBe(0);
       expect(readFileSync(target, 'utf8')).toBe(`${TOKEN}-new`);
       expect(log.mock.calls.flat().join('\n')).not.toContain(TOKEN);
 
       await main(
-        ['--renovar', '--salida', target],
+        ['--renew', '--output', target],
         { INSTAGRAM_TOKEN: TOKEN, GITHUB_ACTIONS: 'true' },
         fn,
       );
