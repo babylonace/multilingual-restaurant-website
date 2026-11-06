@@ -13,7 +13,7 @@ Everything below was read from the repository settings and workflow files on 202
 
 ## What machines check
 
-_(this repository)_ Required for `main`: `verify`. One job runs these steps in order and stops at the first failure:
+_(this repository)_ Required for `main`: `verify` and `secrets`. The `secrets` job runs gitleaks over the whole git history. The `verify` job runs these steps in order and stops at the first failure:
 
 1. `npm ci`
 2. Prettier format check, ESLint and the TypeScript type check.
@@ -23,7 +23,9 @@ _(this repository)_ Required for `main`: `verify`. One job runs these steps in o
 
 The workflow file also keeps the `deploy` and `preview` jobs of the original site. They are skipped here because this repository has no `CLOUDFLARE_ACCOUNT_ID` variable, so it never deploys.
 
-Workflows declare `permissions: contents: read`, and the repository default token is read-only too. A job that needs more asks for it explicitly (`issues: write` in the scheduled content workflow, whose job is skipped in this repository). Every action is pinned to a full commit hash with the version in a comment.
+Workflows declare `permissions: contents: read`, and the repository default token is read-only too. A job that needs more asks for it explicitly (`issues: write` in the scheduled content workflow, whose job is skipped in this repository). Every action is pinned to a full commit hash with the version in a comment, and a repository setting makes GitHub refuse any action that is not.
+
+GitHub CodeQL (default setup, JavaScript/TypeScript and workflow files) scans the code. Its findings appear in the Security tab; it is not a required check.
 
 ## What a person checks
 
@@ -52,31 +54,33 @@ GitHub Dependabot alerts and Dependabot security updates are on.
 ## Secrets and vulnerabilities
 
 - GitHub secret scanning and push protection are on: a push containing a recognised secret is blocked unless the pusher explicitly overrides it.
+- CI also scans the whole git history with gitleaks on every push and pull request (the `secrets` job). The gitleaks archive it downloads must match a SHA-256 hash written in the workflow, taken from the release's checksums file; a mismatch fails the job.
 - The repository stores no secrets. There are zero repository secrets, zero repository variables, and zero secrets or variables in the `preview` and `production` environments. This repository does not deploy.
 - Private vulnerability reporting is on, and [SECURITY.md](../SECURITY.md) says how to use it and what is in scope.
 
 ## Evidence _(this repository)_
 
-Numbers below were printed by the linked run on 2026-11-05. They change as tests are added.
+Numbers below were printed by the linked runs on 2026-11-05 and 2026-11-06. They change as tests are added.
 
 - Pull request that added these controls: [#1](https://github.com/babylonace/multilingual-restaurant-website/pull/1).
 - [Pull request run](https://github.com/babylonace/multilingual-restaurant-website/actions/runs/42132054428), `verify` green in 359 s: 656 unit tests passed and 1 skipped (18 files), 161 browser tests passed, Lighthouse thresholds met. `deploy` and `preview` were skipped.
+- [Run on the branch that added the `secrets` job](https://github.com/babylonace/multilingual-restaurant-website/actions/runs/42138676576): `verify` green in 519 s, `secrets` 6 s (archive hash `OK`, 65 commits scanned, no leaks found).
 - A change that was stopped by CI: the TypeScript pull request described under "New dependencies".
 
 ## What is not covered
 
 - The human review above is not enforced (see "What a person checks").
 - "Require branches to be up to date before merging" is off, so a pull request is checked on its own branch, not against the latest `main`.
-- No code scanning (CodeQL or similar) is configured. Commit signing is not required.
-- The Actions setting that forces every action to be pinned to a hash is off. Pinning is done in the workflow files and holds today because every `uses:` line is pinned, but GitHub would not refuse an unpinned one.
+- CodeQL findings do not block a merge, and commit signing is not required.
+- CodeQL findings in test files, which parse pages this repository generates itself, were dismissed as "used in tests". The dismissals and their reasons are visible in the Security tab.
 - Lighthouse CI is started with `npx` at a pinned version (`@lhci/cli` 0.15.1), which Dependabot does not track.
 
 ## Copy this setup
 
 1. Ruleset on the default branch: require a pull request, require status checks, block deletion and force-pushes, leave the bypass list empty. Use the exact job names as they appear on a pull request (for a matrix job that includes the version, for example `test (22)`); a required check that never reports blocks the merge forever.
-2. Settings, Code security: secret scanning, push protection, Dependabot alerts and security updates, private vulnerability reporting.
+2. Settings, Code security: secret scanning, push protection, Dependabot alerts and security updates, private vulnerability reporting, CodeQL default setup. Add a `secrets` job that runs gitleaks over the full history and checks the downloaded archive against a SHA-256 hash.
 3. `.github/dependabot.yml` with a weekly schedule for each ecosystem in use, including `github-actions`.
-4. In each workflow: `permissions: contents: read`, and every action pinned to a full commit hash with the version as a comment.
+4. In each workflow: `permissions: contents: read`, and every action pinned to a full commit hash with the version as a comment. Then turn on the Actions setting that requires full-length commit SHAs, so a later change cannot undo it.
 5. `.github/CODEOWNERS`, `.github/pull_request_template.md` and `SECURITY.md`.
 6. After the first pull request goes through, link its CI run in the evidence section and write down only numbers a run printed.
 
