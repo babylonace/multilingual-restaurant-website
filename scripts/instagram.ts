@@ -7,7 +7,7 @@
  *                                          https://inkawasi.es), so a deploy from a push keeps
  *                                          them. Never calls Meta; on any doubt it leaves the
  *                                          folder empty and the page falls back to the favourites.
- *   npm run instagram -- --renovar --salida <archivo>
+ *   npm run instagram -- --renew --output <archivo>
  *                                          Renews the token and writes the new one to that file,
  *                                          for the workflow to store as a secret. Prints nothing
  *                                          of it.
@@ -354,10 +354,10 @@ export async function main(
     const token = env.INSTAGRAM_TOKEN?.trim();
     if (!token) throw new InstagramError('INSTAGRAM_TOKEN is not set', 'auth');
 
-    if (argv.includes('--renovar')) {
-      const target = argv[argv.indexOf('--salida') + 1];
-      if (!argv.includes('--salida') || !target) {
-        throw new InstagramError('--renovar needs --salida <file>', 'fatal');
+    if (argv.includes('--renew')) {
+      const target = argv[argv.indexOf('--output') + 1];
+      if (!argv.includes('--output') || !target) {
+        throw new InstagramError('--renew needs --output <file>', 'fatal');
       }
       const renewed = await refreshToken(token, fetchFn);
       // Masked before anything else can print it.
