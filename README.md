@@ -139,7 +139,7 @@ the language setup, the tested renderers, the fonts and image pipeline and the C
 - **Lighthouse CI:** the build fails if mobile performance drops below 90, or accessibility, best practices
   or SEO below 95.
 
-GitHub Actions runs all of it, plus formatting, lint and types, on every push.
+GitHub Actions runs all of it, plus formatting, lint and types, on every push. How a change gets to `main`: [docs/how-this-repo-is-developed.md](docs/how-this-repo-is-developed.md) (English).
 
 ## Stack
 
