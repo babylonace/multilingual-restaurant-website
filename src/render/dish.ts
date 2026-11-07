@@ -4,6 +4,7 @@ import { formatPrice } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
 import type { Page } from './context';
 import { allergenIcon } from './icons';
+import { orderControl } from './order';
 
 export function dishItem(page: Page, id: FoodId): SafeHtml {
   const dish = DISHES[id];
@@ -12,10 +13,16 @@ export function dishItem(page: Page, id: FoodId): SafeHtml {
 
   return html`<li class="dish">
     <div class="dish__head">
-      <h3 class="dish__name">${dish.name}</h3>
-      ${'availability' in dish && html`<span class="badge">${t[dish.availability]}</span>`}
+      <div class="dish__title">
+        <h3 class="dish__name">${dish.name}</h3>
+        ${
+          'availability' in dish &&
+          html`<span class="badge badge--under">${t[dish.availability]}</span>`
+        }
+      </div>
       <span class="leader" aria-hidden="true"></span>
       <span class="price">${formatPrice(dish.priceCents, ctx.lang)}</span>
+      ${orderControl(page, dish, 1)}
     </div>
     <p class="dish__desc">${description}</p>
     ${
@@ -39,5 +46,6 @@ export function priceRow(page: Page, id: DishId): SafeHtml {
     <span class="row__name">${dish.name}</span>
     <span class="leader" aria-hidden="true"></span>
     <span class="price">${formatPrice(dish.priceCents, page.ctx.lang)}</span>
+    ${orderControl(page, dish, 0)}
   </li>`;
 }

@@ -121,22 +121,35 @@
     margin-top: var(--space-3);
   }
 
-  .more li:first-child {
-    grid-column: 1 / -1;
+  /*
+   * Just Eat, second level: a text link under the tiles. It is another way to order, not the way
+   * the restaurant leads with, so it has no tile of its own. 44px tall for a thumb.
+   */
+  .alt-order {
+    margin-top: var(--space-2);
   }
 
-  @media (min-width: 900px) {
-    .actions__list {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+  .alt-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: 44px;
+    font-size: 0.9375rem;
+    font-weight: var(--fw-semibold);
+    color: var(--text-on-dark);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
 
-    .more {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+  .alt-link:hover {
+    color: var(--gold-300);
+  }
 
-    .more li:first-child {
-      grid-column: auto;
-    }
+  .alt-link__icon {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--terra-500);
   }
 
   /* ---- Tiles: a large touch target with an icon over its label ---- */

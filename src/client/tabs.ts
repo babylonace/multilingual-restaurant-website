@@ -28,7 +28,11 @@ export function initTabs(): void {
 
   function fromHash(): HTMLButtonElement | undefined {
     const id = decodeURIComponent(location.hash.slice(1));
-    return tabs.find((t) => t.dataset.tab === id);
+    const direct = tabs.find((t) => t.dataset.tab === id);
+    if (direct || !id) return direct;
+    // An anchor inside a panel (`#pedir-menu`, the menú del día rows) opens the panel that holds it.
+    const panel = document.getElementById(id)?.closest('[role="tabpanel"]');
+    return panel ? tabs.find((t) => panelOf(t) === panel) : undefined;
   }
 
   tablist.addEventListener('click', (event) => {

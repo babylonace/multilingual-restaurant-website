@@ -79,6 +79,19 @@
     gap: 10px;
   }
 
+  /*
+   * Name and, when there is one, the "Domingos" tag under it, close to it. The tag used to sit
+   * between the name and the price and squeezed long names onto two lines; on its own line the
+   * name keeps the width it needs. The dotted leader and the price stay on the name's line.
+   */
+  .dish__title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    min-inline-size: 0;
+  }
+
   .dish__name {
     font-family: var(--font-serif);
     font-size: 1.125rem;

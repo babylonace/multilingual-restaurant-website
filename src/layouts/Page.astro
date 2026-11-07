@@ -26,6 +26,10 @@ const titleFont = fontData['--font-montserrat']?.find((f) => f.style === 'normal
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#6e3f31" />
+    <!-- Before the first paint: the parts that need JavaScript (data-js-only) show only with it. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
     <Fragment set:html={page.head} />
     <Font cssVariable="--font-montserrat" />
     {titleFont && <link rel="preload" href={titleFont} as="font" type="font/woff2" crossorigin />}

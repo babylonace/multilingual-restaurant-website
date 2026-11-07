@@ -54,4 +54,4 @@ export interface Section {
   dishes: readonly FoodId[];
 }
 
-export type TabId = SectionId | 'bebidas';
+export type TabId = SectionId | 'bebidas' | 'menu';

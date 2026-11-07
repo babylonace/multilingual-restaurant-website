@@ -1,0 +1,239 @@
+/*
+ * The pieces that join the carta, the order and the booking into one visit: what the kitchen is
+ * doing right now, the last step after sending, the links between the three, and the carta's top
+ * made short enough that the first dish is on the first screen. Imported last so it can tighten
+ * what the other files set.
+ */
+@layer components {
+  /* ---- The top of the carta: the first dish has to be in the first screen ---- */
+  .masthead__hero {
+    padding-block: 10px 20px;
+  }
+
+  .masthead__title {
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+  }
+
+  .masthead__quote {
+    margin-top: 6px;
+    font-size: 1rem;
+  }
+
+  .favorites .section-head {
+    padding-block: 20px 0;
+  }
+
+  .favorites .section-title {
+    font-size: 1.125rem;
+  }
+
+  .favorites .rule {
+    margin-top: 10px;
+  }
+
+  .fav {
+    min-height: 0;
+  }
+
+  .fav__img {
+    height: 112px;
+  }
+
+  .fav__body {
+    gap: 4px;
+    padding: 10px var(--space-4) 12px;
+  }
+
+  .fav__desc {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* ---- The way of getting the order: one short block, not a card ---- */
+  .order-panel {
+    gap: 6px;
+    margin-bottom: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .order-panel .choice {
+    min-block-size: 44px;
+  }
+
+  .order-panel__costs {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  /* What the kitchen is doing now and what the menú del día is today: a dot says it at a glance. */
+  .order-panel__status,
+  .menu-card__status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.8125rem;
+    font-weight: var(--fw-semibold);
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  .order-panel__status::before,
+  .menu-card__status::before {
+    content: '';
+    flex: none;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--terra-600);
+  }
+
+  .order-panel__status[data-state='open']::before,
+  .menu-card__status[data-state='open']::before {
+    background: var(--olive-500);
+  }
+
+  .menu-card__status {
+    margin-bottom: var(--space-2);
+  }
+
+  /* A + that cannot be used (no menú del día today) looks off, and says why in the line above. */
+  .qty__btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .qty__btn:disabled:hover {
+    background: transparent;
+    color: var(--text-strong);
+  }
+
+  .order__pay {
+    margin: var(--space-2) 0 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  /* ---- Last step: after "send", the order is in WhatsApp ---- */
+  .order__sent {
+    display: grid;
+    gap: var(--space-3);
+    padding-block: var(--space-2) var(--space-1);
+  }
+
+  .order__sent-title,
+  .reserve__sent-title {
+    font-size: 1.375rem;
+    font-weight: var(--fw-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+    color: var(--text-strong);
+  }
+
+  .order__sent-text {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--text-body);
+  }
+
+  .reserve__sent {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    margin-top: var(--space-6);
+  }
+
+  .reserve__sent .reserve__lead {
+    margin-top: 0;
+  }
+
+  /* ---- Links between the three ways of using the web ---- */
+  .reserve__cross,
+  .carta-cross {
+    margin-top: var(--space-5);
+  }
+
+  .carta-cross {
+    text-align: center;
+  }
+
+  .reserve__cross a,
+  .carta-cross a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    font-size: 0.9375rem;
+    font-weight: var(--fw-semibold);
+    color: var(--text-strong);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .reserve__closed {
+    color: var(--terra-700);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* ---- Home: two things to do, and the rest as links ---- */
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+    margin-top: var(--space-2);
+  }
+
+  .hero__links a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    font-size: 0.9375rem;
+    font-weight: var(--fw-semibold);
+    color: var(--cream-100);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .hero__links a:hover {
+    color: var(--gold-300);
+  }
+
+  /* Three ways to enjoy it: wide rows on a phone, three tiles from 900 px. */
+  .actions__list {
+    grid-template-columns: 1fr;
+  }
+
+  .actions__list .tile {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-4);
+    min-height: 72px;
+  }
+
+  .alt-order {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+  }
+
+  .alt-link__icon--wa {
+    color: var(--gold-400);
+  }
+
+  @media (min-width: 900px) {
+    .actions__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .actions__list .tile {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      min-height: 104px;
+    }
+  }
+}

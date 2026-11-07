@@ -9,6 +9,7 @@ import { DEFAULT_LANG, isLangCode } from '../i18n';
  *   /en/carta/       carta, any other language
  *   /  /en/  …       home page of each language (photo and the ways to reach the restaurant)
  *   /menu-del-dia/   menú del día, Spanish; /en/menu-del-dia/ … in the other languages
+ *   /reservar/       reservation form (only when the build turns reservations on)
  *   /aviso-legal/    legal pages, Spanish only (they are required by Spanish law)
  *   /privacidad/
  *
@@ -18,6 +19,7 @@ export type Route =
   | { kind: 'carta'; lang: LangCode }
   | { kind: 'home'; lang: LangCode }
   | { kind: 'menu'; lang: LangCode }
+  | { kind: 'reservar'; lang: LangCode }
   | { kind: 'legal'; lang: 'es'; legal: LegalId };
 
 const LEGAL_ROUTE = new RegExp(`^/(${LEGAL_PAGES.join('|')})/(?:index\\.html)?$`);
@@ -27,12 +29,15 @@ export function resolveRoute(pathname: string): Route | undefined {
   const legal = LEGAL_ROUTE.exec(pathname)?.[1];
   if (legal) return { kind: 'legal', lang: 'es', legal: legal as LegalId };
 
-  const match = /^\/(?:([a-z]{2})\/)?(carta\/|menu-del-dia\/)?(?:index\.html)?$/.exec(pathname);
+  const match = /^\/(?:([a-z]{2})\/)?(carta\/|menu-del-dia\/|reservar\/)?(?:index\.html)?$/.exec(
+    pathname,
+  );
   if (!match) return undefined;
 
   const lang = match[1] ?? DEFAULT_LANG;
   // The default language lives at the root, never under its own prefix.
   if (!isLangCode(lang) || (match[1] && lang === DEFAULT_LANG)) return undefined;
   if (match[2] === 'carta/') return { kind: 'carta', lang };
+  if (match[2] === 'reservar/') return { kind: 'reservar', lang };
   return { kind: match[2] ? 'menu' : 'home', lang };
 }

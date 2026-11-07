@@ -14,13 +14,18 @@ export interface RenderContext {
   pictures: Pictures;
   /** Latest Instagram posts (src/lib/instagram.ts). Without them the section shows the favourites. */
   instagram?: InstagramFeed;
+  /**
+   * The reservation page and the links to it exist. Off by default (BOOKINGS_VISIBLE=1 turns it
+   * on): a deployment can launch bookings with one setting, not by merging code.
+   */
+  bookings?: boolean;
 }
 
 /** What links and absolute URLs need from a context. */
 export type SiteRef = Pick<RenderContext, 'base' | 'siteUrl'>;
 
 /** The kinds of page that exist in every language. */
-export type PageKind = 'home' | 'carta' | 'menu';
+export type PageKind = 'home' | 'carta' | 'menu' | 'reservar';
 
 export interface Page {
   ctx: RenderContext;
@@ -63,10 +68,14 @@ export function langUrl(ctx: SiteRef, lang: LangCode): string | undefined {
 /** The menú del día keeps its Spanish name in every language, like the carta. */
 export const MENU_ROUTE = 'menu-del-dia/';
 
-/** Folder of a page kind in a language: `""`, `"carta/"`, `"menu-del-dia/"`, each under `"en/"`… outside Spanish. */
+/** The reservation form, in every language, under its Spanish slug like the menú del día. */
+export const RESERVAR_ROUTE = 'reservar/';
+
+/** Folder of a page kind in a language: `""`, `"carta/"`, `"menu-del-dia/"`, `"reservar/"`, each under `"en/"`… outside Spanish. */
 export function kindPath(kind: PageKind, lang: LangCode): string {
   if (kind === 'home') return langPath(lang);
-  return kind === 'carta' ? cartaPath(lang) : `${langPath(lang)}${MENU_ROUTE}`;
+  if (kind === 'carta') return cartaPath(lang);
+  return `${langPath(lang)}${kind === 'reservar' ? RESERVAR_ROUTE : MENU_ROUTE}`;
 }
 
 /** Link to the same kind of page in another language, so the language switcher stays on the page. */

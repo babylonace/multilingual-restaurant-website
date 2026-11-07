@@ -81,6 +81,8 @@ jobs:
         run: npm run build
         env:
           INKAWASI_PRIVATE_JSON: ${{ secrets.INKAWASI_PRIVATE_JSON }}
+          # Without this, the first new Instagram post would take the reservation page down.
+          BOOKINGS_VISIBLE: '1'
 
       - name: Deploy
         id: deploy

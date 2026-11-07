@@ -16,7 +16,7 @@ src/pages/        Astro routes: each page calls its renderer; sitemap.xml and ro
 src/layouts/      the shared document: CSS, JS, self-hosted fonts and icons
 src/lib/          build helpers: per-language context and the image pipeline
 src/assets/fotos/ photo originals (at most 2400 px)
-src/client/       progressive enhancement: tabs, language menu, saved preference
+src/client/       progressive enhancement: tabs, language menu, saved preference, order, booking
 scripts/          tokens, favicon, logo, Open Graph image, private data, Instagram posts,
                   gateway check
 workers/vigia/    Cloudflare Worker that watches the Netlify gateway and fails back
@@ -34,7 +34,7 @@ flowchart LR
   R["src/render<br/>pure functions, escaped HTML"] --> P["src/pages<br/>Astro routes"]
   C --> P
   F["src/assets/fotos"] -->|astro:assets| P
-  P -->|astro build| O["dist/<br/>33 static pages, sitemap, robots"]
+  P -->|astro build| O["dist/<br/>43 static pages, sitemap, robots"]
   O --> CF["Cloudflare Pages"]
 ```
 
@@ -54,6 +54,7 @@ When moving from Vite to Astro the HTML of all 33 pages was compared before and 
 | `/en/carta/`, `/gl/carta/`…            | Menu in each of the other 9 languages                                          |
 | `/`, `/en/`…                           | Home page in each language: dining-room photo and the ways to reach us         |
 | `/menu-del-dia/`, `/en/menu-del-dia/`… | Daily set menu: hours, structure and prices; today's dishes are asked on WhatsApp |
+| `/reservar/`, `/en/reservar/`…          | Booking form: name, day, time and guests go out as a WhatsApp message          |
 | `/aviso-legal/`                        | Legal notice (LSSI). Spanish only                                              |
 | `/privacidad/`                         | Privacy policy (GDPR). Spanish only                                            |
 
@@ -68,6 +69,7 @@ The home page lives at `/` and the menu is one button on it; the menu stays at `
 - **No third-party requests at runtime.** Self-hosted fonts split by `unicode-range` (the browser downloads only Latin or Cyrillic, depending on the language; a test checks that all Latin and Russian text fits those two files), inline icons and flags.
 - **Prices as integers (cents)**, formatted with `Intl.NumberFormat` per language.
 - **Templates escape by default** (`html\`\``); no `innerHTML` with unsanitised data.
+- **Ordering and booking without a backend.** The menu page is also the order: a + on every dish, a bar with the total and a dialog for the details. On sending, the page opens WhatsApp with the message already written, so the restaurant takes orders the way it always has, with no server, account or payment. The details stay in the browser tab until the customer sends the message. Kitchen hours are in one file, `src/data/hours.ts`, and always read in Ferrol's time, whatever the visitor's clock says.
 - **Real right-to-left Arabic:** `dir` and `lang` on `<html>`, CSS logical properties, no `letter-spacing` (it breaks letter joining) and prices isolated with `unicode-bidi`.
 - **The design system rules.** Colours come from `tokens.json` and a test fails if a hand-written colour appears in the CSS. Text is in the brand brown, never grey or on white. The design-system shades for small text (`gold-800`, `terra-700`) already meet AA.
 
@@ -83,6 +85,6 @@ The home page lives at `/` and the menu is one button on it; the menu stays at `
 
 ## Tests
 
-- **Unit (Vitest, 657):** every renderer, prices and formats per language, allergens, routes, sitemap, language preference, escaping, the design-system rules, a guard that fails if the real private data ever appears in a tracked file, the Instagram script against a fake API (refused token, Meta down, a tampered published feed) and the gateway and watchman logic.
-- **End to end + accessibility (Playwright + axe-core, 161):** every page type in several languages, keyboard use, right-to-left layout, and WCAG checks.
+- **Unit (Vitest, 1,011):** every renderer, prices and formats per language, allergens, routes, sitemap, language preference, escaping, the design-system rules, a guard that fails if the real private data ever appears in a tracked file, the Instagram script against a fake API (refused token, Meta down, a tampered published feed) and the gateway and watchman logic.
+- **End to end + accessibility (Playwright + axe-core, 318):** every page type in several languages, keyboard use, right-to-left layout, and WCAG checks.
 - **Lighthouse CI:** the build fails if the median of 3 mobile runs drops below 90 for performance or 95 for accessibility, best practices or SEO (`lighthouserc.json`).

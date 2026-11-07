@@ -47,8 +47,9 @@ test.describe('carta', () => {
 
   test('shows drinks, beers and the gluten note', async ({ page }) => {
     await page.goto('/carta/#bebidas');
-    await expect(page.getByText('Inka Kola')).toBeVisible();
-    await expect(page.getByText('Estrella de Galicia')).toBeVisible();
+    const drinks = page.getByRole('tabpanel', { name: 'Bebidas' });
+    await expect(drinks.getByText('Inka Kola')).toBeVisible();
+    await expect(drinks.getByText('Estrella de Galicia')).toBeVisible();
     await expect(page.getByText('Contienen gluten')).toBeVisible();
   });
 });
@@ -178,22 +179,37 @@ test.describe('languages', () => {
 });
 
 test.describe('home page actions', () => {
-  test('offers one ready-made WhatsApp message per intent', async ({ page }) => {
+  test('leads each tile where the visitor can finish: the carta, the form or WhatsApp', async ({
+    page,
+  }) => {
     await page.goto('/');
-    const links = page.locator('.actions a[data-event="whatsapp_clic"]');
-    await expect(links).toHaveCount(4);
-    const intents = await links.evaluateAll((els) =>
-      els.map((e) => (e as HTMLElement).dataset.propIntent),
+    const tiles = page.locator('.actions a.tile');
+    await expect(tiles).toHaveCount(3);
+    const hrefs = await tiles.evaluateAll((els) =>
+      Object.fromEntries(
+        els.map((e) => [
+          (e as HTMLElement).dataset.propIntent,
+          new URL((e as HTMLAnchorElement).href).pathname +
+            new URL((e as HTMLAnchorElement).href).search,
+        ]),
+      ),
     );
-    expect(intents).toEqual(['reservar', 'recoger', 'domicilio', 'consulta']);
-    const hrefs = await links.evaluateAll((els) => els.map((e) => (e as HTMLAnchorElement).href));
-    for (const href of hrefs) expect(href).toMatch(/^https:\/\/wa\.me\/34614922183\?text=Hola/);
-    expect(decodeURIComponent(hrefs[0] ?? '')).toContain('Nombre: \nDía: \nHora: \nPersonas: ');
+    // Booking goes to the form (this build has reservations on); ordering to the carta.
+    expect(hrefs.reservar).toBe('/reservar/');
+    expect(hrefs.recoger).toBe('/carta/?pedido=recoger');
+    expect(hrefs.domicilio).toBe('/carta/?pedido=domicilio');
+    // The question is a small link under the tiles, not a tile.
+    const consulta = await page
+      .locator('.alt-order a[data-prop-intent="consulta"]')
+      .getAttribute('href');
+    expect(consulta).toMatch(/^https:\/\/wa\.me\/34614922183\?text=Hola/);
   });
 
   test('tells the staff which language the visitor speaks', async ({ page }) => {
     await page.goto('/en/');
-    const href = await page.locator('.actions a[data-prop-intent="reservar"]').getAttribute('href');
+    const href = await page
+      .locator('.alt-order a[data-prop-intent="consulta"]')
+      .getAttribute('href');
     expect(decodeURIComponent(href ?? '')).toMatch(/\nIdioma: English$/);
   });
 
@@ -282,8 +298,7 @@ test.describe('home page actions', () => {
   test('keeps the header on screen while scrolling, without covering the WhatsApp band', async ({
     page,
   }) => {
-    await page.goto('/');
-    await page.getByRole('link', { name: /Escríbenos por WhatsApp/ }).click();
+    await page.goto('/#pedir');
     await expect(page.locator('#pedir')).toBeInViewport();
     const header = await page.locator('.masthead--home').boundingBox();
     const title = await page.locator('#actions-title').boundingBox();
@@ -530,7 +545,16 @@ test.describe('without JavaScript', () => {
 
   test('keeps the WhatsApp links working', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('link', { name: /Reservar mesa/ })).toHaveAttribute(
+    await expect(page.locator('.alt-order a[data-prop-intent="consulta"]')).toHaveAttribute(
+      'href',
+      /^https:\/\/wa\.me\/34614922183\?text=/,
+    );
+    // Booking and ordering lead to pages that keep a plain WhatsApp link for this case.
+    await page
+      .getByRole('link', { name: /Reservar mesa/ })
+      .first()
+      .click();
+    await expect(page.getByRole('link', { name: 'Reservar mesa', exact: true })).toHaveAttribute(
       'href',
       /^https:\/\/wa\.me\/34614922183\?text=/,
     );

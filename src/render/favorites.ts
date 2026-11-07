@@ -2,6 +2,7 @@ import { DISHES, FAVORITES } from '../data/menu';
 import { formatPrice } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
 import type { Page } from './context';
+import { orderControl } from './order';
 import { picture, pictureOf } from './picture';
 
 /** Cards above the fold load eagerly; the rest are lazy. */
@@ -22,15 +23,18 @@ export function favorites(page: Page): SafeHtml {
             ${picture(pictureOf(ctx.pictures, image), {
               class: 'fav__img',
               alt: name,
-              // A card is min(220px, 68vw) wide.
-              sizes: '220px',
+              // A card is min(232px, 72vw) wide.
+              sizes: '232px',
               loading: index < EAGER_COUNT ? 'eager' : 'lazy',
             })}
             <div class="fav__body">
               <p class="eyebrow eyebrow--small">${t[section]}</p>
               <h3 class="fav__name">${name}</h3>
               <p class="fav__desc">${locale.descriptions[dish]}</p>
-              <p class="price fav__price">${formatPrice(priceCents, ctx.lang)}</p>
+              <div class="fav__foot">
+                <p class="price fav__price">${formatPrice(priceCents, ctx.lang)}</p>
+                ${orderControl(page, DISHES[dish], 1)}
+              </div>
             </div>
           </li>`;
         })}

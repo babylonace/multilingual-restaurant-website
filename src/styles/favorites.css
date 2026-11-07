@@ -31,7 +31,7 @@
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    width: min(220px, 68vw);
+    width: min(232px, 72vw);
     min-height: 300px;
     overflow: hidden;
     scroll-snap-align: start;
@@ -97,9 +97,33 @@
     color: var(--text-muted);
   }
 
-  .fav__price {
+  /* Price on the left, the + on the right: the one place of the card that acts. */
+  .fav__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
     margin-top: auto;
     padding-top: 4px;
+  }
+
+  .fav .qty {
+    margin-inline-start: 0;
+  }
+
+  /* On the brown highlight the ring and the number turn cream, like the rest of the card. */
+  .fav:hover .qty__btn,
+  .fav:hover .qty__n {
+    border-color: var(--text-on-dark);
+    color: var(--text-on-dark);
+  }
+
+  .fav:hover .qty__btn:hover {
+    background: var(--text-on-dark);
+    color: var(--text-strong);
+  }
+
+  .fav__price {
     font-size: 1rem;
     font-weight: var(--fw-bold);
     color: var(--brown-700);

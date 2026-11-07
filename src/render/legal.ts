@@ -138,9 +138,12 @@ function privacidad({ titular, siteUrl }: LegalInput): SafeHtml {
     <h2>4. Cookies y almacenamiento en tu dispositivo</h2>
     <p>
       Esta web <strong>no usa cookies</strong> ni herramientas de seguimiento, y no carga recursos
-      de terceros (fuentes, iconos, mapas o publicaciones incrustadas). Lo único que guarda en tu
-      navegador es el idioma que eliges en la carta, para mostrártela en él la próxima vez; no sale
-      de tu dispositivo ni te identifica.
+      de terceros (fuentes, iconos, mapas o publicaciones incrustadas). Solo guarda en tu navegador
+      dos cosas: el idioma que eliges en la carta, para mostrártela en él la próxima vez, y,
+      mientras la pestaña siga abierta, los platos que añades a un pedido y los datos que escribes
+      en él (nombre y dirección u hora), para que no se pierdan si recargas o cambias de idioma.
+      Ninguna sale de tu dispositivo: el pedido, y lo mismo una reserva, solo llega al restaurante
+      si lo envías tú por WhatsApp, y entonces lo trata WhatsApp según el apartado 6.
     </p>
     <p>
       Hoy no usamos analítica. Si más adelante añadimos una medición de visitas sin cookies y sin

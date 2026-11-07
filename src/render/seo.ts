@@ -127,11 +127,13 @@ export function head(page: Page): SafeHtml {
     home: t.homeMetaTitle,
     carta: t.metaTitle,
     menu: `${t.menuDelDia} · ${CONTACT.name}`,
+    reservar: `${t.resTitle} · ${CONTACT.name}`,
   }[kind];
   const description = {
     home: t.homeMetaDescription,
     carta: t.metaDescription,
     menu: t.mddMetaDescription,
+    reservar: t.resMetaDescription,
   }[kind];
 
   return html`<title>${title}</title>
