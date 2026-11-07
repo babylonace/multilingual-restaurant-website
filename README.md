@@ -45,8 +45,10 @@ Lighthouse on mobile (simulated throttling, median of 3 runs), first version vs.
 | SEO                      | 82     | **100**    |
 | Largest Contentful Paint | 6.7 s  | **2.6 s**  |
 | Layout shift (CLS)       | 0.73   | **0.01**   |
-| Transferred size         | 847 KB | **297 KB** |
-| Requests                 | 36     | **14**     |
+| Transferred size         | 847 KB | **526 KB** |
+| Requests                 | 36     | **21**     |
+
+Size and requests are from the live home page on 2026-11-07. The six Instagram photos are 6 of those requests and 256 KB.
 
 ## Where to look
 
@@ -65,7 +67,7 @@ You do not need to read everything. Each part lives in a few places and has its 
 
 ## Quick start
 
-You need Node 20 or newer.
+You need Node 22.12 or newer.
 
 ```bash
 git clone https://github.com/babylonace/multilingual-restaurant-website.git

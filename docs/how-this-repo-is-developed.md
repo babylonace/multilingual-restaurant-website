@@ -47,7 +47,7 @@ _(this repository)_
 
 - `npm ci` installs exactly what `package-lock.json` says. If the manifest and the lockfile disagree, or a peer dependency conflicts, the install fails and the job stops before any other check runs.
 - Dependabot opens weekly pull requests for npm (minor and patch updates grouped into one, major updates on their own) and for GitHub Actions. They go through the same required check as any other change.
-- Real example: [pull request #3](https://github.com/babylonace/multilingual-restaurant-website/pull/3) proposes TypeScript 6.0.3 to 7.0.2. [CI failed](https://github.com/babylonace/multilingual-restaurant-website/actions/runs/42134607637) at `npm ci`, because `typescript-eslint` 8.72.0 accepts only TypeScript below 6.1.0. GitHub shows the pull request as blocked.
+- Real example: [pull request #3](https://github.com/babylonace/multilingual-restaurant-website/pull/3) proposed TypeScript 6.0.3 to 7.0.2. [CI failed](https://github.com/babylonace/multilingual-restaurant-website/actions/runs/42134607637) at `npm ci`, because `typescript-eslint` 8.72.0 accepts only TypeScript below 6.1.0, so GitHub blocked the merge. It was closed with Dependabot's `ignore this major version` command, so 7.x will not be proposed again until someone reopens it or updates by hand.
 
 GitHub Dependabot alerts and Dependabot security updates are on.
 
