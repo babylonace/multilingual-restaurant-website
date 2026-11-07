@@ -46,8 +46,10 @@ Lighthouse en móvil (throttling simulado, mediana de 3 ejecuciones), primera ve
 | SEO                      | 82     | **100**    |
 | Largest Contentful Paint | 6,7 s  | **2,6 s**  |
 | Saltos de diseño (CLS)   | 0,73   | **0,01**   |
-| Peso transferido         | 847 KB | **297 KB** |
-| Peticiones               | 36     | **14**     |
+| Peso transferido         | 847 KB | **526 KB** |
+| Peticiones               | 36     | **21**     |
+
+El peso y las peticiones son de la portada en vivo el 2026-11-07. Las seis fotos de Instagram son 6 de esas peticiones y 256 KB.
 
 ## Dónde mirar
 
@@ -66,7 +68,7 @@ No hace falta leerlo todo. Cada parte vive en pocos sitios y tiene sus propios t
 
 ## Inicio rápido
 
-Necesitas Node 20 o superior.
+Necesitas Node 22.12 o superior.
 
 ```bash
 git clone https://github.com/babylonace/multilingual-restaurant-website.git
