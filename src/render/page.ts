@@ -9,6 +9,8 @@ import { spriteSheet } from './icons';
 import { allergenLegend, reviewCallout } from './info';
 import { menu } from './menu';
 import { menuDelDiaBody } from './menu-del-dia';
+import { orderBar, orderDialog } from './order';
+import { reservarBody } from './reservar';
 import { legacyTabScript, redirectScript } from './redirect';
 import { head } from './seo';
 
@@ -29,7 +31,7 @@ function cartaBody(page: Page): SafeHtml {
       ${menu(page)}
       <div class="container tail">${allergenLegend(page)} ${reviewCallout(page)}</div>
     </main>
-    ${footer(page)}`;
+    ${footer(page)} ${orderBar(page)} ${orderDialog(page)}`;
 }
 
 /** The carta of one language. Pure function: same context in, same HTML out. */
@@ -51,6 +53,17 @@ export function renderHomePage(ctx: RenderContext): RenderedPage {
     dir: page.dir,
     head: html`${ctx.lang === DEFAULT_LANG && redirectScript(ctx, 'home')}${legacyTabScript(ctx)}${head(page)}`.toString(),
     body: homeBody(page).toString(),
+  };
+}
+
+/** The reservation form of one language. */
+export function renderReservarPage(ctx: RenderContext): RenderedPage {
+  const page = createPage(ctx, 'reservar');
+  return {
+    lang: ctx.lang,
+    dir: page.dir,
+    head: head(page).toString(),
+    body: reservarBody(page).toString(),
   };
 }
 

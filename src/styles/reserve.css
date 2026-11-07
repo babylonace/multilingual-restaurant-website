@@ -1,0 +1,73 @@
+@layer components {
+  /* ---- Reservation page ---- */
+  .reserve {
+    flex: 1;
+    padding-block: var(--space-6) var(--space-12);
+  }
+
+  .reserve__inner {
+    max-inline-size: 560px;
+  }
+
+  .reserve__back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: 44px;
+    font-size: 0.8125rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-strong);
+  }
+
+  .reserve__back-icon {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+
+  [dir='rtl'] .reserve__back-icon {
+    transform: scaleX(-1);
+  }
+
+  .reserve__title {
+    margin-top: var(--space-2);
+    font-size: 2rem;
+    font-weight: var(--fw-black);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+    color: var(--text-strong);
+  }
+
+  .reserve__lead {
+    margin-top: var(--space-2);
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-style: var(--italic);
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .reserve__lead a {
+    font-weight: var(--fw-semibold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .reserve__form {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .reserve__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .reserve__send {
+    inline-size: 100%;
+    margin-top: var(--space-2);
+  }
+}

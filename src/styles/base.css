@@ -64,6 +64,11 @@
     display: none !important;
   }
 
+  /* Needs JavaScript: shown from the first paint when the head script marked the page `js`. */
+  html:not(.js) [data-js-only] {
+    display: none !important;
+  }
+
   .sprite {
     position: absolute;
   }
@@ -168,6 +173,13 @@
     letter-spacing: var(--tracking-wide);
     white-space: nowrap;
     transform: translateY(-1px);
+  }
+
+  /* The same tag, on its own line under a dish name: smaller, so it labels rather than shouts. */
+  .badge--under {
+    padding: 2px 9px;
+    font-size: 0.6875rem;
+    transform: none;
   }
 
   .rule {

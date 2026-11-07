@@ -1,0 +1,480 @@
+@layer components {
+  /* ---- + / − on every dish and drink ---- */
+  .qty {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    align-self: center;
+    gap: 6px;
+    margin-inline-start: var(--space-2);
+  }
+
+  .qty__btn,
+  .order__close {
+    display: grid;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
+    padding: 0;
+    border: 1.5px solid var(--border-ink);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-strong);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .qty__btn:hover,
+  .order__close:hover {
+    background: var(--text-strong);
+    color: var(--cream-100);
+  }
+
+  .qty__icon {
+    inline-size: 18px;
+    block-size: 18px;
+  }
+
+  .qty__n {
+    min-inline-size: 2ch;
+    font-size: 1rem;
+    font-weight: var(--fw-bold);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text-strong);
+  }
+
+  /* ---- Above the dishes: how to get it, what it costs, how to order ---- */
+  .order-panel {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--surface-sunken);
+    scroll-margin-top: 80px;
+  }
+
+  .order-panel .order__mode {
+    gap: var(--space-2);
+  }
+
+  .order-panel__costs {
+    font-size: 0.875rem;
+    font-weight: var(--fw-semibold);
+    color: var(--text-strong);
+  }
+
+  .order-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  .order-hint__icon {
+    flex: none;
+    inline-size: 18px;
+    block-size: 18px;
+  }
+
+  /* ---- Bar fixed to the bottom ---- */
+  .order-bar {
+    position: fixed;
+    /* Physical, not logical: the floating WhatsApp button stays on the right in Arabic too. */
+    right: 88px;
+    left: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 49;
+  }
+
+  .order-bar__btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    inline-size: 100%;
+    min-block-size: 56px;
+    padding-block: 0;
+    padding-inline: var(--space-3) var(--space-5);
+    border: 2px solid color-mix(in srgb, var(--cream-100) 85%, transparent);
+    border-radius: var(--radius-pill);
+    background: var(--surface-brand);
+    color: var(--cream-100);
+    box-shadow: var(--shadow-lg);
+    font-size: 0.8125rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  .order-bar__btn:hover {
+    background: var(--surface-brand-deep);
+  }
+
+  .order-bar__count {
+    display: grid;
+    place-items: center;
+    flex: none;
+    min-inline-size: 34px;
+    block-size: 34px;
+    padding-inline: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--gold-500);
+    color: var(--brown-900);
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .order-bar__label {
+    flex: 1;
+    text-align: start;
+  }
+
+  .order-bar__total {
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  /* Room under the footer for the bar. */
+  .has-order {
+    padding-bottom: 88px;
+  }
+
+  @media (min-width: 900px) {
+    /* The floating WhatsApp button is hidden here, so the bar can take the middle. */
+    .order-bar {
+      right: 0;
+      left: 0;
+      inline-size: min(420px, calc(100% - 32px));
+      margin-inline: auto;
+    }
+  }
+
+  /* ---- The order ---- */
+  .order {
+    inline-size: min(560px, calc(100% - 24px));
+    max-block-size: calc(100dvh - 24px);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--surface-page);
+    color: var(--text-body);
+    box-shadow: var(--shadow-xl);
+    overflow: auto;
+  }
+
+  .order::backdrop {
+    background: color-mix(in srgb, var(--brown-900) 60%, transparent);
+  }
+
+  .order__panel {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  .order__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .order__title {
+    font-size: 1.375rem;
+    font-weight: var(--fw-black);
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-strong);
+  }
+
+  .order__empty {
+    font-family: var(--font-serif);
+    font-style: var(--italic);
+    color: var(--text-muted);
+  }
+
+  .order__filled {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .order__line {
+    display: grid;
+    grid-template-columns: 1fr auto minmax(5ch, auto);
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .order__name {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--text-strong);
+  }
+
+  .order__name .badge {
+    margin-inline-start: var(--space-1);
+  }
+
+  .qty--line {
+    margin-inline-start: 0;
+  }
+
+  .qty--line .qty__btn {
+    inline-size: 36px;
+    block-size: 36px;
+  }
+
+  .order__amount {
+    margin: 0;
+    font-weight: var(--fw-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: end;
+    white-space: nowrap;
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  /* How the order is received: two pills, the chosen one filled. */
+  .order__mode {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .order__legend {
+    inline-size: 100%;
+    margin-bottom: var(--space-2);
+    padding: 0;
+    font-size: 0.8125rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-strong);
+  }
+
+  .choice {
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-block-size: 48px;
+    padding: 0 var(--space-3);
+    border: 2px solid var(--border-ink);
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: var(--text-strong);
+    cursor: pointer;
+    transition: var(--transition-colors);
+  }
+
+  /* The filled pill shows the choice; the radio stays for keyboards and screen readers. */
+  .choice {
+    position: relative;
+  }
+
+  .choice input {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .choice:has(input:checked) {
+    background: var(--surface-brand);
+    border-color: var(--surface-brand);
+    color: var(--cream-100);
+  }
+
+  .choice:has(input:focus-visible) {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* ---- Fields (the order and the reservation) ---- */
+  .order__details {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .field__label {
+    font-size: 0.875rem;
+    font-weight: var(--fw-semibold);
+    color: var(--text-strong);
+  }
+
+  /* 16 px keeps iOS from zooming in on focus. */
+  .field__input {
+    inline-size: 100%;
+    min-block-size: 48px;
+    padding: 0 var(--space-4);
+    border: 1.5px solid var(--border-ink);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    color: var(--text-body);
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  textarea.field__input {
+    padding-block: var(--space-3);
+    resize: vertical;
+  }
+
+  .field__input:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .field__hint {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  .order__totals {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+  }
+
+  .order__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .order__row dt {
+    color: var(--text-muted);
+  }
+
+  .order__detail {
+    margin-inline-start: var(--space-1);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  .order__row--total {
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: 2px solid var(--border-ink);
+    font-size: 1.25rem;
+    font-weight: var(--fw-bold);
+  }
+
+  .order__row--total dt {
+    color: var(--text-strong);
+  }
+
+  /* Send and clear on one row: the send button takes the room, the clear one keeps its size. */
+  .order__actions {
+    display: flex;
+    gap: var(--space-3);
+    align-items: stretch;
+  }
+
+  .order__actions .pill:first-child {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    padding-inline: var(--space-3);
+  }
+
+  .order__actions .pill:last-child {
+    flex: none;
+  }
+
+  /* After sending: two choices of the same weight, one under the other if they do not fit. */
+  .order__actions--wrap {
+    flex-wrap: wrap;
+  }
+
+  .order__actions--wrap .pill:first-child,
+  .order__actions--wrap .pill:last-child {
+    flex: 1 1 auto;
+  }
+
+  @media print {
+    .qty,
+    .order-hint,
+    .order-bar,
+    .order {
+      display: none !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---- The menú del día, above the dishes ---- */
+  .menu-card {
+    scroll-margin-top: 96px;
+    margin-bottom: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+  }
+
+  .menu-card__title {
+    font-size: 1rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-strong);
+  }
+
+  .menu-card__hours {
+    margin-bottom: var(--space-2);
+    font-size: 0.875rem;
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+  }
+
+  .menu-card__note {
+    margin-top: var(--space-2);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .menu-card__note a {
+    font-weight: var(--fw-semibold);
+    color: var(--text-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media print {
+    .menu-card {
+      scroll-margin-top: 96px;
+      display: none !important;
+    }
+  }
+}

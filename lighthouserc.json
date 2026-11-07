@@ -6,6 +6,7 @@
         "http://localhost/",
         "http://localhost/carta/",
         "http://localhost/menu-del-dia/",
+        "http://localhost/reservar/",
         "http://localhost/en/carta/"
       ],
       "numberOfRuns": 3,

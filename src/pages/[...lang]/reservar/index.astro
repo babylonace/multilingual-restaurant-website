@@ -1,0 +1,14 @@
+---
+/** The reservation form in every language. Not built unless the build turns reservations on. */
+import type { LangCode } from '../../../data/types';
+import Page from '../../../layouts/Page.astro';
+import { langPaths, renderContext, bookings } from '../../../lib/build';
+import { renderReservarPage } from '../../../render/page';
+
+export const getStaticPaths = () => (bookings ? langPaths() : []);
+
+const { lang } = Astro.props as { lang: LangCode };
+const page = renderReservarPage(await renderContext(lang));
+---
+
+<Page page={page} />

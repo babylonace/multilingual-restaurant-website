@@ -1,16 +1,30 @@
 import { BEERS, SECTIONS, SOFT_DRINKS } from '../data/menu';
 import type { SectionId, TabId } from '../data/types';
 import { html, type SafeHtml } from '../lib/html';
-import type { Page } from './context';
+import { kindHref, type Page } from './context';
 import { dishItem, priceRow } from './dish';
+import { menuCard, orderPanel } from './order';
 
 /** Sections whose dishes are sold à la carte rather than as part of the menú del día. */
 const A_LA_CARTE: ReadonlySet<SectionId> = new Set(['marino', 'wok', 'criollo']);
 
 export const FIRST_TAB: TabId = 'entrantes';
 
+/**
+ * The menú del día has a tab of its own, first in the bar, so its rows do not crowd the dishes.
+ * The carta still opens on `FIRST_TAB`, not on the menu (it only runs at lunch, Tuesday to Friday).
+ */
 function tabIds(): TabId[] {
-  return [...SECTIONS.map((s) => s.id), 'bebidas'];
+  return ['menu', ...SECTIONS.map((s) => s.id), 'bebidas'];
+}
+
+function tabLabel(page: Page, id: TabId): string {
+  return id === 'menu' ? page.t.menuDelDia : page.t[id];
+}
+
+function panelContent(page: Page, id: TabId): SafeHtml {
+  if (id === 'menu') return menuCard(page);
+  return id === 'bebidas' ? drinksPanel(page) : dishPanel(page, id);
 }
 
 /**
@@ -34,7 +48,7 @@ function tabList(page: Page): SafeHtml {
               tabindex="${id === FIRST_TAB ? 0 : -1}"
               data-tab="${id}"
             >
-              ${t[id]}
+              ${tabLabel(page, id)}
             </button>`,
         )}
       </div>
@@ -82,8 +96,10 @@ function drinksPanel(page: Page): SafeHtml {
 }
 
 export function menu(page: Page): SafeHtml {
+  const { ctx, t } = page;
   return html`${tabList(page)}
     <div class="container panels">
+      ${orderPanel(page)}
       ${tabIds().map(
         (id) =>
           html`<section
@@ -94,8 +110,19 @@ export function menu(page: Page): SafeHtml {
             tabindex="0"
             ${id !== FIRST_TAB && html`hidden`}
           >
-            ${id === 'bebidas' ? drinksPanel(page) : dishPanel(page, id)}
+            ${panelContent(page, id)}
           </section>`,
       )}
+      ${
+        ctx.bookings &&
+        html`<p class="carta-cross">
+          <a
+            href="${kindHref(ctx, 'reservar', ctx.lang)}"
+            data-event="reserva_clic"
+            data-prop-origin="carta"
+            >${t.crossToReserve}</a
+          >
+        </p>`
+      }
     </div>`;
 }

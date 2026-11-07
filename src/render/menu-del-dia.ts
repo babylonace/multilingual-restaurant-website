@@ -1,3 +1,4 @@
+import { MENU_ITEMS } from '../data/order';
 import { formatPrice } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
 import { whatsappIntentLink } from './contact';
@@ -7,7 +8,7 @@ import { mastheadBar } from './header';
 import { brandIcon, spriteSheet, uiIcon } from './icons';
 
 /** Confirmed by the restaurant: 13,00€ the full menu, 8,00€ the half menu. */
-const PRICES = { full: 1300, half: 800 } as const;
+const PRICES = { full: MENU_ITEMS[0].priceCents, half: MENU_ITEMS[1].priceCents } as const;
 
 /**
  * The menú del día. The prices, set as large type, are the page. Until the daily editor arrives
@@ -48,6 +49,12 @@ export function menuDelDiaBody(page: Page): SafeHtml {
             >${brandIcon('whatsapp', 'pill__icon')}${t.waMenu}<span class="visually-hidden">
               ${t.newTab}</span
             ></a
+          >
+          <a
+            class="pill pill--cream pill--lg"
+            href="${kindHref(ctx, 'carta', ctx.lang)}#pedir-menu"
+            data-event="pedir_menu_clic"
+            >${uiIcon('shopping-bag', 'pill__icon')}${t.orderMenuCta}</a
           >
           <a class="pill pill--ghost pill--lg" href="${kindHref(ctx, 'carta', ctx.lang)}"
             >${t.viewMenu}</a

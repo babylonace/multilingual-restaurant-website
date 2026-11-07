@@ -1,7 +1,7 @@
 /**
  * Watchman for the Netlify gateway (docs/deployment.md). Every 5 minutes it asks the
  * gateway for the home page; if it fails twice, 30 seconds apart, it points inkawasi.es and www
- * back at Cloudflare Pages, proxied, as before the gateway, and e-mails Adriana. Going back to the
+ * back at Cloudflare Pages, proxied, as before the gateway, and e-mails the owner. Going back to the
  * gateway is a manual step, once Netlify is healthy again.
  */
 import { EmailMessage } from 'cloudflare:email';

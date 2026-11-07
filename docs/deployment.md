@@ -10,6 +10,8 @@ When everything passes on `main`, the `deploy` job builds with `SITE_URL=https:/
 
 Every branch other than `main` is published as a preview at `<branch>.<project>.pages.dev` (the `preview` job), built without `SITE_URL` and therefore without private data: the legal pages show the template's placeholders.
 
+Every build in the workflows sets `BOOKINGS_VISIBLE=1`, the daily one in `contenido.yml` too. Without it the booking form at `/reservar/` and the links to it are left out, so `tests/unit/workflows.test.ts` fails if a build forgets it.
+
 ## Daily content
 
 `.github/workflows/contenido.yml` runs every day at 06:00 (Madrid) on `main`. It reads the latest Instagram posts and builds and deploys only if they changed; on Mondays it renews the Instagram token (valid 60 days) and stores the new one as a secret with `gh secret set`. When something fails it deploys nothing, so the site keeps the last good posts, and it opens an issue: at once if the token is refused, after three days in a row if Meta does not answer. A manual run can test the refused-token path with a made-up token. The `deploy` job of `ci.yml` copies the posts already live (`npm run instagram -- --publicado`), so a push keeps them. Neither the tests nor CI call Meta.

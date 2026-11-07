@@ -3,13 +3,13 @@
  * absolute URLs. A dynamic route so that without an origin there is simply no file.
  */
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { base, siteUrl } from '../lib/build';
+import { base, bookings, siteUrl } from '../lib/build';
 import { sitemapXml } from '../render/sitemap';
 
 export const getStaticPaths = (() =>
   siteUrl ? [{ params: { sitemap: 'sitemap' } }] : []) satisfies GetStaticPaths;
 
 export const GET: APIRoute = () =>
-  new Response(sitemapXml({ base, siteUrl: siteUrl! }), {
+  new Response(sitemapXml({ base, siteUrl: siteUrl!, bookings }), {
     headers: { 'Content-Type': 'application/xml' },
   });

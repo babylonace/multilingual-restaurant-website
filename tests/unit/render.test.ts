@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { LANGS } from '../../src/data/langs';
 import { DISHES } from '../../src/data/menu';
 import { LOCALES } from '../../src/i18n';
+import { escapeHtml } from '../../src/lib/html';
 import { renderHomePage, renderMenuDelDiaPage, renderPage } from '../../src/render/page';
 import { TEST_PICTURES } from './fixtures';
 
@@ -21,7 +22,8 @@ describe.each(LANGS)('page "$code"', ({ code, rtl }) => {
 
   it('has one visible tabpanel and the rest hidden', () => {
     const panels = page.body.match(/role="tabpanel"[^>]*>/g) ?? [];
-    expect(panels).toHaveLength(7);
+    // The menú del día, the six sections and the drinks.
+    expect(panels).toHaveLength(8);
     expect(panels.filter((p) => !p.includes('hidden'))).toHaveLength(1);
   });
 
@@ -63,14 +65,14 @@ describe.each(LANGS)('carta "$code" extras', ({ code }) => {
     siteUrl: SITE,
   });
 
-  it('shows all 14 allergens in the legend, with the traces note', () => {
+  it('shows all 14 allergens in the legend, with the footer note', () => {
     const legend = /<ul class="legend__grid">(.*?)<\/ul>/s.exec(body)?.[1] ?? '';
     expect(legend.match(/<li class="legend__item">/g)).toHaveLength(14);
     for (const key of ['frutosCascara', 'altramuces'] as const) {
       expect(legend).toContain(LOCALES[code].allergens[key]);
       expect(body).toContain(`id="alg-${key}"`);
     }
-    expect(body).toContain(LOCALES[code].ui.allergenTraces);
+    expect(body).toContain(escapeHtml(LOCALES[code].ui.allergenFooter));
   });
 
   it('asks for a review on Google Maps and on TripAdvisor', () => {
@@ -89,8 +91,11 @@ describe.each(LANGS)('carta "$code" extras', ({ code }) => {
     expect(body).toContain('href="/privacidad/"');
   });
 
-  it('keeps the hours out: Google Business Profile is the only place they live', () => {
-    expect(body).not.toMatch(/\d\d:\d\d–\d\d:\d\d/);
+  it('keeps the opening hours out: Google Business Profile is the only place they live', () => {
+    // The one hour the carta does state is the menú del día's (Monday to Friday, lunchtime).
+    const withoutMenuHours = body.replace(LOCALES[code].ui.orderMenuHours, '');
+    expect(withoutMenuHours).not.toMatch(/\d\d:\d\d\s?[–-]\s?\d\d:\d\d/);
+    expect(withoutMenuHours).not.toMatch(/\b(?:11|23|24):00\b/);
     expect(head).not.toContain('openingHours');
   });
 
@@ -135,14 +140,21 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(img).toContain(`alt="${ui.coverAlt}"`);
   });
 
-  it('makes the carta one button among the others', () => {
-    expect(body).toMatch(new RegExp(`class="pill pill--gold pill--lg"\\s+href="${carta}"`));
-    expect(body).toContain(ui.viewMenu);
+  it('leads with two actions, order and book, and keeps the carta as a link', () => {
+    expect(body).toMatch(
+      new RegExp(`class="pill pill--gold pill--lg"\\s+href="${carta}\\?pedido=domicilio"`),
+    );
+    expect(body).toContain(ui.heroOrder);
+    const links = /<p class="hero__links">.*?<\/p>/s.exec(body)?.[0] ?? '';
+    expect(links).toContain(`href="${carta}"`);
+    expect(links).toContain(ui.viewMenu);
   });
 
-  it('puts the menú del día next to the carta, and says what and where on the photo', () => {
+  it('links the menú del día next to the carta, and says what and where on the photo', () => {
     const menuDelDia = code === 'es' ? '/menu-del-dia/' : `/${code}/menu-del-dia/`;
-    expect(body).toMatch(new RegExp(`class="pill pill--cream pill--lg"\\s+href="${menuDelDia}"`));
+    const links = /<p class="hero__links">.*?<\/p>/s.exec(body)?.[0] ?? '';
+    expect(links).toContain(`href="${menuDelDia}"`);
+    expect(links).toContain(ui.menuDelDia);
     const tags = /<p class="hero__tags">.*?<\/p>/s.exec(body)?.[0] ?? '';
     expect(tags).toContain(ui.eyebrow);
     expect(tags).toContain(ui.location);
@@ -159,13 +171,34 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(ui.location).not.toContain('·');
   });
 
-  it('offers a ready-made WhatsApp message per intent', () => {
+  it('sends ordering to the carta with the way chosen, and the rest to WhatsApp', () => {
     const actions = /<section class="actions".*?<\/section>/s.exec(body)?.[0] ?? '';
-    const links = [
-      ...actions.matchAll(/href="(https:\/\/wa\.me\/[^"]+)"[^>]*data-prop-intent="(\w+)"/g),
-    ];
-    expect(links.map((m) => m[2])).toEqual(['reservar', 'recoger', 'domicilio', 'consulta']);
-    for (const [, href] of links) expect(href).toMatch(/^https:\/\/wa\.me\/34614922183\?text=Hola/);
+    const tiles = [...actions.matchAll(/href="([^"]+)"[^>]*data-prop-intent="(\w+)"/g)];
+    expect(tiles.map((m) => m[2])).toEqual(['reservar', 'recoger', 'domicilio']);
+    const byIntent = Object.fromEntries(tiles.map((m) => [m[2], m[1]]));
+    expect(byIntent.recoger).toBe(`${carta}?pedido=recoger`);
+    expect(byIntent.domicilio).toBe(`${carta}?pedido=domicilio`);
+    // Reservations are off in this build, so booking still opens the blank WhatsApp message.
+    expect(byIntent.reservar).toMatch(/^https:\/\/wa\.me\/34614922183\?text=Hola/);
+  });
+
+  it('keeps the question as a small WhatsApp link, not a tile, under the tiles', () => {
+    const quiet = /<p class="alt-order">.*?<\/p>/s.exec(body)?.[0] ?? '';
+    expect(quiet).toMatch(/href="https:\/\/wa\.me\/34614922183\?text=Hola[^"]*"/);
+    expect(quiet).toContain('data-prop-intent="consulta"');
+    expect(quiet).toContain(ui.waConsulta);
+  });
+
+  it('asks how to enjoy it, and does not promise WhatsApp for what is not WhatsApp', () => {
+    const actions = /<section class="actions".*?<\/section>/s.exec(body)?.[0] ?? '';
+    expect(actions).toContain(ui.homeChoose);
+    expect(actions).not.toContain('actions__icon');
+  });
+
+  it('does not open a new tab for the tiles that stay on the site', () => {
+    const actions = /<section class="actions".*?<\/section>/s.exec(body)?.[0] ?? '';
+    for (const m of actions.matchAll(/<a\s[^>]*pedido=[^>]*>/g))
+      expect(m[0]).not.toContain('_blank');
   });
 
   it('opens directions in Google Maps and the place card for the hours', () => {
@@ -184,9 +217,10 @@ describe.each(LANGS)('home "$code"', ({ code, rtl }) => {
     expect(body).toContain('tripadvisor.com.pe/UserReviewEdit-d34747578');
   });
 
-  it('gives Just Eat its own button, with its icon, here and in the footer', () => {
-    expect(body).toMatch(/class="tile tile--terra"\s+href="https:\/\/www\.just-eat\.es\//);
-    expect(body).toMatch(/tile--terra[\s\S]*?<svg class="tile__icon"/);
+  it('offers Just Eat as a second-level link with its icon, not a tile, and in the footer', () => {
+    expect(body).toMatch(/class="alt-link"\s+href="https:\/\/www\.just-eat\.es\//);
+    expect(body).toMatch(/class="alt-link"[\s\S]*?<svg class="alt-link__icon"/);
+    expect(body).not.toContain('tile--terra');
     const footer = /<footer.*<\/footer>/s.exec(body)?.[0] ?? '';
     expect(footer).toMatch(/justeat_clic[\s\S]*?<svg class="icon icon--gold"/);
   });

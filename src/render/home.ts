@@ -1,8 +1,8 @@
 import { DISHES, FAVORITES } from '../data/menu';
 import { formatPrice } from '../lib/format';
 import { html, type SafeHtml } from '../lib/html';
-import { actions } from './actions';
-import { CONTACT, justEatLink } from './contact';
+import { actions, tileTarget } from './actions';
+import { CONTACT, justEatLink, whatsappIntentLink } from './contact';
 import { kindHref, type Page } from './context';
 import { footer } from './footer';
 import { mastheadBar } from './header';
@@ -20,6 +20,7 @@ import { PLATE_SIZES, picture, pictureOf } from './picture';
  */
 function hero(page: Page): SafeHtml {
   const { ctx, t } = page;
+  const booking = tileTarget(page, 'reservar');
   return html`<section class="hero" aria-labelledby="home-title">
     ${picture(ctx.pictures.cover, {
       class: 'hero__img cover__img',
@@ -37,20 +38,24 @@ function hero(page: Page): SafeHtml {
       <div class="hero__ctas">
         <a
           class="pill pill--gold pill--lg"
-          href="${kindHref(ctx, 'carta', ctx.lang)}"
-          data-event="carta_clic"
-          >${t.viewMenu}</a
+          href="${kindHref(ctx, 'carta', ctx.lang)}?pedido=domicilio"
+          data-event="pedido_clic"
+          data-prop-origin="hero"
+          >${t.heroOrder}</a
         >
         <a
           class="pill pill--cream pill--lg"
-          href="${kindHref(ctx, 'menu', ctx.lang)}"
-          data-event="menu_dia_clic"
-          >${t.menuDelDia}</a
-        >
-        <a class="pill pill--ghost" href="#pedir"
-          >${brandIcon('whatsapp', 'pill__icon')}${t.waTitle}</a
+          href="${booking.href}"
+          ${!booking.internal && html`target="_blank" rel="noopener"`}
+          data-event="${booking.event}"
+          data-prop-origin="hero"
+          >${t.waReservar}${!booking.internal && html`<span class="visually-hidden"> ${t.newTab}</span>`}</a
         >
       </div>
+      <p class="hero__links">
+        <a href="${kindHref(ctx, 'carta', ctx.lang)}" data-event="carta_clic">${t.viewMenu}</a>
+        <a href="${kindHref(ctx, 'menu', ctx.lang)}" data-event="menu_dia_clic">${t.menuDelDia}</a>
+      </p>
     </div>
   </section>`;
 }
@@ -60,23 +65,38 @@ const brandBar = html`<div class="brand-bar" aria-hidden="true"></div>`;
 
 /** Ordering and getting there, as large tiles on the brand brown, with the isotype beside them. */
 function orderBand(page: Page): SafeHtml {
-  const { t } = page;
+  const { ctx, t } = page;
   return html`<div class="band band--brown" id="pedir">
     <div class="band__inner">
       ${isotype('sun-mark')} ${actions(page)}
-      <ul class="more">
-        <li>
-          <a
-            class="tile tile--terra"
-            href="${justEatLink('home')}"
-            target="_blank"
-            rel="noopener"
-            data-event="justeat_clic"
-            data-prop-location="home"
-            >${brandIcon('justeat', 'tile__icon')}<span class="tile__label">${t.justEat}</span
-            ><span class="visually-hidden"> ${t.newTab}</span></a
+      <p class="alt-order">
+        <a
+          class="alt-link"
+          href="${justEatLink('home')}"
+          target="_blank"
+          rel="noopener"
+          data-event="justeat_clic"
+          data-prop-location="home"
+          >${brandIcon('justeat', 'alt-link__icon')}${t.justEat}<span class="visually-hidden">
+            ${t.newTab}</span
+          ></a
+        >
+        <a
+          class="alt-link"
+          href="${whatsappIntentLink('consulta', ctx.lang)}"
+          target="_blank"
+          rel="noopener"
+          data-event="whatsapp_clic"
+          data-prop-intent="consulta"
+          data-prop-origin="home"
+          >${brandIcon('whatsapp', 'alt-link__icon alt-link__icon--wa')}${t.waConsulta}<span
+            class="visually-hidden"
           >
-        </li>
+            ${t.newTab}</span
+          ></a
+        >
+      </p>
+      <ul class="more">
         <li>
           <a
             class="tile tile--outline"

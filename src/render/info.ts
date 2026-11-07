@@ -19,7 +19,6 @@ export function allergenLegend(page: Page): SafeHtml {
       )}
     </ul>
     <p class="legend__footer">${t.allergenFooter}</p>
-    <p class="legend__footer">${t.allergenTraces}</p>
   </section>`;
 }
 

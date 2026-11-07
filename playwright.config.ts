@@ -20,6 +20,8 @@ export default defineConfig({
   webServer: {
     command: `npm run build && npx astro preview --port ${PORT}`,
     url: `http://localhost:${PORT}`,
+    // The same switch as the builds in the workflows, so the reservation page is tested.
+    env: { BOOKINGS_VISIBLE: '1' },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

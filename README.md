@@ -13,9 +13,9 @@ texts are Inkawasi's, and "Use it for your own business" below says what to chan
 
 **Live:** [inkawasi.es](https://inkawasi.es) · [English menu](https://inkawasi.es/en/carta/)
 
-| Home, phone                                                                                                                                                                     | Menu, phone                                                                                                                                         | Home, desktop                                                                             |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| <img src="docs/images/home-mobile.webp" alt="Home page on a phone: cover photo of the restaurant, title and buttons for the menu, the daily set menu and WhatsApp" width="220"> | <img src="docs/images/carta-mobile.webp" alt="English menu on a phone: favourite dishes with photos and prices, then tabs per section" width="220"> | <img src="docs/images/home-desktop.webp" alt="Home page on a desktop screen" width="420"> |
+| Home, phone                                                                                                                                                        | Menu, phone                                                                                                                                         | Home, desktop                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| <img src="docs/images/home-mobile.webp" alt="Home page on a phone: cover photo of the restaurant, title and the buttons to order and to book a table" width="220"> | <img src="docs/images/carta-mobile.webp" alt="English menu on a phone: favourite dishes with photos and prices, then tabs per section" width="220"> | <img src="docs/images/home-desktop.webp" alt="Home page on a desktop screen" width="420"> |
 
 ## What it shows
 
@@ -23,17 +23,18 @@ The first version was generated with a design tool: it worked, but it was slow, 
 search engines and full of hard-coded text. Rebuilding it solved problems that most small-business
 sites have, menu or not:
 
-| Problem                       | How it is solved here                                                                                                                            |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Slow on a phone               | Pages are built in advance, ship 2.2 KB of JavaScript and make no requests to other sites. Lighthouse performance 44 → **95**                    |
-| Many languages, kept in step  | One file per language, typed against Spanish: a missing translation **stops the build** instead of leaving a blank on the page                   |
-| Right-to-left languages       | Real Arabic layout: `dir="rtl"`, CSS logical properties, prices isolated so numbers do not flip                                                  |
-| Accessibility                 | Contrast, landmarks, keyboard use and axe-core checks on every page type. Lighthouse accessibility 86 → **100**                                  |
-| Found by search engines       | One real URL per language with `hreflang`, a sitemap and structured data. SEO 82 → **100**                                                       |
-| Wrong data reaching customers | Prices in cents and the 14 official allergens as a type, checked by tests. The audit also caught "peanuts" translated as "almonds" in Galician   |
-| Private data required by law  | Kept out of Git and injected only by the production build, with a test that fails if it leaks                                                    |
-| Social feed without embeds    | The latest six Instagram posts, fetched once a day by a scheduled build and served from the site itself: no Meta script, no cookies, never empty |
-| Blocked during football       | Spanish ISPs block Cloudflare IPs during LaLiga matches; a Netlify gateway keeps the site up and a small Worker fails back if the gateway breaks |
+| Problem                       | How it is solved here                                                                                                                                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Slow on a phone               | Pages are built in advance, ship 6 KB of JavaScript and make no requests to other sites. Lighthouse performance 44 → **95**                                                                                  |
+| Many languages, kept in step  | One file per language, typed against Spanish: a missing translation **stops the build** instead of leaving a blank on the page                                                                               |
+| Right-to-left languages       | Real Arabic layout: `dir="rtl"`, CSS logical properties, prices isolated so numbers do not flip                                                                                                              |
+| Accessibility                 | Contrast, landmarks, keyboard use and axe-core checks on every page type. Lighthouse accessibility 86 → **100**                                                                                              |
+| Found by search engines       | One real URL per language with `hreflang`, a sitemap and structured data. SEO 82 → **100**                                                                                                                   |
+| Wrong data reaching customers | Prices in cents and the 14 official allergens as a type, checked by tests. The audit also caught "peanuts" translated as "almonds" in Galician                                                               |
+| Private data required by law  | Kept out of Git and injected only by the production build, with a test that fails if it leaks                                                                                                                |
+| Social feed without embeds    | The latest six Instagram posts, fetched once a day by a scheduled build and served from the site itself: no Meta script, no cookies, never empty                                                             |
+| Orders without a backend      | Dishes are picked right in the menu and tables booked in a form; the page writes the WhatsApp message, total included. No server, no account, no payment, and the site never receives the customer's details |
+| Blocked during football       | Spanish ISPs block Cloudflare IPs during LaLiga matches; a Netlify gateway keeps the site up and a small Worker fails back if the gateway breaks                                                             |
 
 Lighthouse on mobile (simulated throttling, median of 3 runs), first version vs. now:
 
@@ -45,7 +46,7 @@ Lighthouse on mobile (simulated throttling, median of 3 runs), first version vs.
 | SEO                      | 82     | **100**    |
 | Largest Contentful Paint | 6.7 s  | **2.6 s**  |
 | Layout shift (CLS)       | 0.73   | **0.01**   |
-| Transferred size         | 847 KB | **526 KB** |
+| Transferred size         | 847 KB | **548 KB** |
 | Requests                 | 36     | **21**     |
 
 Size and requests are from the live home page on 2026-11-07. The six Instagram photos are 6 of those requests and 256 KB.
@@ -54,16 +55,17 @@ Size and requests are from the live home page on 2026-11-07. The six Instagram p
 
 You do not need to read everything. Each part lives in a few places and has its own tests:
 
-| If you care about…              | Look at                                                                                                          | Tested in                                                     |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Languages and right-to-left     | `src/i18n/locales/`, `src/data/langs.ts`, `src/data/types.ts`                                                    | `tests/unit/render.test.ts`, `tests/unit/routes.test.ts`      |
-| The menu data and the allergens | `src/data/menu.ts`, `src/render/menu.ts`, `src/render/dish.ts`                                                   | `tests/unit/data.test.ts`, `tests/e2e/carta.spec.ts`          |
-| Accessibility                   | `src/layouts/Page.astro`, `src/styles/`                                                                          | `tests/e2e/a11y.spec.ts` (axe-core on every page type)        |
-| Search engines                  | `src/render/sitemap.ts`, `src/render/routes.ts`, `src/pages/[sitemap].xml.ts`                                    | `tests/unit/sitemap.test.ts`, `tests/unit/routes.test.ts`     |
-| Private data kept out of Git    | `scripts/private-data.ts`, `private/`, `src/data/legal.ts`                                                       | `tests/unit/private-data.test.ts`, `tests/unit/legal.test.ts` |
-| The Instagram feed, no embeds   | `scripts/instagram.ts`, `src/render/instagram.ts`, `src/styles/instagram.css`, `.github/workflows/contenido.yml` | `tests/unit/instagram.test.ts`, `tests/e2e/instagram.spec.ts` |
-| The football-match gateway      | `netlify-puerta/`, `workers/vigia/`, `scripts/check-gateway.ts`, [docs/deployment.md](docs/deployment.md)        | `tests/unit/gateway.test.ts`, `tests/unit/vigia.test.ts`      |
-| Design tokens                   | `design-system/tokens.json`, `scripts/tokens.ts`, `src/styles/`                                                  | `tests/unit/design-system.test.ts`                            |
+| If you care about…               | Look at                                                                                                          | Tested in                                                     |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Languages and right-to-left      | `src/i18n/locales/`, `src/data/langs.ts`, `src/data/types.ts`                                                    | `tests/unit/render.test.ts`, `tests/unit/routes.test.ts`      |
+| The menu data and the allergens  | `src/data/menu.ts`, `src/render/menu.ts`, `src/render/dish.ts`                                                   | `tests/unit/data.test.ts`, `tests/e2e/carta.spec.ts`          |
+| Ordering and booking, no backend | `src/lib/order.ts`, `src/lib/reservation.ts`, `src/lib/hours.ts`, `src/client/order.ts`, `src/client/reserve.ts` | `tests/e2e/order.spec.ts`, `tests/e2e/booking.spec.ts`        |
+| Accessibility                    | `src/layouts/Page.astro`, `src/styles/`                                                                          | `tests/e2e/a11y.spec.ts` (axe-core on every page type)        |
+| Search engines                   | `src/render/sitemap.ts`, `src/render/routes.ts`, `src/pages/[sitemap].xml.ts`                                    | `tests/unit/sitemap.test.ts`, `tests/unit/routes.test.ts`     |
+| Private data kept out of Git     | `scripts/private-data.ts`, `private/`, `src/data/legal.ts`                                                       | `tests/unit/private-data.test.ts`, `tests/unit/legal.test.ts` |
+| The Instagram feed, no embeds    | `scripts/instagram.ts`, `src/render/instagram.ts`, `src/styles/instagram.css`, `.github/workflows/contenido.yml` | `tests/unit/instagram.test.ts`, `tests/e2e/instagram.spec.ts` |
+| The football-match gateway       | `netlify-puerta/`, `workers/vigia/`, `scripts/check-gateway.ts`, [docs/deployment.md](docs/deployment.md)        | `tests/unit/gateway.test.ts`, `tests/unit/vigia.test.ts`      |
+| Design tokens                    | `design-system/tokens.json`, `scripts/tokens.ts`, `src/styles/`                                                  | `tests/unit/design-system.test.ts`                            |
 
 ## Quick start
 
@@ -74,7 +76,7 @@ git clone https://github.com/babylonace/multilingual-restaurant-website.git
 cd multilingual-restaurant-website
 npm ci
 npm run dev        # every page, every language, at http://localhost:4321
-npm test           # 657 unit tests
+npm test           # 1,011 unit tests
 npm run build      # the static site in dist/
 ```
 
@@ -90,15 +92,15 @@ flowchart LR
   R --> B["astro build"]
   CSS --> B
   P["Photos"] -->|AVIF + WebP| B
-  B --> S["33 static pages<br/>sitemap, robots"]
+  B --> S["43 static pages<br/>sitemap, robots"]
 ```
 
 - **Data and text are separate.** Dishes, prices and allergens live in typed TypeScript files; every visible
   sentence lives in one JSON per language.
 - **Pages come from small, tested functions** that take data and return escaped HTML. Astro only routes,
   bundles, and optimises fonts and images; it ships no framework to the browser.
-- **JavaScript is optional.** The content and the language switcher are plain HTML and links; the 2.2 KB script
-  adds the tabs and remembers the chosen language.
+- **JavaScript is optional.** The content and the language switcher are plain HTML and links; the 6 KB script
+  adds the tabs, the order and the booking form, and remembers the chosen language. Without it, the buttons open a blank WhatsApp message.
 - **Fresh content without a backend.** A daily GitHub Actions run reads the latest Instagram posts, crops and
   converts the photos and redeploys only if something changed. If Instagram is down, the site keeps the last
   good posts; if the token stops working, it opens an issue with what to do.
@@ -115,6 +117,7 @@ Fork it and change, in this order:
    and `public/assets/`, then run `npm run build:favicon` and `npm run build:og`.
 2. **Content.** Dishes, sections, prices (in cents: `1450` is 14.50) and allergens in `src/data/menu.ts`;
    phone, address and links in `src/render/contact.ts`; ready-made WhatsApp messages in `src/data/whatsapp.ts`;
+   delivery fee and packaging in `src/data/order.ts`; kitchen hours in `src/data/hours.ts`;
    photos in `src/assets/fotos/` (up to 2400 px, the build makes the smaller versions).
 3. **Text and languages.** Every sentence is in `src/i18n/locales/<lang>.json`. To add a language: add its code
    to `LangCode` in `src/data/types.ts`, an entry to `src/data/langs.ts` (`rtl: true` if it is written right to left),
@@ -124,6 +127,7 @@ Fork it and change, in this order:
    It is never committed.
 5. **Publish.** `dist/` is plain files, so any static host works. To deploy from GitHub Actions to Cloudflare
    Pages as this repository does, follow [docs/deployment.md](docs/deployment.md).
+   The booking form is built only with `BOOKINGS_VISIBLE=1`.
 
 Run `npm test` after each step: a dish without a price or a translation, or an allergen outside the official
 14, fails with a message that says where.
@@ -133,10 +137,10 @@ the language setup, the tested renderers, the fonts and image pipeline and the C
 
 ## Tests and CI
 
-- **657 unit tests** (Vitest): renderers, formats per language, allergens, routes, sitemap, escaping, the
+- **1,011 unit tests** (Vitest): renderers, formats per language, allergens, routes, sitemap, escaping, the
   design-system rules, a guard against leaking private data, the Instagram feed (with a fake API, never the
-  real one) and the gateway checks.
-- **161 end-to-end and accessibility tests** (Playwright + axe-core): every page type, several languages,
+  real one), the gateway checks and the order, booking and opening-hours rules.
+- **318 end-to-end and accessibility tests** (Playwright + axe-core, 8 of them run on only one screen size): every page type, several languages,
   keyboard use, right-to-left layout and WCAG A/AA.
 - **Lighthouse CI:** the build fails if mobile performance drops below 90, or accessibility, best practices
   or SEO below 95.
