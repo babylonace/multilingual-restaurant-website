@@ -1,6 +1,6 @@
 /**
  * Rules of an order made from the carta and sent over WhatsApp. Prices are in euro cents, like
- * the dishes. Decided by Adriana on 2026-11-03; change them here and nowhere else.
+ * the dishes. Change them here and nowhere else.
  */
 export const ORDER_MODES = ['domicilio', 'recoger'] as const;
 

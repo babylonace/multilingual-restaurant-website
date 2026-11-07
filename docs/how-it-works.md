@@ -54,7 +54,7 @@ When moving from Vite to Astro the HTML of all 33 pages was compared before and 
 | `/en/carta/`, `/gl/carta/`…            | Menu in each of the other 9 languages                                          |
 | `/`, `/en/`…                           | Home page in each language: dining-room photo and the ways to reach us         |
 | `/menu-del-dia/`, `/en/menu-del-dia/`… | Daily set menu: hours, structure and prices; today's dishes are asked on WhatsApp |
-| `/reservar/`, `/en/reservar/`…          | Booking form: name, day, time and guests go out as a WhatsApp message          |
+| `/reservar/`, `/en/reservar/`…          | Booking form, built with `BOOKINGS_VISIBLE=1`: the details go out as a WhatsApp message          |
 | `/aviso-legal/`                        | Legal notice (LSSI). Spanish only                                              |
 | `/privacidad/`                         | Privacy policy (GDPR). Spanish only                                            |
 

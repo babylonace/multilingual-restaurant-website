@@ -1,5 +1,5 @@
 /**
- * When the kitchen works, in Ferrol time. Confirmed by Adriana on 2026-11-04: the kitchen is open
+ * When the kitchen works, in Ferrol time. The kitchen is open
  * from 13:00 to 16:00 and from 20:00 to 22:00, closed on Mondays; orders (delivery and pickup)
  * follow the kitchen; the menú del día runs Tuesday to Friday at lunch. Change them here only.
  */

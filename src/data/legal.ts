@@ -3,7 +3,7 @@ export const LEGAL_PAGES = ['aviso-legal', 'privacidad'] as const;
 export type LegalId = (typeof LEGAL_PAGES)[number];
 
 /**
- * While true, the legal pages say they are a draft. Approved by Adriana on 22 October 2026.
+ * While true, the legal pages say they are a draft.
  * Draft or not, they are always noindex and out of the sitemap: the law requires the holder's
  * NIE and address on the site, not in search results (her decision, same day).
  */

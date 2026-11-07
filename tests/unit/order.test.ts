@@ -30,7 +30,7 @@ const CATALOG = [
 ];
 
 describe('the rules', () => {
-  it('are the ones Adriana decided: 5 € delivery, 0,50 € per dish container', () => {
+  it('are the restaurant's rules: 5 € delivery, 0,50 € per dish container', () => {
     expect(DELIVERY_FEE_CENTS).toBe(500);
     expect(TAPER_CENTS).toBe(50);
   });

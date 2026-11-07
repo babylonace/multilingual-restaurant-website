@@ -129,8 +129,8 @@ los idiomas, las funciones testeadas, las fuentes, las imágenes y el CI funcion
 
 - **1011 tests unitarios** (Vitest): funciones de render, formatos por idioma, alérgenos, rutas, sitemap,
   escapado, las reglas del sistema de diseño, un test contra filtraciones de datos privados, el feed de
-  Instagram (con una API falsa, nunca la real) y las comprobaciones de la puerta.
-- **318 tests end-to-end y de accesibilidad** (Playwright + axe-core): cada tipo de página, varios idiomas,
+  Instagram (con una API falsa, nunca la real), las comprobaciones de la puerta y las reglas de pedidos, reservas y horarios.
+- **318 tests end-to-end y de accesibilidad** (Playwright + axe-core, 8 de ellos solo en un tamaño de pantalla): cada tipo de página, varios idiomas,
   uso con teclado, diseño de derecha a izquierda y WCAG A/AA.
 - **Lighthouse CI:** el build falla si el rendimiento en móvil baja de 90, o accesibilidad, buenas prácticas
   o SEO bajan de 95.

@@ -92,7 +92,7 @@ test.describe('the order in the carta', () => {
     const bar = page.locator('[data-order-bar]');
     await expect(bar).toBeVisible();
     await expect(bar.locator('[data-order-count]')).toHaveText('4');
-    // 43 € + 5 € de envío + 3 tapers (1,50 €), a domicilio por defecto.
+    // 43 € + 5 € delivery + 3 tapers (1,50 €), delivery by default.
     await expect(bar.locator('[data-order-bar-total]')).toHaveText(/^49,50\s€$/);
   });
 
@@ -210,7 +210,7 @@ test.describe('the order in the carta', () => {
     await add(page, 'Bebidas', 'Coca Cola', 2);
     const dialog = await openOrder(page);
     await expect(dialog.locator('[data-order-tapers-row]')).toBeHidden();
-    // 2 x 2,50 € + 5 € de envío.
+    // 2 x 2,50 € + 5 € delivery.
     await expect(dialog.locator('[data-order-total]')).toHaveText(/^10\s€$/);
   });
 
@@ -433,7 +433,7 @@ test.describe('the menú del día in the order', () => {
     await page.getByRole('button', { name: 'Añadir Medio menú del día al pedido' }).click();
     const dialog = await openOrder(page);
 
-    // 13 € + 8 € = 21 €; 2 + 1 tapers = 1,50 €; 5 € de envío.
+    // 13 € + 8 € = 21 €; 2 + 1 tapers = 1,50 €; 5 € delivery.
     await expect(dialog.locator('[data-order-subtotal]')).toHaveText(/^21\s€$/);
     await expect(dialog.locator('[data-order-tapers-detail]')).toHaveText(/^3 × 0,50\s€$/);
     await expect(dialog.locator('[data-order-total]')).toHaveText(/^27,50\s€$/);
@@ -457,7 +457,7 @@ test.describe('the menú del día in the order', () => {
   });
 });
 
-test.describe('pedido accesible', () => {
+test.describe('accessible ordering', () => {
   test('has no WCAG A/AA failures with an order under way and the dialog open', async ({
     page,
   }) => {
